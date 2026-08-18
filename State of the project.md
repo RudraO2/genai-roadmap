@@ -59,7 +59,7 @@ spec at a time, inside the session that builds it.
 | 08 | `specs/spec-08-progress.md` | `DONE` | 04, 05, 07 |
 | 09 | `specs/spec-09-frontier.md` | `DONE` | 04, 05 |
 | 10 | `specs/spec-10-navigation.md` | `DONE` | 04, 08, 09 |
-| 11 | `specs/spec-11-portability.md` | `READY FOR DEVELOPMENT` | 08 |
+| 11 | `specs/spec-11-portability.md` | `IN PROGRESS` | 08 |
 | 12 | `specs/spec-12-ship.md` | `SPEC PENDING` | 01–11 |
 
 ---
@@ -1019,7 +1019,7 @@ row derived the standing act separately; `pad` was copy-pasted into four files; 
 
 ## 11 — Progress portability
 
-**State:** `READY FOR DEVELOPMENT`  **Depends on:** 08
+**State:** `IN PROGRESS`  **Depends on:** 08
 
 Export progress to a JSON file, import it back, reset it. This is how a learner moves
 between devices without an account. It is the entire sync story and it must stay that way.
