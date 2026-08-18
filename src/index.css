@@ -1,0 +1,59 @@
+/**
+ * index.css — the CSS entry point. Imported once, from main.tsx.
+ *
+ * Two jobs.
+ *
+ * 1. Order. Tailwind first (it declares the layer order), then the theme tokens,
+ *    then our own layered styles. theme.css sits in this same directory so the
+ *    relative @font-face URLs resolve identically however the file is inlined.
+ *
+ * 2. Enforcement. CONTEXT.md section 8 bans gradients, glassmorphism, glow shadows,
+ *    default palette tokens, decorative rounding and ambient motion. Tailwind ships
+ *    utilities for every one of those. Clearing a theme namespace with `initial`
+ *    deletes both its variables and the utilities that read them, so `bg-slate-900`,
+ *    `backdrop-blur-md`, `shadow-lg`, `rounded-2xl` and `animate-pulse` are not
+ *    classes that exist. A future violation becomes a no-op, not a shipped gradient.
+ *
+ * What survives is layout: spacing, flex, grid, breakpoints, containers, position.
+ * That is "Tailwind is for layout only", enforced by the build rather than by memory.
+ * Colour and type reach components through var(--...) in src/styles/, never a class.
+ */
+
+@import 'tailwindcss';
+@import './theme.css';
+@import './styles/base.css';
+@import './styles/shell.css';
+
+@theme {
+  /* Colour: the entire default palette, deleted. theme.css is the only source. */
+  --color-*: initial;
+
+  /* Type: faces, sizes, weights, tracking and leading all live in theme.css. */
+  --font-*: initial;
+  --text-*: initial;
+  --font-weight-*: initial;
+  --tracking-*: initial;
+  --leading-*: initial;
+
+  /* Section 8: hard edges by default, no glow, no frosted panels. */
+  --radius-*: initial;
+  --shadow-*: initial;
+  --inset-shadow-*: initial;
+  --drop-shadow-*: initial;
+  --text-shadow-*: initial;
+  --blur-*: initial;
+
+  /* Section 8: motion only to show state change. Every default animation here
+   * is ambient — spin, ping, pulse, bounce. None of them may exist. */
+  --animate-*: initial;
+}
+
+@theme inline {
+  /* Tailwind's spacing scale reads the same unit the hand-written CSS does, so
+   * `gap-10` and `calc(var(--space-unit) * 10)` can never drift apart. */
+  --spacing: var(--space-unit);
+
+  /* Preflight's default family, restated because --font-* was cleared above. */
+  --default-font-family: var(--font-mono);
+  --default-mono-font-family: var(--font-mono);
+}
