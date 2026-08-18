@@ -52,7 +52,7 @@ spec at a time, inside the session that builds it.
 | 01 | `specs/spec-01-schema.md` | `DONE` | — |
 | 02 | `specs/spec-02-shell.md` | `DONE` | 01 |
 | 03 | `specs/spec-03-intake.md` | `DONE` | 01, 02 |
-| 04 | `specs/spec-04-path.md` | `READY FOR DEVELOPMENT` | 01, 02 |
+| 04 | `specs/spec-04-path.md` | `IN PROGRESS` | 01, 02 |
 | 05 | `specs/spec-05-cards.md` | `SPEC PENDING` | 01, 04 |
 | 06 | `specs/spec-06-panel.md` | `SPEC PENDING` | 01, 05 |
 | 07 | `specs/spec-07-character.md` | `SPEC PENDING` | 04 |
@@ -284,7 +284,7 @@ rule, no new focus style added.
 
 ## 04 — The path engine
 
-**State:** `SPEC PENDING`  **Depends on:** 01, 02
+**State:** `IN PROGRESS`  **Depends on:** 01, 02
 
 The load-bearing spec. One SVG `<path>` element per act. Node position is
 `path.getPointAtLength(total * t)` — nodes never store x/y. A `usePathPoint(t)` hook returns
