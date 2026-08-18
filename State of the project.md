@@ -56,7 +56,7 @@ spec at a time, inside the session that builds it.
 | 05 | `specs/spec-05-cards.md` | `DONE` | 01, 04 |
 | 06 | `specs/spec-06-panel.md` | `DONE` | 01, 05 |
 | 07 | `specs/spec-07-character.md` | `DONE` | 04 |
-| 08 | `specs/spec-08-progress.md` | `READY FOR DEVELOPMENT` | 04, 05, 07 |
+| 08 | `specs/spec-08-progress.md` | `IN PROGRESS` | 04, 05, 07 |
 | 09 | `specs/spec-09-frontier.md` | `READY FOR DEVELOPMENT` | 04, 05 |
 | 10 | `specs/spec-10-navigation.md` | `SPEC PENDING` | 04, 08, 09 |
 | 11 | `specs/spec-11-portability.md` | `SPEC PENDING` | 08 |
@@ -631,7 +631,7 @@ throughout.
 
 ## 08 — Progress and fog of war
 
-**State:** `READY FOR DEVELOPMENT`  **Depends on:** 04, 05, 07
+**State:** `IN PROGRESS` — claimed 2026-08-18  **Depends on:** 04, 05, 07
 
 Mark a node complete or incomplete; persist to localStorage. Fog of war is
 `stroke-dasharray` and `stroke-dashoffset` on the same path from spec 04. Completed glow is
