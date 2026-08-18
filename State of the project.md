@@ -42,7 +42,7 @@ A spec may only move to `DONE` with a green build. Anything less goes back to
 
 | # | File | State | Depends on |
 | --- | --- | --- | --- |
-| 01 | `specs/spec-01-schema.md` | `SPEC PENDING` | — |
+| 01 | `specs/spec-01-schema.md` | `IN PROGRESS` | — |
 | 02 | `specs/spec-02-shell.md` | `SPEC PENDING` | 01 |
 | 03 | `specs/spec-03-intake.md` | `SPEC PENDING` | 01, 02 |
 | 04 | `specs/spec-04-path.md` | `SPEC PENDING` | 01, 02 |
@@ -59,7 +59,7 @@ A spec may only move to `DONE` with a green build. Anything less goes back to
 
 ## 01 — Types, schema, and data loading
 
-**State:** `SPEC PENDING`  **Depends on:** nothing
+**State:** `IN PROGRESS`  **Depends on:** nothing
 
 Defines `Node`, `Track`, `Act`, `Branch`, `Link`, `Level`, `Zone`, `Status`, `Kind` in
 `src/types.ts`, plus a runtime validator and loader for `data/nodes.json` and
