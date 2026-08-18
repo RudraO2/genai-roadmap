@@ -55,7 +55,7 @@ spec at a time, inside the session that builds it.
 | 04 | `specs/spec-04-path.md` | `DONE` | 01, 02 |
 | 05 | `specs/spec-05-cards.md` | `DONE` | 01, 04 |
 | 06 | `specs/spec-06-panel.md` | `DONE` | 01, 05 |
-| 07 | `specs/spec-07-character.md` | `READY FOR DEVELOPMENT` | 04 |
+| 07 | `specs/spec-07-character.md` | `IN PROGRESS` | 04 |
 | 08 | `specs/spec-08-progress.md` | `SPEC PENDING` | 04, 05, 07 |
 | 09 | `specs/spec-09-frontier.md` | `SPEC PENDING` | 04, 05 |
 | 10 | `specs/spec-10-navigation.md` | `SPEC PENDING` | 04, 08, 09 |
@@ -526,7 +526,7 @@ is now used for the first time (`.node-panel__title`), closing `BACKLOG.md` T021
 
 ## 07 — The character
 
-**State:** `SPEC PENDING`  **Depends on:** 04
+**State:** `IN PROGRESS` — 2026-08-18  **Depends on:** 04
 
 `<Character t={0.42} facing="right" variant={{ body, hair, outfit }} />`. Code-drawn
 geometric placeholder with a two-state bob. Position comes from the path engine, never from
