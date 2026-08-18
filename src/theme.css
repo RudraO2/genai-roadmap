@@ -1,0 +1,123 @@
+/**
+ * theme.css — the one swappable file.
+ *
+ * Every colour and every type value in this project is declared here as a custom
+ * property, and nowhere else. CONTEXT.md section 10: "all colour/type via CSS custom
+ * properties in one theme.css, so the theme is swappable in one file." Rewrite the
+ * values below and the whole aesthetic changes; touch nothing else.
+ *
+ * The only selectors permitted in this file are :root and the @font-face blocks.
+ * No component styling lives here — that is src/styles/.
+ *
+ * The palette is CONTEXT.md section 8 read literally: near-black base, warm off-white
+ * text, exactly one accent hue. The accent is spent on state, never on decoration.
+ */
+
+/* Instrument Serif — display only. Vendored; see ./fonts/README.md. */
+@font-face {
+  font-family: 'Instrument Serif';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url('./fonts/instrument-serif-400-latin.woff2') format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC,
+    U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215,
+    U+FEFF, U+FFFD;
+}
+
+@font-face {
+  font-family: 'Instrument Serif';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url('./fonts/instrument-serif-400-latin-ext.woff2') format('woff2');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304,
+    U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0,
+    U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+
+/* JetBrains Mono — the voice of the interface. Variable, 400 to 700. */
+@font-face {
+  font-family: 'JetBrains Mono';
+  font-style: normal;
+  font-weight: 400 700;
+  font-display: swap;
+  src: url('./fonts/jetbrains-mono-400-700-latin.woff2') format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC,
+    U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215,
+    U+FEFF, U+FFFD;
+}
+
+@font-face {
+  font-family: 'JetBrains Mono';
+  font-style: normal;
+  font-weight: 400 700;
+  font-display: swap;
+  src: url('./fonts/jetbrains-mono-400-700-latin-ext.woff2') format('woff2');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304,
+    U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0,
+    U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+
+:root {
+  /* ---- Colour -------------------------------------------------------------
+   * Nine values. If a tenth is needed, it is probably a component reaching for
+   * decoration. Contrast against --surface-base, WCAG 2.1:
+   *   primary 15.4 : 1   secondary 7.7 : 1   muted 5.0 : 1   accent 5.3 : 1
+   */
+  --surface-base: #0b0c0e;
+  --surface-raised: #111316;
+
+  --rule: #22252a;
+  --rule-faint: #191c20;
+
+  --text-primary: #e8e4dc;
+  --text-secondary: #a8a29a;
+  --text-muted: #8a857b;
+
+  /* The one accent hue. Focus ring, hover marker, text selection. Nothing else. */
+  --accent: #e4552e;
+  --accent-quiet: #7a2a16;
+
+  /* ---- Type ---------------------------------------------------------------
+   * One serif display face, one mono for everything structural. The mono is the
+   * interface's voice; the serif speaks only in headings.
+   */
+  --font-display: 'Instrument Serif', 'Iowan Old Style', Georgia, 'Times New Roman', serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, 'SFMono-Regular', 'Cascadia Mono', Menlo,
+    Consolas, monospace;
+
+  /* Six sizes, real jumps. Display is 3.2x body at 360px and 5.9x at full width. */
+  --size-display: clamp(3rem, 1.9rem + 5vw, 5.5rem);
+  --size-title: clamp(1.5rem, 1.1rem + 1.8vw, 2.25rem);
+  --size-lead: 1.125rem;
+  --size-body: 0.9375rem;
+  --size-meta: 0.8125rem;
+  --size-micro: 0.6875rem;
+
+  --weight-regular: 400;
+  --weight-medium: 500;
+  --weight-bold: 700;
+
+  --tracking-caps: 0.16em;
+  --tracking-tight: -0.02em;
+  --leading-tight: 1.04;
+  --leading-body: 1.6;
+
+  /* ---- Structure ----------------------------------------------------------
+   * --space-unit feeds Tailwind's spacing scale (see index.css), so layout
+   * utilities and hand-written CSS share one rhythm.
+   */
+  --space-unit: 0.25rem;
+  --frame-max: 78rem;
+  --measure: 62ch;
+  --hairline: 1px;
+  --gutter: clamp(1.25rem, 0.5rem + 3vw, 4rem);
+
+  /* ---- Motion -------------------------------------------------------------
+   * Section 8: motion only to show state change. There is no ambient animation
+   * token here on purpose, and there should never be one.
+   */
+  --dur-state: 120ms;
+  --ease-state: cubic-bezier(0.2, 0, 0, 1);
+}
