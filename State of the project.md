@@ -53,7 +53,7 @@ spec at a time, inside the session that builds it.
 | 02 | `specs/spec-02-shell.md` | `DONE` | 01 |
 | 03 | `specs/spec-03-intake.md` | `DONE` | 01, 02 |
 | 04 | `specs/spec-04-path.md` | `DONE` | 01, 02 |
-| 05 | `specs/spec-05-cards.md` | `READY FOR DEVELOPMENT` | 01, 04 |
+| 05 | `specs/spec-05-cards.md` | `IN PROGRESS` | 01, 04 |
 | 06 | `specs/spec-06-panel.md` | `SPEC PENDING` | 01, 05 |
 | 07 | `specs/spec-07-character.md` | `READY FOR DEVELOPMENT` | 04 |
 | 08 | `specs/spec-08-progress.md` | `SPEC PENDING` | 04, 05, 07 |
@@ -374,7 +374,7 @@ rather than overflowing the frame. Zero console errors throughout.
 
 ## 05 — Node cards in the negative-space pockets
 
-**State:** `SPEC PENDING`  **Depends on:** 01, 04
+**State:** `IN PROGRESS`  **Depends on:** 01, 04
 
 Cards sit in the pockets the S-curve bends create, alternating sides from the `side` field
 in `tracks.json`. Card shows title, blurb, level, and a completion affordance.
