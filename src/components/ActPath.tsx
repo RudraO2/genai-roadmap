@@ -2,6 +2,7 @@ import { memo, useMemo, type ReactNode } from 'react'
 
 import type { ActProgress } from '../data/progress.ts'
 import { usePathLength } from '../hooks/usePathLength.ts'
+import { dashToFraction } from '../path/dash.ts'
 import { PathContext } from '../path/PathContext.ts'
 import { parseViewBoxSize } from '../path/viewBox.ts'
 import type { Act, Level } from '../types.ts'
@@ -16,24 +17,6 @@ export interface ActPathProps {
   progress: ActProgress
   /** `t` of the walker, when this act is the one hosting it (spec 07). */
   characterT?: number | null
-}
-
-/**
- * The dash pattern that draws the first `fraction` of a path and nothing else.
- *
- * `stroke-dasharray: L` lays out a dash of L followed by a gap of L; a
- * `stroke-dashoffset` of `L * (1 - fraction)` slides that pattern back so the
- * visible dash covers exactly `[0, L * fraction]`. This is `CONTEXT.md` section
- * 9's fog of war, and the same two properties clip the completed stroke.
- */
-function dashToFraction(totalLength: number, fraction: number): {
-  strokeDasharray: number
-  strokeDashoffset: number
-} {
-  return {
-    strokeDasharray: totalLength,
-    strokeDashoffset: totalLength * (1 - fraction),
-  }
 }
 
 /**

@@ -40,7 +40,7 @@ spec at a time, inside the session that builds it.
 | Phase | What | State |
 | --- | --- | --- |
 | A | Research the node registry → `data/nodes.json`, `data/tracks.json` | `DONE` — 2026-08-18 |
-| B | Write the specs → `specs/*.md` | `IN PROGRESS` — folded into each spec's own session; 8 of 12 written |
+| B | Write the specs → `specs/*.md` | `IN PROGRESS` — folded into each spec's own session; 10 of 12 written |
 | C | Build the backlog → `BACKLOG.md` | `IN PROGRESS` — `BACKLOG.md` created 2026-08-18, appended per session |
 
 ---
@@ -58,7 +58,7 @@ spec at a time, inside the session that builds it.
 | 07 | `specs/spec-07-character.md` | `DONE` | 04 |
 | 08 | `specs/spec-08-progress.md` | `DONE` | 04, 05, 07 |
 | 09 | `specs/spec-09-frontier.md` | `DONE` | 04, 05 |
-| 10 | `specs/spec-10-navigation.md` | `IN PROGRESS` | 04, 08, 09 |
+| 10 | `specs/spec-10-navigation.md` | `DONE` | 04, 08, 09 |
 | 11 | `specs/spec-11-portability.md` | `READY FOR DEVELOPMENT` | 08 |
 | 12 | `specs/spec-12-ship.md` | `SPEC PENDING` | 01–11 |
 
@@ -896,12 +896,124 @@ one line ran past 100 columns.
 
 ## 10 — Act navigation and the overview map
 
-**State:** `IN PROGRESS`  **Depends on:** 04, 08, 09
+**State:** `DONE` — 2026-08-18  **Depends on:** 04, 08, 09
 
 Move between acts. Each act is its own serpentine screen. A zoomed-out overview chains the
 acts into one map so the whole road is legible at once.
 
 Act counts per track: game 7, app 6, portfolio 8, media 8.
+
+### Session notes — 2026-08-18
+
+**Built:** `src/data/navigation.ts` (the whole view-state logic as pure functions —
+`ActView`, `resolveAct`, `neighbourActs`, `actRefOf`, `initialView`, `padIndex`),
+`src/path/dash.ts` (`dashToFraction`, lifted out of `ActPath` the moment a second drawing
+needed it), `src/components/ActNav.tsx` (overview link, `Act 03 / 07`, and the "you are in"
+jump), `src/components/ActPager.tsx` (previous / next act by name),
+`src/components/Overview.tsx` (the act rows plus the private `ActMini` miniature),
+`ActProgress.frontier` inside the existing `computeTrackProgress`, a rewritten `TrackMap`
+that holds the view and renders one act or the overview, and `src/styles/navigation.css`.
+
+**Decided:**
+
+- **The map opens where the learner is standing, not at act 01.** `initialView` reads the
+  same placement the walker is drawn from (`character ?? progress.placement`), so the figure
+  is on screen at mount and the first thing a returning learner does is not scroll. Opening
+  on the overview was the alternative and was rejected: the overview is a table of contents,
+  and opening a book at the contents every time is a worse default than opening it at the
+  bookmark.
+- **Marking a node done never moves the view.** Finishing the last node of the act on screen
+  advances the frontier to the next act; the screen stays put and `ActNav` starts offering
+  "You are in 04 Tools". A screen that navigates itself out from under a pointer is worse
+  than a stale one, and the walker leaving is exactly the thing that control is there to
+  explain.
+- **Previous/next live at the foot of the act; the overview is the random access.** One
+  control per job. The position indicator answers "where am I" at the top, the road is
+  walked forward so the way onward belongs at the end, and putting both in both bars would
+  have made the two rules read as the same bar twice.
+- **The overview is a stack of rows, not a grid of tiles.** Section 8 bans bento grids
+  outright and the acts are a sequence; a hairline-ruled column in index order is the
+  editorial form and the honest one.
+- **No connector drawn between the miniatures.** The curves start and end at different
+  corners (`long` ends at x=130, `medium` at x=1070), so a line joining two rows would be
+  decoration pretending to be geometry — the thing section 8 exists to stop. What chains the
+  acts is the stack order and the progress painted continuously across it.
+- **The miniatures carry no dots.** At ~11rem a 1200-unit act cannot hold six legible dots
+  and no labels at all. The row's `n / m done · n / m frontier` says what the dots would
+  have, and the strokes say how far along it is.
+- **Hover and "here" must not look alike.** A row's hover marker is `--text-muted`; the
+  accent left marker is reserved for the act the learner is standing in. If the pointer
+  could produce the accent, the accent would stop meaning "here".
+- **One source for "where the learner is".** The overview's marked row and the act screen's
+  jump control both read the value the figure is drawn from, passed down as `standingActId`,
+  rather than each deriving it. Two derivations of one fact is how a map ends up marking two
+  different acts.
+- **`ActProgress` gained the per-act frontier tally rather than the overview counting
+  spurs.** Spec 08's note is explicit that `computeTrackProgress` is the only thing that may
+  decide what progress looks like, and spec 09 added the branch slices to it for the same
+  reason. Keyed on `branch.act`, because that is the act a spur is drawn under.
+
+**Verified:** `npm run build` and `npx tsc --noEmit` both exit 0; the registry still
+validates 0 errors / 0 warnings. A 502-assertion suite over the four real tracks covers
+every act's index, ref, neighbours and resolution, the unknown-id cases, `initialView` at
+zero / two-acts-done / fully-complete / bad-placement, and the per-act frontier tally
+against three completion subsets each — including that the tallies sum to the track's, that
+branch completions leave every act's `revealT` and the road's totals untouched, and that a
+spur naming an act that does not exist counts in the track total but on no act's row. The
+suite was checked against deliberately wrong expectations to confirm it can fail. Synthetic
+cases cover a track with no acts, a one-act track, an act with no nodes that still hosts a
+spur, and a barren act.
+
+In a real Chrome tab: a cleared-storage first run goes intake → act 01 with one `Section`,
+one act `<svg>`, its branch, a walker and one `current` dot — and no other act in the DOM.
+The pager walks all seven acts of `game` forward and back, the position reads `Act 0n / 07`
+at each step, the first act offers only next and the last only previous, and every step
+lands at `scrollY` 0 with focus on `.map-screen` (the first mount focuses nothing). Progress
+that finishes acts 01–02 opens the map on act 03. Completing the act on screen leaves the
+heading where it was, drops the walker and raises "You are in 04 Tools" in the accent.
+Overview: all seven rows on `game` and all eight on `portfolio`, tallies summing exactly to
+the masthead's `n / m DONE` and `· n / m FRONTIER`, exactly one row marked, and each
+miniature's dash clip equal to that act's `revealT` / `completeT` to three decimals —
+checked against the full-size act's own strokes (0.414 / 0.242 on both). Five throwaway
+React roots (no acts, one act, an act with no nodes, an empty branch, a very long act title)
+render without throwing and without horizontal overflow. At an emulated 360x740 the
+miniature wraps below its row's text and `scrollWidth` equals `innerWidth` on both screens.
+Zero console errors or warnings throughout.
+
+**Found in review, then fixed:** six. The one that mattered: the miniatures were first drawn
+with `vector-effect: non-scaling-stroke` to keep the hairline visible, which silently moved
+the *whole* stroke — dash pattern included — into device space, so a `stroke-dasharray` of
+3298 user units became 3298 device pixels against a path only ~480 long, and every miniature
+drew an arbitrary slice of itself in the accent. It looked plausible on screen and was found
+by reading the computed dash values against the measured path length. The stroke is widened
+in user units instead. Also: `initialView` ignored spec 07's `character` override, so a
+hand-placed figure could open off screen; the "you are in" control and the overview's marked
+row derived the standing act separately; `pad` was copy-pasted into four files; a dead
+`margin-left: 0`; and a doc comment left describing the fix that had been removed.
+
+**Next session should know:**
+
+- **`TrackMap` renders one act or the overview — never the whole track.** Anything that
+  wants to reach a specific act goes through `selectAct` / `ActView`; there is no scroll
+  target for an act any more, and no `id` anchors were added.
+- **The view lives in React state and nowhere else.** No URL, no hash, no storage key
+  (T105, T106). The browser's back button leaves the app. Spec 12 owns the Pages base path
+  and 404 handling and is the place to decide whether a hash route is worth it; spec 11
+  owns storage and should read T106 before adding a key for this.
+- **`computeTrackProgress` still decides everything about progress**, now including each
+  act's `frontier` tally. The overview counts nothing itself and neither should anything
+  else.
+- **`dashToFraction` is in `src/path/dash.ts` and `usePathLength` is still the only
+  measurement.** Three drawings of one act now share both. A fourth must reuse them, and
+  must not put `vector-effect: non-scaling-stroke` on a dash-clipped path — see above.
+- **`padIndex` in `data/navigation.ts` is the two-digit act label.** `Intake` still has its
+  own inline `padStart` for the track index, which is a different sequence; it was left
+  alone deliberately.
+- **Focus and scroll move on navigation, gated by a ref flag** so the first mount does
+  neither. `.map-screen:focus { outline: none }` is deliberate: the container is not in the
+  tab order and the whole screen changing is the feedback.
+- The dev server for verification ran on port 5187 (5183–5186 and 5199 were left untouched)
+  and was killed by PID afterwards.
 
 ---
 
@@ -938,6 +1050,11 @@ a backend. v1 is the map only. If one of these appears in a task, the task is wr
 
 Newest first. One line per state change. Whoever changes a state writes the line.
 
+- 2026-08-18 — Spec 10 `DONE`. Act navigation and the overview map: the track shows one act
+  at a time with a nav strip, a named pager and a "you are in" jump, plus a zoomed-out
+  overview listing every act with its own miniature clipped to its own progress. Nothing
+  promoted — spec 11 was already `READY FOR DEVELOPMENT`, and spec 12 stays `SPEC PENDING`
+  until 11 lands.
 - 2026-08-18 — Spec 09 `DONE`. The frontier branch: 21 spurs rendered under their acts,
   dashed and marked unproven, with hollow dots, anchor rings and their own explored tallies;
   demotion derived from `last_commit` with a linked successor. Spec 10 promoted `SPEC

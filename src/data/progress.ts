@@ -95,6 +95,22 @@ export interface ActProgress {
    * itself — one pass over the track, one place that decides.
    */
   anchors: ReadonlySet<string>
+  /**
+   * The frontier spurs that render under this act, tallied together (spec 10's
+   * overview states it per act). Keyed on `branch.act` rather than on the
+   * anchor's own act, because that is the act a branch is drawn under — the
+   * tally counts what the row is standing over.
+   *
+   * Beside the road, never in it: like `TrackProgress.frontier`, it takes no
+   * part in `done` / `total`, the fog geometry or the walker.
+   */
+  frontier: BranchTally
+}
+
+/** A done-out-of-total pair. The frontier's only shape, at both altitudes. */
+export interface BranchTally {
+  done: number
+  total: number
 }
 
 /**
@@ -129,7 +145,7 @@ export interface TrackProgress {
    * `done` / `total`: a branch is off the main path, so folding it in would make
    * the road's progress depend on optional side trips.
    */
-  frontier: { done: number; total: number }
+  frontier: BranchTally
 }
 
 /** An act with no placed nodes. Exported so no caller branches on `undefined`. */
@@ -140,7 +156,11 @@ export const EMPTY_ACT_PROGRESS: ActProgress = Object.freeze({
   done: 0,
   total: 0,
   anchors: new Set<string>(),
+  frontier: { done: 0, total: 0 },
 })
+
+/** No spurs under this act. Shared, so every such act reads the same object. */
+const EMPTY_TALLY: BranchTally = Object.freeze({ done: 0, total: 0 })
 
 /** A branch with no placed nodes. Same contract as `EMPTY_ACT_PROGRESS`. */
 export const EMPTY_BRANCH_PROGRESS: BranchProgress = Object.freeze({
@@ -167,8 +187,16 @@ function computeActProgress(
   completed: ReadonlySet<string>,
   isFrontierAct: boolean,
   anchorIds: ReadonlySet<string>,
+  frontier: BranchTally,
 ): ActResult {
-  if (act.nodes.length === 0) return { progress: EMPTY_ACT_PROGRESS, firstIncomplete: -1 }
+  // An act can place no nodes and still host a spur, so the tally survives the
+  // early return; the frozen constant is kept for the case where there is
+  // nothing at all to say.
+  if (act.nodes.length === 0) {
+    const progress =
+      frontier.total === 0 ? EMPTY_ACT_PROGRESS : { ...EMPTY_ACT_PROGRESS, frontier }
+    return { progress, firstIncomplete: -1 }
+  }
 
   const states = new Map<string, NodeProgressState>()
   const anchors = new Set<string>()
@@ -203,7 +231,15 @@ function computeActProgress(
   else if (isFrontierAct) revealT = Math.max(completeT, clamp01(act.nodes[firstIncomplete]!.t))
 
   return {
-    progress: { revealT, completeT, states, done, total: act.nodes.length, anchors },
+    progress: {
+      revealT,
+      completeT,
+      states,
+      done,
+      total: act.nodes.length,
+      anchors,
+      frontier,
+    },
     firstIncomplete,
   }
 }
@@ -257,11 +293,20 @@ export function computeTrackProgress(
   // that does not hold it.
   const anchorIds = new Set(track.branches.map((branch) => branch.anchor))
 
+  // The same branch slices, grouped by the act they render under, so an act's
+  // row can state its spurs without a second pass over `track.branches`.
+  const frontierByAct = new Map<string, { done: number; total: number }>()
+
   for (const branch of track.branches) {
     const progress = computeBranchProgress(branch, completed)
     branches.set(branch.id, progress)
     frontierDone += progress.done
     frontierTotal += progress.total
+
+    const tally = frontierByAct.get(branch.act) ?? { done: 0, total: 0 }
+    tally.done += progress.done
+    tally.total += progress.total
+    frontierByAct.set(branch.act, tally)
   }
 
   for (const act of track.acts) {
@@ -275,6 +320,7 @@ export function computeTrackProgress(
       completed,
       isFrontierAct,
       anchorIds,
+      frontierByAct.get(act.id) ?? EMPTY_TALLY,
     )
     acts.set(act.id, progress)
     done += progress.done

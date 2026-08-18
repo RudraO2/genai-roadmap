@@ -121,6 +121,20 @@ bottom rather than done inline.
       persistence, panels, stubs, overlap scan at 1440px and 360px, patched-dormancy render,
       throwaway roots for the empty cases, mid-tween fps and branch mutation count)
 
+## Spec 10 — Act navigation and the overview map
+
+- [x] T095 — Write `specs/spec-10-navigation.md`
+- [x] T096 — `src/data/navigation.ts` — `ActView`, act lookup, neighbours, `initialView`, pure
+- [x] T097 — `src/path/dash.ts` — `dashToFraction` lifted out of `ActPath`, one clip
+- [x] T098 — `src/data/progress.ts` — `ActProgress.frontier`, the per-act spur tally
+- [x] T099 — `src/components/ActNav.tsx` — overview, position, the "you are in" jump
+- [x] T100 — `src/components/ActPager.tsx` — previous / next act, named, hidden at the ends
+- [x] T101 — `src/components/Overview.tsx` — the act rows and their `ActMini` miniatures
+- [x] T102 — `src/components/TrackMap.tsx` — one act at a time, view state, focus and scroll
+- [x] T103 — `src/styles/navigation.css` (+ `index.css` import)
+- [x] T104 — Verify: build, typecheck, 502-assertion suite, five React edge cases, browser
+      pass at 1440 and 360 across `game` and `portfolio`
+
 ## Noticed, not done
 
 Appended by sessions that spotted work outside their one task. Do not do these inline.
@@ -173,3 +187,18 @@ Appended by sessions that spotted work outside their one task. Do not do these i
 - [ ] T094 — `BranchPath` still passes `viewBoxWidth`/`viewBoxHeight` to `NodeCard` and the
       card still computes a percentage position, which `branch.css` then overrides. Kept so
       `NodeCard` has one contract; drop it only if branches never float again.
+- [ ] T105 — No URL, hash or history entry per act. Navigation lives in React state only,
+      so the browser's back button leaves the app and a link cannot point at one act. Spec
+      12 owns the GitHub Pages base path and 404 handling; decide there whether a hash
+      route is worth it, and remember `CONTEXT.md` section 10 forbids anything server-side.
+- [ ] T106 — The viewed act is not persisted. Reopening the map lands on the progress
+      frontier, which is usually right, but a learner reading ahead loses their place on a
+      reload. Spec 11 owns storage; if it adds a key for this, it must also survive an
+      import of someone else's progress without pointing at an act of another track.
+- [ ] T107 — `useTweenedT` still runs while the overview is showing, tweening a walker that
+      nothing draws. Harmless (it only animates when `t` changes) but it is work with no
+      output; if the overview ever gets expensive, gate the hook on the act view.
+- [ ] T108 — The overview miniatures carry no dots, so a learner cannot see *which* node
+      they are standing on from the zoomed-out screen — only how far along the act is. If
+      the minis ever grow (a wider breakpoint, say), revisit: the geometry is already there
+      through `PathContext`, and only legibility argued against it.

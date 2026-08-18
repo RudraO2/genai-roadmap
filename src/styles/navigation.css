@@ -1,0 +1,290 @@
+/**
+ * navigation.css — spec 10's act nav, pager and overview. @layer components,
+ * tokens only.
+ *
+ * Three bars of mono text and one column of rows. Nothing here is a card: the
+ * only structure is the hairline, which is what `CONTEXT.md` section 8 asks for
+ * ("hairline rules instead of card borders", "hard edges by default").
+ *
+ * The accent appears once in this file, on the overview row for the act the
+ * learner is standing in. Hover is `--text-muted` instead, deliberately: if the
+ * pointer could produce the accent, the accent would stop meaning "here".
+ */
+
+@layer components {
+  /* ---- The screen container ---------------------------------------------
+   * Focused programmatically after a navigation so the reader lands on the new
+   * screen. It is not in the tab order (`tabindex="-1"`) and is not a control,
+   * so the focus ring is suppressed: the entire screen changing is the feedback,
+   * and a 2px outline around the whole map is not.
+   */
+
+  .map-screen:focus {
+    outline: none;
+  }
+
+  /* ---- Act nav (top) ---------------------------------------------------- */
+
+  .act-nav {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: calc(var(--space-unit) * 2) calc(var(--space-unit) * 8);
+    padding-bottom: calc(var(--space-unit) * 4);
+    margin-bottom: calc(var(--space-unit) * 12);
+    border-bottom: var(--hairline) solid var(--rule);
+  }
+
+  .act-nav__position {
+    font-size: var(--size-micro);
+    letter-spacing: var(--tracking-caps);
+    text-transform: uppercase;
+    color: var(--text-muted);
+    margin-left: auto;
+    white-space: nowrap;
+  }
+
+  /* Underlined mono text, the same affordance as the masthead's change control.
+   * Not a button shape: a bar of three pill buttons is the launch-page look
+   * section 8 rules out. */
+  .act-nav__link {
+    background: none;
+    border: none;
+    padding: 0;
+    font: inherit;
+    font-size: var(--size-micro);
+    letter-spacing: var(--tracking-caps);
+    text-transform: uppercase;
+    color: var(--text-secondary);
+    cursor: pointer;
+    text-decoration: underline;
+    text-underline-offset: 0.2em;
+    transition: color var(--dur-state) var(--ease-state);
+  }
+
+  .act-nav__link:hover {
+    color: var(--text-primary);
+  }
+
+  /* Where the learner actually is, so it is allowed the accent — the same
+   * meaning it carries on the dot, the stroke and the overview row. */
+  .act-nav__link--standing {
+    color: var(--accent);
+  }
+
+  /* Holds the accent through hover, which the rule above it would otherwise
+   * take back to off-white — a control that dims when pointed at reads as
+   * disabled. */
+  .act-nav__link--standing:hover {
+    color: var(--accent);
+  }
+
+  /* ---- Act pager (bottom) ----------------------------------------------- */
+
+  .act-pager {
+    display: flex;
+    flex-wrap: wrap;
+    gap: calc(var(--space-unit) * 6);
+    margin-top: calc(var(--space-unit) * 16);
+    padding-top: calc(var(--space-unit) * 6);
+    border-top: var(--hairline) solid var(--rule);
+  }
+
+  .act-pager__step {
+    display: flex;
+    flex-direction: column;
+    gap: calc(var(--space-unit) * 1);
+    flex: 1 1 14rem;
+    background: none;
+    border: none;
+    padding: 0;
+    font: inherit;
+    text-align: left;
+    cursor: pointer;
+  }
+
+  /* The next act is the road ahead, so it sits at the right-hand end of the bar
+   * and reads from its own edge. `text-align` rather than a second element. */
+  .act-pager__step--next {
+    text-align: right;
+  }
+
+  /* Only when a previous step exists does the next one need pushing over; on the
+   * first act it is the only child and stays left. */
+  .act-pager__step--prev ~ .act-pager__step--next {
+    align-items: flex-end;
+  }
+
+  .act-pager__direction {
+    font-size: var(--size-micro);
+    letter-spacing: var(--tracking-caps);
+    text-transform: uppercase;
+    color: var(--text-muted);
+  }
+
+  .act-pager__act {
+    font-family: var(--font-display);
+    font-size: var(--size-lead);
+    line-height: var(--leading-tight);
+    color: var(--text-secondary);
+    transition: color var(--dur-state) var(--ease-state);
+  }
+
+  .act-pager__step:hover .act-pager__act {
+    color: var(--text-primary);
+  }
+
+  /* ---- Overview ---------------------------------------------------------
+   * A stack of rows, not a grid of tiles: section 8 bans bento grids, and the
+   * acts are a sequence. The rules between rows are the chain — no connector is
+   * drawn between two miniatures, because the curves start and end at different
+   * corners and a line joining them would be decoration pretending to be
+   * geometry.
+   */
+
+  .overview {
+    list-style: none;
+    border-top: var(--hairline) solid var(--rule);
+  }
+
+  .overview__item {
+    border-bottom: var(--hairline) solid var(--rule);
+  }
+
+  .overview__act {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: calc(var(--space-unit) * 4) calc(var(--space-unit) * 8);
+    width: 100%;
+    background: none;
+    border: none;
+    border-left: calc(var(--hairline) * 3) solid transparent;
+    padding: calc(var(--space-unit) * 6) 0 calc(var(--space-unit) * 6)
+      calc(var(--space-unit) * 4);
+    font: inherit;
+    text-align: left;
+    cursor: pointer;
+    transition: border-left-color var(--dur-state) var(--ease-state);
+  }
+
+  .overview__act:hover {
+    border-left-color: var(--text-muted);
+  }
+
+  /* The one accent in this file. It means the same thing it means everywhere
+   * else on the map: the learner is standing here. */
+  .overview__act[data-here='true'] {
+    border-left-color: var(--accent);
+  }
+
+  .overview__text {
+    display: flex;
+    flex-direction: column;
+    gap: calc(var(--space-unit) * 1);
+    flex: 1 1 18rem;
+    min-width: 0;
+  }
+
+  .overview__kicker {
+    display: flex;
+    gap: calc(var(--space-unit) * 4);
+    align-items: baseline;
+    font-size: var(--size-micro);
+    letter-spacing: var(--tracking-caps);
+    text-transform: uppercase;
+  }
+
+  .overview__index {
+    color: var(--text-muted);
+  }
+
+  /* Said in words as well as in colour, so the state does not depend on hue. */
+  .overview__here {
+    color: var(--accent);
+  }
+
+  .overview__title {
+    font-family: var(--font-display);
+    font-size: var(--size-title);
+    line-height: var(--leading-tight);
+    letter-spacing: var(--tracking-tight);
+    color: var(--text-primary);
+    transition: color var(--dur-state) var(--ease-state);
+  }
+
+  .overview__subtitle {
+    font-size: var(--size-body);
+    color: var(--text-secondary);
+    max-width: var(--measure);
+  }
+
+  .overview__tally {
+    margin-top: calc(var(--space-unit) * 1);
+    font-size: var(--size-micro);
+    letter-spacing: var(--tracking-caps);
+    text-transform: uppercase;
+    color: var(--text-muted);
+  }
+
+  /* Zoomed out, and fixed at that size: "zoomed-out" is a smaller drawing, not a
+   * gesture surface. Shrinks with the viewport so the row can still put the text
+   * and the map side by side down to the point where they wrap. */
+  .overview__mini {
+    display: block;
+    flex: 0 1 auto;
+    width: min(11rem, 34vw);
+  }
+
+  .overview-map {
+    display: block;
+    width: 100%;
+    height: auto;
+    overflow: visible;
+  }
+
+  .overview-map__line,
+  .overview-map__reached,
+  .overview-map__walked {
+    fill: none;
+    /* Ten user units, not a pixel width. The act's own 2-unit stroke drawn at a
+     * seventh of the size is a third of a pixel and the road disappears, so it
+     * is widened in the path's own space — 10 units lands between 1.0 and 1.5
+     * device pixels across this element's width range.
+     *
+     * `vector-effect: non-scaling-stroke` was the first fix and was wrong: it
+     * moves the *whole* stroke, dash pattern included, into device space, so a
+     * `stroke-dasharray` of 3298 user units became 3298 device pixels against a
+     * path only ~480 long. Every miniature then drew an arbitrary slice of
+     * itself in the accent and the progress clip said nothing. The dash is in
+     * user units, so the width has to be too. */
+    stroke-width: calc(var(--hairline) * 10);
+  }
+
+  .overview-map__line {
+    stroke: var(--rule);
+  }
+
+  .overview-map__reached,
+  .overview-map__walked {
+    transition: stroke-dashoffset calc(var(--dur-state) * 4) var(--ease-state);
+  }
+
+  /* Same three strokes, same order, same meanings as the full-size act
+   * (`path.css`): the road, the stretch reached, the stretch walked painted over
+   * it. A miniature that read differently from the act it stands for would be
+   * worse than no miniature. */
+  .overview-map__reached {
+    stroke: var(--accent);
+  }
+
+  .overview-map__walked {
+    stroke: var(--accent-quiet);
+  }
+
+  .overview__empty {
+    font-size: var(--size-body);
+    color: var(--text-muted);
+  }
+}

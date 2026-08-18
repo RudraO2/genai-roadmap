@@ -361,3 +361,61 @@ measurement, so spec 10's overview map should use it; `.act-stage--branch`'s sta
 is load-bearing and the numbers behind it are in `branch.css`; `dormancyOf` reads the clock,
 so the map's appearance genuinely changes with the date; and nothing in the registry is
 dormant today, so those paths live only against patched data until a real tool dies.
+
+---
+
+## Spec 10 — Act navigation and the overview map — 2026-08-18
+
+**Did:** Turned the track from one unbroken scroll into a place you move through. `TrackMap`
+now renders exactly one act — its `Section`, its path, its cards, its spurs — framed by a nav
+strip that says `Act 03 / 07` and offers the overview, and a pager at the foot that names the
+act before and the act after. The map opens on the act the learner is standing in rather than
+at act 01, and when they wander off it a control in the accent says "You are in 04 Tools" and
+takes them back. The second half is the overview: every act of the track as a row with its
+index, title, standfirst, `n / m done · n / m frontier`, and a miniature of that act's own
+serpentine painted with that act's own progress — the whole road on one screen, any act one
+click away. Three small pieces were lifted to make it honest: `dashToFraction` out of
+`ActPath` into `src/path/dash.ts`, a per-act `frontier` tally into `computeTrackProgress`, and
+all the view logic into a React-free `src/data/navigation.ts`.
+
+**Decided:** The map opens at the bookmark, not the table of contents — `initialView` reads
+the same placement the walker is drawn from, so the figure is on screen at mount. Marking a
+node done never moves the view: finishing the act on screen advances the frontier to the next
+act and the screen stays where the learner put it, which is why the "you are in" control
+exists at all. Previous/next live only at the foot of the act and the overview is the random
+access, so no control appears twice. The overview is a stack of hairline-ruled rows rather
+than a grid of tiles (section 8 bans bento grids, and acts are a sequence), it draws no
+connector between two miniatures whose curves do not meet, and it carries no dots — the row's
+tally says what a six-dot miniature at 11rem could not. Hover marks a row in `--text-muted`
+so the accent keeps meaning "here" and nothing else. Full reasoning in the spec 10 session
+notes in `State of the project.md`.
+
+**Verified:** `npm run build` and `npx tsc --noEmit` both exit 0; the registry still validates
+0 errors / 0 warnings. A 502-assertion suite over the four real tracks covers indices, refs,
+neighbours, resolution, the unknown-id cases, `initialView` in four progress states, and the
+per-act frontier tally against three completion subsets each — including that the tallies sum
+to the track's and that branch completions leave the road untouched — and the suite was
+checked against deliberately wrong expectations to prove it can fail. In a real Chrome tab: a
+first run lands on act 01 with no other act in the DOM; the pager walks `game`'s seven acts
+forward and back with the position tracking each step and the ends offering only one
+direction; finishing the act on screen keeps the heading and raises the jump control;
+`portfolio`'s overview tallies sum exactly to the masthead's counts; and every miniature's
+dash clip equals its act's own strokes to three decimals. Five throwaway React roots cover no
+acts, one act, an act with no nodes, an empty branch and a very long title. At 360x740
+nothing overflows. Zero console errors.
+
+**Found in review, then fixed:** six, listed in the spec 10 notes. The one worth repeating is
+that the miniatures' first stroke rule used `vector-effect: non-scaling-stroke` to stay
+visible when scaled down, and that quietly moved the dash pattern into device space too — a
+3298-unit `stroke-dasharray` became 3298 device pixels against a ~480-pixel path, so every
+miniature drew an arbitrary slice of itself in the accent while looking entirely plausible.
+Reading the computed dash values against the measured length found it; the screenshot never
+would have.
+
+**Next iteration should know:** everything under "Next session should know" in the spec 10
+notes in `State of the project.md`. Short version: there is no scroll target for an act any
+more, so reach one through `selectAct`; the view lives in React state with no URL, hash or
+storage key behind it (T105, T106 — spec 11 owns storage, spec 12 owns the Pages routing
+question); `computeTrackProgress` decides progress including each act's spur tally; and a
+fourth drawing of an act must reuse `usePathLength` and `dashToFraction` and must not put
+`non-scaling-stroke` on a dash-clipped path.
