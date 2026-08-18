@@ -1,0 +1,138 @@
+/**
+ * panel.css — spec 06's own surface: the node detail `<dialog>` and its
+ * `::backdrop`. @layer components, tokens only.
+ *
+ * The backdrop dims with `color-mix()` against `--surface-base` rather than a
+ * hardcoded rgba — still one token, no second colour source — and never
+ * blurs (CONTEXT.md section 8 bans `backdrop-blur` outright).
+ */
+
+@layer components {
+  .node-panel {
+    position: fixed;
+    inset: 0;
+    margin: auto;
+    max-height: min(32rem, 80vh);
+    width: min(30rem, calc(100vw - var(--gutter) * 2));
+    padding: 0;
+    border: var(--hairline) solid var(--rule);
+    background: var(--surface-raised);
+    color: var(--text-primary);
+  }
+
+  .node-panel::backdrop {
+    background: color-mix(in srgb, var(--surface-base) 80%, transparent);
+  }
+
+  .node-panel__content {
+    max-height: min(32rem, 80vh);
+    overflow-y: auto;
+    padding: calc(var(--space-unit) * 8);
+  }
+
+  .node-panel__close {
+    float: right;
+    background: none;
+    border: none;
+    padding: 0;
+    font: inherit;
+    font-size: var(--size-micro);
+    letter-spacing: var(--tracking-caps);
+    text-transform: uppercase;
+    color: var(--text-secondary);
+    cursor: pointer;
+    transition: color var(--dur-state) var(--ease-state);
+  }
+
+  .node-panel__close:hover {
+    color: var(--accent);
+  }
+
+  .node-panel__kicker {
+    font-family: var(--font-mono);
+    font-size: var(--size-micro);
+    letter-spacing: var(--tracking-caps);
+    text-transform: uppercase;
+    color: var(--text-muted);
+  }
+
+  .node-panel__title {
+    margin-top: calc(var(--space-unit) * 2);
+    font-family: var(--font-display);
+    font-size: var(--size-title);
+    color: var(--text-primary);
+    line-height: var(--leading-tight);
+    overflow-wrap: break-word;
+    clear: both;
+  }
+
+  .node-panel__facts {
+    margin-top: calc(var(--space-unit) * 6);
+    display: flex;
+    gap: calc(var(--space-unit) * 8);
+    border-top: var(--hairline) solid var(--rule);
+    padding-top: calc(var(--space-unit) * 4);
+  }
+
+  .node-panel__fact dt {
+    font-size: var(--size-micro);
+    letter-spacing: var(--tracking-caps);
+    text-transform: uppercase;
+    color: var(--text-muted);
+  }
+
+  .node-panel__fact dd {
+    margin-top: calc(var(--space-unit) * 1);
+    font-size: var(--size-body);
+    color: var(--text-primary);
+  }
+
+  .node-panel__note {
+    margin-top: calc(var(--space-unit) * 4);
+    font-size: var(--size-meta);
+    color: var(--text-secondary);
+    line-height: var(--leading-body);
+  }
+
+  .node-panel__group {
+    margin-top: calc(var(--space-unit) * 6);
+    border-top: var(--hairline) solid var(--rule);
+    padding-top: calc(var(--space-unit) * 4);
+  }
+
+  .node-panel__group-title {
+    font-family: var(--font-mono);
+    font-size: var(--size-micro);
+    letter-spacing: var(--tracking-caps);
+    text-transform: uppercase;
+    color: var(--text-muted);
+  }
+
+  .node-panel__links {
+    list-style: none;
+    margin-top: calc(var(--space-unit) * 3);
+    display: flex;
+    flex-direction: column;
+    gap: calc(var(--space-unit) * 2);
+  }
+
+  .node-panel__links a {
+    font-size: var(--size-body);
+    color: var(--text-primary);
+    text-decoration: underline;
+    text-decoration-color: var(--rule);
+    text-underline-offset: 0.2em;
+    transition: color var(--dur-state) var(--ease-state);
+  }
+
+  .node-panel__links a:hover {
+    color: var(--accent);
+    text-decoration-color: var(--accent);
+  }
+
+  @media (max-width: 480px) {
+    .node-panel {
+      width: calc(100vw - var(--gutter) * 2);
+    }
+  }
+}

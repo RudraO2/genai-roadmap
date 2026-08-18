@@ -54,7 +54,7 @@ spec at a time, inside the session that builds it.
 | 03 | `specs/spec-03-intake.md` | `DONE` | 01, 02 |
 | 04 | `specs/spec-04-path.md` | `DONE` | 01, 02 |
 | 05 | `specs/spec-05-cards.md` | `DONE` | 01, 04 |
-| 06 | `specs/spec-06-panel.md` | `IN PROGRESS` | 01, 05 |
+| 06 | `specs/spec-06-panel.md` | `DONE` | 01, 05 |
 | 07 | `specs/spec-07-character.md` | `READY FOR DEVELOPMENT` | 04 |
 | 08 | `specs/spec-08-progress.md` | `SPEC PENDING` | 04, 05, 07 |
 | 09 | `specs/spec-09-frontier.md` | `SPEC PENDING` | 04, 05 |
@@ -471,7 +471,7 @@ both `game`/`beginner` (all full cards, stacked) and `portfolio`/`beginner`.
 
 ## 06 — The node panel: pointers, never content
 
-**State:** `IN PROGRESS`  **Depends on:** 01, 05
+**State:** `DONE` — 2026-08-18  **Depends on:** 01, 05
 
 Opening a node reveals its links grouped by `kind` (repo / docs / video / thread / article /
 playground), its star count, last commit date, `status`, and `note`.
@@ -479,6 +479,48 @@ playground), its star count, last commit date, `status`, and `note`.
 **Watch for:** the hard rule from `CONTEXT.md` section 3. This panel renders metadata about
 a URL and links out. It never explains what the tool is or how to use it. If a task asks for
 prose about a tool, that task is wrong — log it to `BLOCKED.md` rather than writing it.
+
+### Session notes — 2026-08-18
+
+**Did:** Built `NodePanel` — a native `<dialog>`, controlled by an `open` boolean prop rather
+than an imperative handle, synced with `showModal()`/`close()` in an effect. Shows title,
+level/status, star count and last commit (or `unverified` when either is `null`), `note`
+when present, and every link grouped under its `kind` in the `KINDS` order `constants.ts`
+already reserved for this spec, kinds with no links simply omitted. `NodeCard`'s title
+became a `<button>` that opens its own `NodePanel`; the stub's expand control is untouched.
+Added `src/styles/panel.css` for the dialog surface and `::backdrop`.
+
+**Decided:** Went with a controlled `<dialog>` (`open` prop + effect) instead of a ref-based
+imperative-open API, so `Escape` (which fires the dialog's native `close` event) and the
+explicit close button both funnel through one `onClose` rather than two divergent paths.
+Close-on-backdrop-click checks `event.target === dialogRef.current` — a click anywhere in
+`.node-panel__content` targets a descendant, not the dialog element itself, so it never
+false-triggers. Each `NodeCard` mounts its own `<dialog>` rather than lifting "which panel
+is open" to `TrackMap`/`App`: this matches spec 05's existing precedent (completion/expand
+state also stays card-local) and native `<dialog>` already guarantees only one can be the
+page's active modal regardless of how many exist in the DOM. The backdrop dim uses
+`color-mix(in srgb, var(--surface-base) 80%, transparent)` rather than a second hardcoded
+colour — still one token, and not a `backdrop-blur` (which section 8 bans outright).
+
+**Verified:** `npm run build` and `npx tsc --noEmit` both exit 0. Grepped every new/edited
+file for hardcoded colour/gradient/glow/emoji — none (the only regex hits were the word
+"blurb"). In a real Chrome tab: clicking a full card's title opened that node's panel with
+correct grouped links in `KINDS` order, star/commit placeholders for a hosted-product node
+with both fields `null`, and its `note` rendered; `Escape` closed the panel and returned
+focus to the title button that opened it; a script-dispatched click targeting the dialog
+element itself closed the panel while a click on inner content did not; exactly one of 26
+mounted `<dialog>` elements was ever `open` at a time; at a 360px-equivalent emulated
+viewport (`innerWidth` 540, `scrollWidth` 517 — Chrome's emulate reports CSS px scaled by
+DPR, but the two numbers stayed in the right relation either way) the panel filled the frame
+width with no horizontal overflow and no layout breakage; zero console errors.
+
+**Next session should know:** `NodePanel` takes a plain `Node`, not a `PlacedNode` — any
+future spec rendering a node detail outside `NodeCard` (e.g. spec 09's frontier cards, if it
+reuses `NodeCard` as spec 05's notes suggested) gets the panel for free by reusing
+`NodeCard` itself rather than reimplementing panel wiring. `requires` (prerequisites) is
+still not shown anywhere in the UI — out of scope here by the spec board description: a
+navigation spec (10) is the more likely owner if it turns out to be needed. `--size-title`
+is now used for the first time (`.node-panel__title`), closing `BACKLOG.md` T021.
 
 ---
 
@@ -588,3 +630,7 @@ Newest first. One line per state change. Whoever changes a state writes the line
   stubs, inert completion toggle for spec 08 to wire up. Spec 06 promoted `SPEC PENDING` →
   `READY FOR DEVELOPMENT` (deps 01, 05 both now `DONE`). Spec 08 still `SPEC PENDING` — 07
   has not landed.
+- 2026-08-18 — Spec 06 `DONE`. Node detail panel: native controlled `<dialog>`, links
+  grouped by `kind`, star/commit/status/note metadata, no prose. No spec's dependencies
+  changed — nothing else depends on 06 alone; spec 07 was already `READY FOR DEVELOPMENT`
+  and spec 08 still waits on it.

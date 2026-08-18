@@ -61,6 +61,15 @@ bottom rather than done inline.
 - [x] T043 — `src/styles/cards.css` — card layout, stub, narrow-viewport stacked fallback
 - [x] T044 — Verify: build, typecheck, browser (stub/expand, side, level change, track change, 360px)
 
+## Spec 06 — The node panel: pointers, never content
+
+- [x] T045 — Write `specs/spec-06-panel.md`
+- [x] T046 — `src/components/NodePanel.tsx` — controlled `<dialog>`, links grouped by `kind`
+- [x] T047 — `src/components/NodeCard.tsx` — title becomes a button that opens the panel
+- [x] T048 — `src/styles/panel.css` — dialog surface, `::backdrop`, grouped-link list
+- [x] T049 — Verify: build, typecheck, browser (open/close, Escape+focus return, backdrop
+      click, one dialog open at a time, 360px)
+
 ## Noticed, not done
 
 Appended by sessions that spotted work outside their one task. Do not do these inline.
@@ -71,8 +80,8 @@ Appended by sessions that spotted work outside their one task. Do not do these i
       does, "no hex outside `theme.css`" is checked by hand.
 - [ ] T020 — `registry.tracks` and `registry.geometry` are readonly by type only, not frozen.
       Revisit if a spec ever mutates them by accident.
-- [ ] T021 — `--size-title` is now defined in `theme.css` but unused anywhere in `src/`.
-      Reserved for a sub-heading a later spec introduces inside a `Section`; not a bug.
+- [x] T021 — `--size-title` was defined in `theme.css` but unused anywhere in `src/`.
+      Resolved in spec 06: `.node-panel__title` uses it for the detail-panel heading.
 - [x] T022 — `.track-row`/`.track-list` in `src/styles/shell.css` style a static index.
       Resolved in spec 03: `button.track-row` reset + `.track-row--selected` modifier
       added to `shell.css`, hover/focus states merged rather than duplicated.

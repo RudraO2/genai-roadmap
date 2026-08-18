@@ -172,3 +172,37 @@ notes in `State of the project.md`. Short version: spec 08 replaces `NodeCard`'s
 `useState` with a persisted hook behind the same markup; `ActPath` now requires a `level`
 prop; `NodeCard` doesn't care whether a `PlacedNode` came from an act or a branch, so spec
 09 (frontier) can likely reuse it directly rather than building a second card component.
+
+---
+
+## Spec 06 — The node panel: pointers, never content — 2026-08-18
+
+**Did:** Built `NodePanel`, a native `<dialog>` controlled by an `open` prop rather than an
+imperative handle, showing a node's title, level/status, star count and last commit (with an
+`unverified` placeholder when either is `null`), `note` when present, and its links grouped
+by `kind` in the `KINDS` display order already reserved in `constants.ts`. `NodeCard`'s
+title is now a `<button>` that opens the card's own `NodePanel`; the stub's expand control
+is unchanged. Added `src/styles/panel.css` for the dialog surface and `::backdrop`.
+
+**Decided:** Controlled `<dialog>` over a ref-based imperative API so `Escape` (native
+`close` event) and the explicit close button funnel through one `onClose`. Backdrop-click
+detection checks `event.target === dialogRef.current`, which a click on inner content never
+satisfies. Each card owns its own `<dialog>` rather than lifting "which panel is open" to
+`TrackMap`/`App` — matches spec 05's precedent of card-local interaction state, and native
+`<dialog>` already guarantees only one page-level modal regardless of how many exist in the
+DOM. Full reasoning in the spec 06 session notes in `State of the project.md`.
+
+**Verified:** `npm run build` and `npx tsc --noEmit` both exit 0. Grepped every new/edited
+file for hardcoded colour/gradient/glow/emoji — none. In a real Chrome tab: opening a full
+card's title showed its panel with links correctly grouped and ordered, and correct
+placeholders/note for a hosted-product node with `stars`/`last_commit` both `null`;
+`Escape` closed the panel and returned focus to the title button; a backdrop click closed it
+while a click on inner content did not; exactly one of 26 mounted dialogs was ever `open`;
+no horizontal overflow at a 360px-equivalent emulated viewport; zero console errors.
+
+**Next iteration should know:** everything under "Next session should know" in the spec 06
+notes in `State of the project.md`. Short version: `NodePanel` takes a plain `Node`, so any
+future spec needing a node's detail view outside `NodeCard` should reuse `NodeCard` rather
+than rebuild panel wiring; `requires` (prerequisites) still isn't shown anywhere in the UI,
+out of this spec's scope by the spec board description; `--size-title` is now used for the
+first time, closing `BACKLOG.md` T021.
