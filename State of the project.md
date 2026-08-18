@@ -17,14 +17,21 @@ Do not merge them.
 
 | State | Meaning | Who moves it |
 | --- | --- | --- |
-| `SPEC PENDING` | Titled and scoped here, but the spec file in `specs/` does not exist yet. Not claimable. | Whoever writes the spec |
+| `SPEC PENDING` | Titled and scoped here, but the spec file in `specs/` does not exist yet, and at least one dependency is not `DONE`. | Whoever writes the spec |
 | `READY TO GO` | Spec file written and approved. Blocked — at least one dependency is not `DONE`. | Automatic, when a dependency lands |
-| `READY FOR DEVELOPMENT` | Spec written, every dependency `DONE`. Claimable right now. | Automatic, when the last dependency lands |
+| `READY FOR DEVELOPMENT` | Every dependency `DONE`. Claimable right now. The claiming session writes the spec file first if it does not exist. | Automatic, when the last dependency lands |
 | `IN PROGRESS` | A session has claimed it. Only one spec may be `IN PROGRESS` at a time. | The claiming session |
 | `DONE` | Every acceptance criterion in the spec verified. `npm run build` and `npx tsc --noEmit` both pass. | The finishing session |
 
 A spec may only move to `DONE` with a green build. Anything less goes back to
 `READY FOR DEVELOPMENT` and the reason goes in `BLOCKED.md`.
+
+**On who writes the spec file.** An earlier reading of this legend deadlocked the project:
+nothing could be claimed until a spec file existed, and no session was assigned to write one.
+`prompts/02-ralph-loop.md` settles it — the session that claims a spec writes
+`specs/<n>-<name>.md` from the title and description below, before writing any code. So a
+spec is claimable on its dependencies alone. Phase B is not a separate pass; it happens one
+spec at a time, inside the session that builds it.
 
 ---
 
@@ -33,8 +40,8 @@ A spec may only move to `DONE` with a green build. Anything less goes back to
 | Phase | What | State |
 | --- | --- | --- |
 | A | Research the node registry → `data/nodes.json`, `data/tracks.json` | `DONE` — 2026-08-18 |
-| B | Write the specs → `specs/*.md` | `IN PROGRESS` — titles approved, files not written |
-| C | Build the backlog → `BACKLOG.md` | `SPEC PENDING` — blocked on B |
+| B | Write the specs → `specs/*.md` | `IN PROGRESS` — folded into each spec's own session; 1 of 12 written |
+| C | Build the backlog → `BACKLOG.md` | `IN PROGRESS` — `BACKLOG.md` created 2026-08-18, appended per session |
 
 ---
 
@@ -42,8 +49,8 @@ A spec may only move to `DONE` with a green build. Anything less goes back to
 
 | # | File | State | Depends on |
 | --- | --- | --- | --- |
-| 01 | `specs/spec-01-schema.md` | `IN PROGRESS` | — |
-| 02 | `specs/spec-02-shell.md` | `SPEC PENDING` | 01 |
+| 01 | `specs/spec-01-schema.md` | `DONE` | — |
+| 02 | `specs/spec-02-shell.md` | `READY FOR DEVELOPMENT` | 01 |
 | 03 | `specs/spec-03-intake.md` | `SPEC PENDING` | 01, 02 |
 | 04 | `specs/spec-04-path.md` | `SPEC PENDING` | 01, 02 |
 | 05 | `specs/spec-05-cards.md` | `SPEC PENDING` | 01, 04 |
@@ -59,7 +66,7 @@ A spec may only move to `DONE` with a green build. Anything less goes back to
 
 ## 01 — Types, schema, and data loading
 
-**State:** `IN PROGRESS`  **Depends on:** nothing
+**State:** `DONE` — 2026-08-18  **Depends on:** nothing
 
 Defines `Node`, `Track`, `Act`, `Branch`, `Link`, `Level`, `Zone`, `Status`, `Kind` in
 `src/types.ts`, plus a runtime validator and loader for `data/nodes.json` and
@@ -72,11 +79,64 @@ track before its prerequisite, every date-less node `emerging` and carrying a `n
 **Watch for:** `status: "emerging"` is the majority state (42 of 67 nodes). It means
 "freshness unknown", not "risky". Do not type it as an error condition.
 
+### Session notes — 2026-08-18
+
+**Built:** `src/types.ts` (type-only), `src/constants.ts`, `src/data/order.ts`,
+`src/data/validate.ts` (32 rule codes, pure and total), `src/data/registry.ts` (loads,
+validates once, throws `RegistryError`, exposes indexed lookups), `scripts/validate-data.ts`,
+and the minimal Vite + React + TS toolchain. Real data validates with 0 errors and 0
+warnings; a 45-case corruption suite confirms every rule code fires.
+
+**Decided:**
+
+- **Spec 01 owns the toolchain, spec 02 owns the look.** `package.json`, `tsconfig.json` and
+  `vite.config.ts` had to land here because spec 01's own definition of done is "`npm run
+  build` and `npx tsc --noEmit` pass", and neither command existed. **Spec 02 must not run
+  `npm create vite`** — it inherits this scaffold and adds `theme.css`, the typefaces,
+  Tailwind and the app frame on top.
+- **`src/main.tsx` is a throwaway smoke test.** Unstyled semantic HTML printing registry
+  counts, no class, no style attribute, no stylesheet, because `theme.css` does not exist
+  yet. Spec 02 replaces its contents wholesale.
+- **Reading order lives in exactly one file.** `src/data/order.ts` defines it — act by act,
+  each act's own nodes then the nodes of every branch anchored in that act. Both the
+  validator and the loader import it. A second implementation would let the map disagree with
+  its own prerequisite checking, which is the same class of bug `CONTEXT.md` section 9 warns
+  about for path positions. Do not inline this logic anywhere.
+- **No `@types/node`.** `scripts/node-shims.d.ts` declares the five Node functions the CLI
+  script uses, so the dependency list stays at exactly what `CONTEXT.md` section 10 allows.
+  If a later spec needs materially more of the Node API, log the `@types/node` question to
+  `BLOCKED.md` rather than growing that file.
+- **No `tsconfig.node.json`.** A composite referenced project may not set `noEmit` (TS6310).
+  `vite.config.ts` is in the single `tsconfig.json` include instead.
+
+**Next session should know:**
+
+- `npm run build` is now `validate:data && tsc --noEmit && vite build`. A registry that fails
+  validation fails the build, verified by deliberately breaking a `requires` and watching it
+  exit 1. `validate:data` needs **Node >= 22.6** for `--experimental-strip-types`; that is
+  declared in `engines`.
+- Imports inside `src/` and `scripts/` carry explicit `.ts` extensions
+  (`allowImportingTsExtensions`). This is load-bearing: it is what lets plain Node run
+  `scripts/validate-data.ts` against the same validator the browser uses. Keep writing them.
+- `src/types.ts` must stay type-only — runtime values go in `src/constants.ts`. `constants.ts`
+  already holds `LEVEL_RANK` for spec 03's level filter, `KINDS` in the display order spec 06
+  should group links by, and the section 6 freshness thresholds spec 09 needs.
+- `registry.getNode(id)` **throws** on an unknown id rather than returning `undefined`.
+- `registry.tracks` and `registry.geometry` are the live imported JSON objects and are only
+  `readonly` at the type level, not frozen. Do not mutate them.
+- The registry is a hard stop, not a degraded render: if validation fails at runtime the app
+  throws at module load and the page is blank with a console error. That is deliberate — a
+  silently wrong map is worse than no map.
+- The dev server logs one 404 for `/favicon.ico`. No favicon exists yet; that is a spec 02
+  asset decision, deliberately not made here.
+- `data/nodes.json` and `data/tracks.json` are untouched and byte-identical to commit
+  `a787113`.
+
 ---
 
 ## 02 — Visual shell: theme, type scale, app frame
 
-**State:** `SPEC PENDING`  **Depends on:** 01
+**State:** `READY FOR DEVELOPMENT`  **Depends on:** 01
 
 Vite + React + TypeScript scaffold. One `theme.css` holding every colour and type custom
 property so the whole aesthetic is swappable in one file. Serif display face plus mono for
@@ -235,3 +295,9 @@ Newest first. One line per state change. Whoever changes a state writes the line
 - 2026-08-18 — Phase A `DONE`. Registry: 67 nodes, 44 main / 23 frontier, 98 URLs verified 200.
 - 2026-08-18 — Registry revised: freshness rule applied literally, `core` 61 → 25, `emerging` 6 → 42.
 - 2026-08-18 — Phase B opened. Twelve spec titles approved. All specs `SPEC PENDING`.
+- 2026-08-18 — Repo put under git; Phase A files committed as `a787113`.
+- 2026-08-18 — Legend clarified: the claiming session writes the spec file, so a spec is
+  claimable on its dependencies alone. The old reading deadlocked the board.
+- 2026-08-18 — Spec 01 `DONE`. Types, 32-rule validator, loader, and the minimal toolchain.
+  Registry validates 0 errors / 0 warnings; `npm run build` now gated on it.
+- 2026-08-18 — Spec 02 `SPEC PENDING` → `READY FOR DEVELOPMENT`, its only dependency landed.
