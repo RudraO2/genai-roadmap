@@ -58,7 +58,7 @@ spec at a time, inside the session that builds it.
 | 07 | `specs/spec-07-character.md` | `DONE` | 04 |
 | 08 | `specs/spec-08-progress.md` | `DONE` | 04, 05, 07 |
 | 09 | `specs/spec-09-frontier.md` | `DONE` | 04, 05 |
-| 10 | `specs/spec-10-navigation.md` | `READY FOR DEVELOPMENT` | 04, 08, 09 |
+| 10 | `specs/spec-10-navigation.md` | `IN PROGRESS` | 04, 08, 09 |
 | 11 | `specs/spec-11-portability.md` | `READY FOR DEVELOPMENT` | 08 |
 | 12 | `specs/spec-12-ship.md` | `SPEC PENDING` | 01–11 |
 
@@ -896,7 +896,7 @@ one line ran past 100 columns.
 
 ## 10 — Act navigation and the overview map
 
-**State:** `READY FOR DEVELOPMENT`  **Depends on:** 04, 08, 09
+**State:** `IN PROGRESS`  **Depends on:** 04, 08, 09
 
 Move between acts. Each act is its own serpentine screen. A zoomed-out overview chains the
 acts into one map so the whole road is legible at once.
