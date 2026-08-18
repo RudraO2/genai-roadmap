@@ -1,10 +1,11 @@
 /**
  * path.css — the act path screen. @layer components, tokens only.
  *
- * Bare by design (spec 04): a hairline path, a small dot per node, a mono
- * label. `--accent` is not used here — spec 02 spent it on selection, the
- * focus ring, and track-row hover; it stays free for spec 08's completed-
- * progress glow, the state that actually warrants it on this screen.
+ * Bare by design (spec 04): a hairline path, a small dot per node — the title
+ * lives on spec 05's card now, not a second label here. `--accent` is not
+ * used on this screen — spec 02 spent it on selection, the focus ring, and
+ * track-row hover; it stays free for spec 08's completed-progress glow, the
+ * state that actually warrants it here.
  */
 
 @layer components {
@@ -12,8 +13,8 @@
     display: block;
     width: 100%;
     height: auto;
-    /* Labels near t=0/t=1 can sit close to the viewBox edge; the default SVG
-     * clip would cut them off. The gutter around .shell__main leaves room. */
+    /* Dots near t=0/t=1 can sit close to the viewBox edge. The gutter around
+     * .shell__main leaves room; keep overflow visible rather than clipping. */
     overflow: visible;
   }
 
@@ -25,11 +26,5 @@
 
   .path-node__dot {
     fill: var(--text-secondary);
-  }
-
-  .path-node__label {
-    fill: var(--text-secondary);
-    font-family: var(--font-mono);
-    font-size: var(--size-micro);
   }
 }

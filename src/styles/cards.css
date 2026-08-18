@@ -1,0 +1,147 @@
+/**
+ * cards.css — spec 05's own surfaces: the node card, its collapsed stub, and
+ * the pocket layout that positions both against the act's path. @layer
+ * components, tokens only.
+ *
+ * Pocket positioning is percentage-of-viewBox left/top plus a small transform
+ * nudge away from the anchor point — not a second coordinate source. Below
+ * `--breakpoint-stack` there is no negative space to float a card in, so cards
+ * drop into normal document flow beneath their act's path instead.
+ */
+
+@layer components {
+  .act-stage {
+    position: relative;
+  }
+
+  .act-stage__cards {
+    position: absolute;
+    inset: 0;
+    /* Most of this box is empty space between cards; only cards themselves
+     * should intercept the pointer. */
+    pointer-events: none;
+  }
+
+  .node-card {
+    position: absolute;
+    width: clamp(11rem, 22vw, 16rem);
+    padding-top: calc(var(--space-unit) * 3);
+    border-top: var(--hairline) solid var(--rule);
+    pointer-events: auto;
+  }
+
+  .node-card--left {
+    transform: translate(calc(var(--space-unit) * -6), -50%);
+  }
+
+  .node-card--right {
+    transform: translate(calc(var(--space-unit) * 6), -50%);
+  }
+
+  .node-card__level {
+    font-family: var(--font-mono);
+    font-size: var(--size-micro);
+    letter-spacing: var(--tracking-caps);
+    text-transform: uppercase;
+    color: var(--text-muted);
+  }
+
+  .node-card__title {
+    margin-top: calc(var(--space-unit) * 2);
+    font-family: var(--font-display);
+    font-size: var(--size-lead);
+    color: var(--text-primary);
+    line-height: var(--leading-tight);
+    overflow-wrap: break-word;
+  }
+
+  .node-card__blurb {
+    margin-top: calc(var(--space-unit) * 2);
+    font-size: var(--size-meta);
+    color: var(--text-secondary);
+    line-height: var(--leading-body);
+    overflow-wrap: break-word;
+  }
+
+  .node-card__foot {
+    margin-top: calc(var(--space-unit) * 3);
+    display: flex;
+    align-items: center;
+    gap: calc(var(--space-unit) * 4);
+  }
+
+  .node-card__complete,
+  .node-card__collapse,
+  .node-card__stub-expand {
+    background: none;
+    border: none;
+    padding: 0;
+    font: inherit;
+    font-size: var(--size-micro);
+    letter-spacing: var(--tracking-caps);
+    text-transform: uppercase;
+    color: var(--text-secondary);
+    cursor: pointer;
+    transition: color var(--dur-state) var(--ease-state);
+  }
+
+  .node-card__complete:hover,
+  .node-card__collapse:hover,
+  .node-card__stub-expand:hover {
+    color: var(--accent);
+  }
+
+  .node-card__complete[aria-pressed='true'] {
+    color: var(--accent);
+  }
+
+  /* Collapsed: a hairline and a title, nothing else. Below the learner's
+   * chosen level, not deleted — CONTEXT.md section 5. */
+  .node-card--stub {
+    width: max-content;
+    max-width: clamp(9rem, 18vw, 12rem);
+    padding-top: calc(var(--space-unit) * 2);
+  }
+
+  .node-card--stub .node-card__stub-expand {
+    display: block;
+    max-width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  /* ---- Narrow viewport: stacked flow, no pockets ------------------------
+   * There isn't enough width left over between the path and the frame edge
+   * to float a card in negative space once the gutter eats most of it.
+   */
+  @media (max-width: 640px) {
+    .act-stage__cards {
+      position: static;
+      display: flex;
+      flex-direction: column;
+      gap: calc(var(--space-unit) * 6);
+      margin-top: calc(var(--space-unit) * 8);
+      pointer-events: auto;
+    }
+
+    .node-card,
+    .node-card--left,
+    .node-card--right,
+    .node-card--stub {
+      position: static;
+      transform: none;
+      width: 100%;
+      max-width: none;
+    }
+
+    /* Stacked flow has a full line to itself; the ellipsis truncation was
+     * only needed to keep a stub's width from fighting its pocket position. */
+    .node-card--stub .node-card__stub-expand {
+      overflow: visible;
+      text-overflow: clip;
+      white-space: normal;
+      overflow-wrap: break-word;
+    }
+  }
+}

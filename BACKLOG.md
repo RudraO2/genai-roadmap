@@ -51,6 +51,16 @@ bottom rather than done inline.
 - [x] T036 — Rewrite `src/App.tsx` confirmation branch to render `TrackMap`
 - [x] T037 — Verify: build, typecheck, browser (positions, track switch, 360px, no accent)
 
+## Spec 05 — Node cards in the negative-space pockets
+
+- [x] T038 — Write `specs/spec-05-cards.md`
+- [x] T039 — `src/path/viewBox.ts` — pure viewBox-string parser
+- [x] T040 — `src/components/NodeCard.tsx` — card/stub, level filter, inert completion toggle
+- [x] T041 — `src/components/ActPath.tsx` — `.act-stage` wrapper, card overlay, `level` prop
+- [x] T042 — `src/components/TrackMap.tsx` / `src/App.tsx` — thread `level` down
+- [x] T043 — `src/styles/cards.css` — card layout, stub, narrow-viewport stacked fallback
+- [x] T044 — Verify: build, typecheck, browser (stub/expand, side, level change, track change, 360px)
+
 ## Noticed, not done
 
 Appended by sessions that spotted work outside their one task. Do not do these inline.

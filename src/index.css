@@ -25,6 +25,7 @@
 @import './styles/shell.css';
 @import './styles/intake.css';
 @import './styles/path.css';
+@import './styles/cards.css';
 
 @theme {
   /* Colour: the entire default palette, deleted. theme.css is the only source. */

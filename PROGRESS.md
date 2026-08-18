@@ -136,3 +136,39 @@ are the one position implementation — spec 07 (character) and spec 08 (fog/glo
 them, and spec 08's second path should reuse `act.path` as data rather than clone the
 mounted DOM node; `TrackMap` renders every act unconditionally (no act nav yet, that's spec
 10) so tracks with 7–8 acts are a long scroll right now, which is expected.
+
+---
+
+## Spec 05 — Node cards in the negative-space pockets — 2026-08-18
+
+**Did:** Built `NodeCard` — a card or, below the learner's chosen level, a hairline stub —
+positioned from the same `usePathPoint(placed.t)` call spec 04's `PathNode` makes, converted
+to a percentage of the act's viewBox via a new `parseViewBoxSize`. Threaded a new `level`
+prop from `App` through `TrackMap` into `ActPath`, which now wraps its `<svg>` in an
+`.act-stage` container and renders one card per placed node in a sibling HTML overlay.
+Added `cards.css`, including a narrow-viewport fallback that drops the pocket layout for a
+plain stacked column below 640px.
+
+**Decided:** Removed `PathNode`'s bare-dot title label rather than repositioning it —
+screenshotting the first pass showed it sitting on top of the new card's own title at the
+same point, and spec 04 had already flagged that label as provisional. The completion
+toggle is local `useState`, not localStorage — spec 08 owns persistence and depends on this
+spec, so the button/class-name contract is what it should land behind rather than this spec
+reaching into storage it doesn't own. Full reasoning, including why pocket offset is a CSS
+transform nudge rather than stored geometry, is in the spec 05 session notes in
+`State of the project.md`.
+
+**Verified:** `npm run build` and `npx tsc --noEmit` both exit 0. Grepped every new/edited
+file for hardcoded colour/gradient/glow — none. In a real Chrome tab: 26 cards for `game`'s
+26 placed nodes at `beginner` (0 stubs), 25 of 26 collapsed to stubs at `advanced`; stub
+expand/collapse round-tripped correctly (checked as two separate post-click reads, since a
+click and a same-call DOM read can race the re-render); a real focused `Tab`+`Enter`
+toggled "Mark done" to "Done" with computed accent colour; switching track cleared the old
+track's cards with no stale DOM; zero console errors; no horizontal overflow at 360px on
+either track.
+
+**Next iteration should know:** everything under "Next session should know" in the spec 05
+notes in `State of the project.md`. Short version: spec 08 replaces `NodeCard`'s completion
+`useState` with a persisted hook behind the same markup; `ActPath` now requires a `level`
+prop; `NodeCard` doesn't care whether a `PlacedNode` came from an act or a branch, so spec
+09 (frontier) can likely reuse it directly rather than building a second card component.

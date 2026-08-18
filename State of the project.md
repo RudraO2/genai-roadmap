@@ -53,8 +53,8 @@ spec at a time, inside the session that builds it.
 | 02 | `specs/spec-02-shell.md` | `DONE` | 01 |
 | 03 | `specs/spec-03-intake.md` | `DONE` | 01, 02 |
 | 04 | `specs/spec-04-path.md` | `DONE` | 01, 02 |
-| 05 | `specs/spec-05-cards.md` | `IN PROGRESS` | 01, 04 |
-| 06 | `specs/spec-06-panel.md` | `SPEC PENDING` | 01, 05 |
+| 05 | `specs/spec-05-cards.md` | `DONE` | 01, 04 |
+| 06 | `specs/spec-06-panel.md` | `READY FOR DEVELOPMENT` | 01, 05 |
 | 07 | `specs/spec-07-character.md` | `READY FOR DEVELOPMENT` | 04 |
 | 08 | `specs/spec-08-progress.md` | `SPEC PENDING` | 04, 05, 07 |
 | 09 | `specs/spec-09-frontier.md` | `SPEC PENDING` | 04, 05 |
@@ -374,7 +374,7 @@ rather than overflowing the frame. Zero console errors throughout.
 
 ## 05 — Node cards in the negative-space pockets
 
-**State:** `IN PROGRESS`  **Depends on:** 01, 04
+**State:** `DONE` — 2026-08-18  **Depends on:** 01, 04
 
 Cards sit in the pockets the S-curve bends create, alternating sides from the `side` field
 in `tracks.json`. Card shows title, blurb, level, and a completion affordance.
@@ -382,11 +382,96 @@ in `tracks.json`. Card shows title, blurb, level, and a completion affordance.
 Also owns level filtering: nodes below the learner's chosen level collapse to a hairline
 stub. Collapsed, never deleted — the learner can always expand.
 
+### Session notes — 2026-08-18
+
+**Built:** `src/path/viewBox.ts` (pure `parseViewBoxSize`), `src/components/NodeCard.tsx`
+(card or, below the learner's level, a hairline stub — positions itself via the same
+`usePathPoint(placed.t)` call `PathNode` makes, converted to a percentage of the act's
+viewBox), and threaded a new `level: Level` prop from `App` through `TrackMap` into
+`ActPath`, which now wraps its `<svg>` in a `.act-stage` container and renders one
+`NodeCard` per placed node in a sibling overlay `<div>` sharing the same `PathContext`.
+Added `src/styles/cards.css`. Also edited `src/components/PathNode.tsx` and `path.css` to
+drop the bare dot's mono `<text>` label — see Decided.
+
+**Decided:**
+
+- **The card overlay is a plain HTML `<div>` sibling of the `<svg>`, not more SVG.** Cards
+  need real text wrapping and buttons; `.act-stage` (`position: relative`, sized by the
+  `<svg>`'s own `height: auto`) lets the overlay position children by percentage of the
+  same box the path renders into, with no second size measurement.
+- **Pocket offset is a small CSS transform nudge away from the anchor point, not stored
+  geometry.** `PlacedNode` only carries `t` and `side` — there is no per-node pocket
+  coordinate in the data — so `left`/`right` percentage plus a fixed `--space-unit`
+  transform is the one interpretation that data shape supports. A left-side card is
+  positioned with `right: (100 - leftPct)%` (grows leftward from the anchor) rather than
+  `left` + `translateX(-100%)`, so its width never has to be known to avoid overflowing
+  past the anchor.
+- **Removed `PathNode`'s title label instead of leaving it.** Screenshotting the first
+  build showed the spec-04 dot label sitting at the exact same point as the new card and
+  overlapping its text (both render at the same `t`, same vertical center). Spec 04's own
+  comment already flagged the label as provisional ("spec 05/08 add those"); since the
+  card now carries the title, the fix was deletion, not repositioning — two labels for one
+  node was never the intended end state. `path.css`'s now-dead `.path-node__label` rule
+  went with it.
+- **The completion toggle is `useState`, not wired to storage.** Spec 08 owns persistence
+  and depends on this spec; wiring `localStorage` here would mean spec 08 either reworks
+  this component or duplicates the read path. The button, class names (`.node-card__complete`,
+  `aria-pressed`) and visual states (accent on pressed) are the contract spec 08 should
+  land behind, per the interface note in `specs/spec-05-cards.md`.
+- **Below 640px, cards leave the pocket layout entirely** and stack in normal document
+  flow beneath their act's path (`position: static`, no transform). There isn't gutter
+  room left over for a floating pocket once the frame narrows that far — confirmed by
+  measuring `scrollWidth` against `innerWidth` at 360px before and after; the pocket
+  layout alone did not fit.
+
+**Verified:** `npm run build` and `npx tsc --noEmit` both exit 0. Grepped every new/edited
+file for hex/`rgb(`/`rgba(`/`hsl(`/gradient/`backdrop-filter`/`box-shadow`/`text-shadow`/
+`rounded-2xl` — zero matches. Loaded in a real Chrome tab (`chrome-devtools` MCP) against
+the `game` track: 26 `NodeCard`s for 26 placed nodes, matching the dot count from spec 04's
+own verification. At `beginner` level every card renders full (0 stubs, since nothing ranks
+below beginner); switching stored level to `advanced` via `localStorage` + reload collapsed
+25 of 26 to stubs, leaving only the one node whose own level is `advanced`. Clicking a
+stub's title expanded it to a full card with a visible "Collapse" control; clicking that
+control returned it to a stub — verified as two separate post-click queries, since reading
+DOM state in the same `evaluate_script` call as the click that changes it can race the
+re-render. A real focused `Tab`-reachable `Mark done` button responded to a real `Enter`
+keypress (not a synthetic click) and toggled to "Done" with computed `color` equal to
+`--accent` (`rgb(228, 85, 46)`). Switching track via "Change track / level" from `game` to
+`portfolio` produced 34 cards for `portfolio`'s node count, including `ChatGPT` again — the
+same shared foundation-node id reappearing on both tracks, not a stale unmount (same check
+spec 04 made). Zero console errors throughout. At a 360×740 viewport,
+`document.documentElement.scrollWidth` (517) stayed under `window.innerWidth` (540) on
+both `game`/`beginner` (all full cards, stacked) and `portfolio`/`beginner`.
+
+**Next session should know:**
+
+- `NodeCard`'s completion toggle (`useState`) is the exact surface spec 08 should replace.
+  Keep `.node-card__complete` / `aria-pressed` / the "Mark done" ↔ "Done" label pair; only
+  the state source should change, from local `useState` to a persisted hook mirroring
+  `useIntake`'s shape.
+- `NodeCard`'s `expanded` (stub-collapse) state is also local `useState` and resets on
+  remount — switching level or track re-collapses everything below the new level back to
+  stub, even a node the learner had manually expanded a moment ago. That was not treated
+  as a bug: expand-state persistence was never asked for by this spec, and re-deriving
+  "collapsed by default below level" on every render is the simpler, correct behavior
+  absent a stated requirement to remember an expand choice.
+- `ActPath` now takes a `level: Level` prop it did not have before; any other caller
+  constructing `<ActPath>` directly (there is currently only one, in `TrackMap`) needs it
+  too.
+- Branch nodes (frontier, spec 09) are still unrendered by `ActPath` — `act.nodes` only,
+  same as spec 04 left it. `NodeCard` itself doesn't care whether a `PlacedNode` came from
+  an act or a branch; spec 09 can likely reuse it directly rather than writing a second
+  card component, as long as it also passes a `viewBoxWidth`/`viewBoxHeight` matching
+  whatever `<svg>` the branch renders into.
+- The dev server was run once on port 5183 (5199 was already running from something else
+  and was left untouched, same as spec 04's session) for verification and killed by PID
+  afterward.
+
 ---
 
 ## 06 — The node panel: pointers, never content
 
-**State:** `SPEC PENDING`  **Depends on:** 01, 05
+**State:** `READY FOR DEVELOPMENT`  **Depends on:** 01, 05
 
 Opening a node reveals its links grouped by `kind` (repo / docs / video / thread / article /
 playground), its star count, last commit date, `status`, and `note`.
@@ -499,3 +584,7 @@ Newest first. One line per state change. Whoever changes a state writes the line
 - 2026-08-18 — Spec 04 `DONE`. Path engine: `usePathPoint`, one `<svg>`/`<path>` per act,
   plain dots. Specs 05 and 07 promoted `SPEC PENDING` → `READY FOR DEVELOPMENT` (deps 01, 04
   and 04 respectively, both now `DONE`).
+- 2026-08-18 — Spec 05 `DONE`. Node cards positioned in the path's pockets, level-filter
+  stubs, inert completion toggle for spec 08 to wire up. Spec 06 promoted `SPEC PENDING` →
+  `READY FOR DEVELOPMENT` (deps 01, 05 both now `DONE`). Spec 08 still `SPEC PENDING` — 07
+  has not landed.

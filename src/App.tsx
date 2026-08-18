@@ -46,7 +46,7 @@ export default function App(): ReactNode {
         </button>
       }
     >
-      <TrackMap track={track} />
+      <TrackMap track={track} level={intake.level} />
     </Shell>
   )
 }
