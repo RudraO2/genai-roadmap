@@ -40,7 +40,7 @@ spec at a time, inside the session that builds it.
 | Phase | What | State |
 | --- | --- | --- |
 | A | Research the node registry → `data/nodes.json`, `data/tracks.json` | `DONE` — 2026-08-18 |
-| B | Write the specs → `specs/*.md` | `IN PROGRESS` — folded into each spec's own session; 10 of 12 written |
+| B | Write the specs → `specs/*.md` | `IN PROGRESS` — folded into each spec's own session; 11 of 12 written |
 | C | Build the backlog → `BACKLOG.md` | `IN PROGRESS` — `BACKLOG.md` created 2026-08-18, appended per session |
 
 ---
@@ -59,8 +59,8 @@ spec at a time, inside the session that builds it.
 | 08 | `specs/spec-08-progress.md` | `DONE` | 04, 05, 07 |
 | 09 | `specs/spec-09-frontier.md` | `DONE` | 04, 05 |
 | 10 | `specs/spec-10-navigation.md` | `DONE` | 04, 08, 09 |
-| 11 | `specs/spec-11-portability.md` | `IN PROGRESS` | 08 |
-| 12 | `specs/spec-12-ship.md` | `SPEC PENDING` | 01–11 |
+| 11 | `specs/spec-11-portability.md` | `DONE` | 08 |
+| 12 | `specs/spec-12-ship.md` | `READY FOR DEVELOPMENT` | 01–11 |
 
 ---
 
@@ -1019,7 +1019,7 @@ row derived the standing act separately; `pad` was copy-pasted into four files; 
 
 ## 11 — Progress portability
 
-**State:** `IN PROGRESS`  **Depends on:** 08
+**State:** `DONE` — 2026-08-18  **Depends on:** 08
 
 Export progress to a JSON file, import it back, reset it. This is how a learner moves
 between devices without an account. It is the entire sync story and it must stay that way.
@@ -1027,11 +1027,98 @@ between devices without an account. It is the entire sync story and it must stay
 **Watch for:** no backend, no auth, no database. If a task here starts describing a server
 route, it has violated the constitution.
 
+### Session notes — 2026-08-18
+
+**Built:** `src/data/portability.ts` (the file's shape and every decision about one:
+`ProgressFile`, `buildProgressFile`, `serializeProgressFile`, the total `parseProgressFile`,
+`exportFilename`, `MAX_PROGRESS_FILE_BYTES` and one sentence per refusal in
+`IMPORT_PROBLEM_MESSAGE`), `parseIntake` extracted out of `loadIntake` so storage and an
+imported file validate a track and level from one definition, `replaceProgress` on
+`useProgress`, `src/components/ProgressPanel.tsx` (a controlled native `<dialog>` on the
+`NodePanel` pattern, holding export, import and a two-step reset with one status line), the
+`Progress file` control in the masthead of both screens plus the import wiring in `App`, and
+`src/styles/portability.css`.
+
+**Decided:**
+
+- **The file carries the intake, not just the ids.** Moving device means landing on the same
+  map at the same level. A file whose intake this build cannot read still imports its
+  completions and leaves the device's own track alone — a bad `track` string is not a reason
+  to throw away someone's progress.
+- **Import replaces, it never merges.** The file has no per-node timestamps, so there is no
+  honest rule for which of two sets is newer. The panel says so in the row itself, before the
+  file picker opens, rather than after the fact.
+- **Five refusals, each a sentence.** `unreadable`, `too-large`, `not-a-progress-file`,
+  `unsupported-version`, `empty`. Every one ends "Nothing was changed", because that is the
+  fact the learner actually needs. The size cap is checked before the read: `accept=".json"`
+  does not stop a misclicked video, and `JSON.parse` on a gigabyte freezes the tab.
+- **A well-formed file with no ids and no intake is refused as `empty`** rather than applied.
+  Exporting an empty set is still allowed — it is a legitimate state to carry — but importing
+  nothing over something would be a silent no-op the learner could read as a success.
+- **Reset arms and confirms in place**, never `confirm()`. Closing the panel disarms it, so
+  an arm cannot outlive the panel it was made in.
+- **`parseIntake` was extracted rather than duplicated.** Two validators for a track id would
+  eventually disagree, and the import door is exactly where a stale one would show.
+- **The panel is not a screen.** It is a `<dialog>` hanging off both branches of `App`, which
+  is the only component holding both the completed set and the intake.
+
+**Verified:** `npm run build` and `npx tsc --noEmit` both exit 0; the registry still
+validates 0 errors / 0 warnings. An 81-assertion suite over the pure half covers 22 hostile
+inputs for totality, every refusal code, dedupe, dropped non-strings, kept unknown ids,
+deterministic bytes, the filename in two months, and `parseIntake`; it was re-run against a
+deliberately wrong expectation to prove it can fail. In a real Chrome tab: the export's blob
+captured and read back (correct MIME, dated filename, anchor in the document at click time
+and removed after, object URL revoked); four bad files each refused with their own sentence
+and nothing applied; a 5MB file refused unread; a good file replacing `{chatgpt, claude-chat,
+gemini}` with its own four ids including one the registry does not know; the fog's
+`stroke-dashoffset` moving 3298 → 1649 and the masthead with it, no reload; the two-step
+reset leaving `0 / 35` and an empty key; reopening the panel disarmed with no stale sentence;
+`Escape`, the backdrop and `Close` all closing it with focus returning to the opener; a fresh
+device (storage cleared) importing straight from the picker onto the Portfolio map; and a
+full export → reset → import round trip restoring the exact set and intake. At 360x740 the
+rows stack, nothing overflows and the status line scrolls itself into view. Zero console
+errors.
+
+**Found in review, then fixed:** four.
+
+1. The `<dialog>` kept the UA stylesheet's own `overflow: auto`, so it scrolled beside the
+   content's scroller — two bars, ~30px eaten out of every row, and the action buttons
+   wrapping under their notes for no visible reason. One `overflow: hidden` on the dialog.
+2. The status line sat below the fold on a phone, so an import's outcome was invisible on the
+   screen where it matters most. It now scrolls itself into view with `block: 'nearest'`,
+   which is a no-op on a desktop.
+3. No size guard: a misclicked video would have been read whole and handed to `JSON.parse`.
+   `MAX_PROGRESS_FILE_BYTES` (4MB) is checked against `file.size` before the read.
+4. The file input was `display: none`, which more than one engine has ignored on a
+   programmatic `.click()`. It is now rendered at 1px and transparent, out of flow,
+   `tabIndex={-1}`, driven by a real button.
+
+**Next session should know:**
+
+- **`data/portability.ts` is React-free and DOM-free and must stay that way.** The `Blob`,
+  the object URL, the anchor and the file input all live in `ProgressPanel`. That is what
+  makes the parser testable under bare `node --experimental-strip-types`.
+- **`parseIntake` is now the one definition of a valid intake.** Anything that reads a track
+  or level from outside the app goes through it.
+- **`replaceProgress` writes through the same effect `useProgress` already persists with.**
+  Do not add a second writer to `roadmap:progress:v1`.
+- **A reset leaves `{"completed":[]}` in storage, not an absent key.** `clearCompleted`
+  removes it and the persist effect immediately rewrites the empty set. Harmless, deliberate,
+  and the reason acceptance criterion 10 is worded about a non-empty set.
+- **`ProgressPanel` keeps its state across the picker → map switch** because it sits at the
+  same position in both branches' children. That is why an import made on the picker still
+  shows its status sentence on the map. Moving it inside either branch would break that.
+- **The version gate refuses forward, not backward.** A file with `version: 2` is refused by
+  this build; if the shape ever changes, bump `PROGRESS_FILE_VERSION` and decide explicitly
+  what to do with a version-1 file rather than letting it fall through.
+- The dev server for verification ran on port 5191. Killing it with `taskkill /IM node.exe`
+  also killed the MCP browser server — kill by PID next time.
+
 ---
 
 ## 12 — Ship: build gates and GitHub Pages
 
-**State:** `SPEC PENDING`  **Depends on:** 01–11
+**State:** `READY FOR DEVELOPMENT`  **Depends on:** 01–11
 
 `npm run build` and `npx tsc --noEmit` wired as gates. A script that fails the build on any
 hardcoded colour outside `theme.css`. GitHub Pages base path and 404 handling for a static
@@ -1050,6 +1137,11 @@ a backend. v1 is the map only. If one of these appears in a task, the task is wr
 
 Newest first. One line per state change. Whoever changes a state writes the line.
 
+- 2026-08-18 — Spec 11 `DONE`. Progress portability: a `Progress file` dialog on both
+  screens exporting the completed ids and the intake to dated JSON, importing one back
+  through a total parser with five stated refusals and a size cap, and a two-step reset.
+  Spec 12 promoted `SPEC PENDING` → `READY FOR DEVELOPMENT` — every dependency, 01 to 11, is
+  now `DONE`. It is the last spec.
 - 2026-08-18 — Spec 10 `DONE`. Act navigation and the overview map: the track shows one act
   at a time with a nav strip, a named pager and a "you are in" jump, plus a zoomed-out
   overview listing every act with its own miniature clipped to its own progress. Nothing

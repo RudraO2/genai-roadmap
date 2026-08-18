@@ -21,6 +21,8 @@ import { clearCompleted, loadCompleted, saveCompleted } from '../data/progress.t
 export interface UseProgress {
   completed: ReadonlySet<string>
   toggle: (id: string) => void
+  /** Swaps the whole set. An import is one write, never a loop of toggles. */
+  replaceProgress: (ids: ReadonlySet<string>) => void
   resetProgress: () => void
 }
 
@@ -44,6 +46,12 @@ export function useProgress(): UseProgress {
     })
   }, [])
 
+  // Copied rather than stored by reference: the caller's set came from a parsed
+  // file and nothing here should share a mutable object with it.
+  const replaceProgress = useCallback((ids: ReadonlySet<string>) => {
+    setCompleted(new Set(ids))
+  }, [])
+
   const resetProgress = useCallback(() => {
     clearCompleted()
     // The effect above rewrites the (now empty) key. Harmless, and it keeps one
@@ -51,5 +59,8 @@ export function useProgress(): UseProgress {
     setCompleted(new Set())
   }, [])
 
-  return useMemo(() => ({ completed, toggle, resetProgress }), [completed, toggle, resetProgress])
+  return useMemo(
+    () => ({ completed, toggle, replaceProgress, resetProgress }),
+    [completed, toggle, replaceProgress, resetProgress],
+  )
 }

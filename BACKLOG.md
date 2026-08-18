@@ -135,6 +135,17 @@ bottom rather than done inline.
 - [x] T104 — Verify: build, typecheck, 502-assertion suite, five React edge cases, browser
       pass at 1440 and 360 across `game` and `portfolio`
 
+## Spec 11 — Progress portability
+
+- [x] T109 — Write `specs/spec-11-portability.md`
+- [x] T110 — `src/data/portability.ts` — file shape, builder, serializer, total parser, filename
+- [x] T111 — `src/data/intake.ts` — `parseIntake` extracted so storage and import validate once
+- [x] T112 — `src/hooks/useProgress.ts` — `replaceProgress`, one write per import
+- [x] T113 — `src/components/ProgressPanel.tsx` — the dialog: export, import, two-step reset
+- [x] T114 — `src/App.tsx` — panel state, masthead control on both screens, import wiring
+- [x] T115 — `src/styles/portability.css` (+ `index.css` import)
+- [x] T116 — Verify: build, typecheck, 81-assertion parser suite, browser pass at 1200 and 360
+
 ## Noticed, not done
 
 Appended by sessions that spotted work outside their one task. Do not do these inline.
@@ -161,9 +172,9 @@ Appended by sessions that spotted work outside their one task. Do not do these i
 - [ ] T062 — The placeholder's legs are one block, not two. A gap would need either a
       third pseudo-element per layer or a cut painted in `--surface-base` over the path
       line; neither was worth it before real sprites.
-- [ ] T075 — `useProgress`'s `resetProgress` and `data/progress.ts`'s `clearCompleted` are
-      written and exported but nothing calls them. Spec 11 (portability) owns the reset
-      affordance; wire them there rather than adding a control now.
+- [x] T075 — `useProgress`'s `resetProgress` and `data/progress.ts`'s `clearCompleted` are
+      written and exported but nothing calls them. Resolved in spec 11: `ProgressPanel`'s
+      two-step reset calls `resetProgress`, which calls `clearCompleted`.
 - [ ] T076 — `App` calls `computeTrackProgress` for the masthead count and `TrackMap` calls
       it again for the map. Same pure function, same inputs, so they cannot disagree — but
       if the derivation ever gets expensive, the fix is to lift the map branch into its own
@@ -202,3 +213,17 @@ Appended by sessions that spotted work outside their one task. Do not do these i
       they are standing on from the zoomed-out screen — only how far along the act is. If
       the minis ever grow (a wider breakpoint, say), revisit: the geometry is already there
       through `PathContext`, and only legibility argued against it.
+- [ ] T117 — `.node-panel` in `panel.css` has the same double-scroller as `.progress-panel`
+      had: the UA stylesheet gives `<dialog>` its own `overflow: auto`, so a tall node panel
+      scrolls beside its content's scroller and loses ~15px of row width. Spec 06 owns that
+      file; the fix is one `overflow: hidden` on `.node-panel`.
+- [ ] T118 — Import replaces and never merges, which is the honest default with no per-node
+      timestamps in the file. If two devices ever need to be reconciled rather than
+      overwritten, the file needs a per-id `marked_at` before a merge rule can exist.
+- [ ] T119 — The export writes through a `Blob` + object URL + synthetic anchor click. If a
+      browser ever blocks that (an aggressive download policy, a sandboxed iframe), the
+      learner gets no file and no error. A visible fallback would mean showing the JSON to
+      copy by hand, which is a bigger UI than this spec wanted.
+- [ ] T120 — T106 (persist the viewed act) stays open after spec 11. Storage now has a
+      second key shape to think about: any act key must survive importing a file for another
+      track, so it belongs beside the intake, not beside the completed set.

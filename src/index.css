@@ -29,6 +29,7 @@
 @import './styles/branch.css';
 @import './styles/cards.css';
 @import './styles/panel.css';
+@import './styles/portability.css';
 @import './styles/character.css';
 
 @theme {

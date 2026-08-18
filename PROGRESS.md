@@ -419,3 +419,59 @@ storage key behind it (T105, T106 — spec 11 owns storage, spec 12 owns the Pag
 question); `computeTrackProgress` decides progress including each act's spur tally; and a
 fourth drawing of an act must reuse `usePathLength` and `dashToFraction` and must not put
 `non-scaling-stroke` on a dash-clipped path.
+
+---
+
+## Spec 11 — Progress portability — 2026-08-18
+
+**Did:** Gave the learner their progress as a file. A `Progress file` control in the masthead
+of both screens opens one dialog that does three things: export writes the completed ids and
+the intake to `roadmap-progress-2026-08-18.json`, import reads one back, reset clears the
+device behind a confirm step. `src/data/portability.ts` holds the file's shape and every
+decision about one — `buildProgressFile`, `serializeProgressFile`, `exportFilename`, the size
+cap, and a `parseProgressFile` that is total: five named refusals, each a sentence ending
+"Nothing was changed", and never a throw and never a half-applied import. The intake half of
+the file reuses `parseIntake`, extracted out of `loadIntake` in the same session so a track id
+is validated by one definition whichever door it arrives through. `useProgress` gained
+`replaceProgress` so an import is one write rather than a loop of toggles.
+
+**Decided:** The file carries the intake as well as the ids, because moving device means
+landing on the same map at the same level; a file whose intake this build cannot read still
+imports its completions and leaves the device's track alone. Import replaces and never
+merges — with no per-node timestamps there is no honest rule for which set is newer, and the
+row says so before the picker opens. A well-formed file carrying neither ids nor a track is
+refused as `empty` rather than applied, so a no-op cannot read as a success. Reset arms and
+confirms in place instead of calling `confirm()`, and closing the panel disarms it. Full
+reasoning in the spec 11 session notes in `State of the project.md`.
+
+**Verified:** `npm run build` and `npx tsc --noEmit` both exit 0; the registry still validates
+0 errors / 0 warnings. An 81-assertion suite over the pure half covers 22 hostile inputs for
+totality, every refusal code, dedupe, dropped non-strings, kept unknown ids, deterministic
+bytes and `parseIntake`, and was re-run against a deliberately wrong expectation to prove it
+can fail. In a real Chrome tab: the export's blob captured and read back with the right MIME,
+a dated filename, the anchor in the document at click time and removed after, and the object
+URL revoked; four bad files each refused with their own sentence and nothing applied; a 5MB
+file refused unread; a good file replacing three ids with its own four including one the
+registry does not know; the fog's `stroke-dashoffset` moving 3298 → 1649 with the masthead,
+no reload; the two-step reset leaving `0 / 35`; `Escape`, the backdrop and `Close` all
+closing the dialog with focus returning to the opener; a storage-cleared device importing
+straight from the picker onto another track's map; and a full export → reset → import round
+trip restoring the exact set and intake. At 360x740 nothing overflows. Zero console errors.
+
+**Found in review, then fixed:** four, listed in the spec 11 notes. The one worth repeating
+is that the `<dialog>` kept the UA stylesheet's own `overflow: auto` and scrolled beside its
+content's scroller — two bars, ~30px eaten out of every row, and the action buttons wrapping
+under their notes. It looked like a flex-basis mistake and was not one; reading the two
+scroll heights found it.
+
+**Next iteration should know:** everything under "Next session should know" in the spec 11
+notes in `State of the project.md`. Short version: `data/portability.ts` is React-free and
+DOM-free and must stay that way, which is what lets the parser be tested under bare
+`node --experimental-strip-types`; `parseIntake` is now the one definition of a valid intake;
+`replaceProgress` writes through the effect `useProgress` already persists with, so do not
+add a second writer to `roadmap:progress:v1`; a reset leaves `{"completed":[]}` rather than
+an absent key; and `ProgressPanel` keeps its state across the picker → map switch only
+because it sits at the same position in both branches' children.
+
+Spec 12 — build gates and GitHub Pages — is now `READY FOR DEVELOPMENT`, and it is the last
+one.
