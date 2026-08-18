@@ -54,7 +54,7 @@ spec at a time, inside the session that builds it.
 | 03 | `specs/spec-03-intake.md` | `DONE` | 01, 02 |
 | 04 | `specs/spec-04-path.md` | `DONE` | 01, 02 |
 | 05 | `specs/spec-05-cards.md` | `DONE` | 01, 04 |
-| 06 | `specs/spec-06-panel.md` | `READY FOR DEVELOPMENT` | 01, 05 |
+| 06 | `specs/spec-06-panel.md` | `IN PROGRESS` | 01, 05 |
 | 07 | `specs/spec-07-character.md` | `READY FOR DEVELOPMENT` | 04 |
 | 08 | `specs/spec-08-progress.md` | `SPEC PENDING` | 04, 05, 07 |
 | 09 | `specs/spec-09-frontier.md` | `SPEC PENDING` | 04, 05 |
@@ -471,7 +471,7 @@ both `game`/`beginner` (all full cards, stacked) and `portfolio`/`beginner`.
 
 ## 06 — The node panel: pointers, never content
 
-**State:** `READY FOR DEVELOPMENT`  **Depends on:** 01, 05
+**State:** `IN PROGRESS`  **Depends on:** 01, 05
 
 Opening a node reveals its links grouped by `kind` (repo / docs / video / thread / article /
 playground), its star count, last commit date, `status`, and `note`.
