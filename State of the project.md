@@ -51,7 +51,7 @@ spec at a time, inside the session that builds it.
 | --- | --- | --- | --- |
 | 01 | `specs/spec-01-schema.md` | `DONE` | — |
 | 02 | `specs/spec-02-shell.md` | `DONE` | 01 |
-| 03 | `specs/spec-03-intake.md` | `READY FOR DEVELOPMENT` | 01, 02 |
+| 03 | `specs/spec-03-intake.md` | `IN PROGRESS` | 01, 02 |
 | 04 | `specs/spec-04-path.md` | `READY FOR DEVELOPMENT` | 01, 02 |
 | 05 | `specs/spec-05-cards.md` | `SPEC PENDING` | 01, 04 |
 | 06 | `specs/spec-06-panel.md` | `SPEC PENDING` | 01, 05 |
@@ -211,7 +211,7 @@ matching `--frame-max: 78rem` — the measure stops growing rather than filling 
 
 ## 03 — Intake: track and level
 
-**State:** `SPEC PENDING`  **Depends on:** 01, 02
+**State:** `IN PROGRESS`  **Depends on:** 01, 02
 
 One screen: pick a track (game / app / portfolio / media), pick a level (beginner /
 intermediate / advanced). Choice persists to localStorage. Re-entry skips the screen and
