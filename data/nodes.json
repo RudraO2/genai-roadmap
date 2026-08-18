@@ -1,0 +1,2060 @@
+{
+  "version": 1,
+  "generated": "2026-08-18",
+  "nodes": [
+    {
+      "id": "chatgpt",
+      "title": "ChatGPT",
+      "blurb": "Browser chat that writes code, makes images, and argues an idea into shape.",
+      "level": "beginner",
+      "tracks": [
+        "game",
+        "app",
+        "portfolio",
+        "media"
+      ],
+      "requires": [],
+      "links": [
+        {
+          "label": "Open ChatGPT",
+          "url": "https://chatgpt.com",
+          "kind": "playground"
+        },
+        {
+          "label": "API reference",
+          "url": "https://platform.openai.com/docs/api-reference/introduction",
+          "kind": "docs"
+        }
+      ],
+      "repo": null,
+      "stars": null,
+      "last_commit": null,
+      "status": "emerging",
+      "zone": "main",
+      "first_indexed": "2026-08-18",
+      "verified_at": "2026-08-18",
+      "note": "Hosted product with no public commit history; freshness not verifiable from a repo."
+    },
+    {
+      "id": "claude-chat",
+      "title": "Claude",
+      "blurb": "Chat built for long context and careful code reasoning. Paste a mess, get structure.",
+      "level": "beginner",
+      "tracks": [
+        "game",
+        "app",
+        "portfolio",
+        "media"
+      ],
+      "requires": [],
+      "links": [
+        {
+          "label": "Open Claude",
+          "url": "https://claude.com",
+          "kind": "playground"
+        },
+        {
+          "label": "Anthropic overview",
+          "url": "https://www.anthropic.com/claude",
+          "kind": "docs"
+        }
+      ],
+      "repo": null,
+      "stars": null,
+      "last_commit": null,
+      "status": "emerging",
+      "zone": "main",
+      "first_indexed": "2026-08-18",
+      "verified_at": "2026-08-18",
+      "note": "Hosted product with no public commit history; freshness not verifiable from a repo. claude.ai blocks automated requests; claude.com verified instead."
+    },
+    {
+      "id": "gemini",
+      "title": "Gemini",
+      "blurb": "Google's chat with image, video and search built in. Free creative entry point.",
+      "level": "beginner",
+      "tracks": [
+        "game",
+        "app",
+        "portfolio",
+        "media"
+      ],
+      "requires": [],
+      "links": [
+        {
+          "label": "Open Gemini",
+          "url": "https://gemini.google.com",
+          "kind": "playground"
+        }
+      ],
+      "repo": null,
+      "stars": null,
+      "last_commit": null,
+      "status": "emerging",
+      "zone": "main",
+      "first_indexed": "2026-08-18",
+      "verified_at": "2026-08-18",
+      "note": "Hosted product with no public commit history; freshness not verifiable from a repo."
+    },
+    {
+      "id": "prompting",
+      "title": "Prompting that works",
+      "blurb": "Goal plus constraints plus one example beats a long vague wish. The whole game.",
+      "level": "beginner",
+      "tracks": [
+        "game",
+        "app",
+        "portfolio",
+        "media"
+      ],
+      "requires": [
+        "chatgpt"
+      ],
+      "links": [
+        {
+          "label": "Anthropic prompt engineering",
+          "url": "https://docs.anthropic.com/en/docs/build-with-claude/prompt-engineering/overview",
+          "kind": "docs"
+        }
+      ],
+      "repo": null,
+      "stars": null,
+      "last_commit": null,
+      "status": "emerging",
+      "zone": "main",
+      "first_indexed": "2026-08-18",
+      "verified_at": "2026-08-18",
+      "note": "Concept node, not a released artifact; there is no commit history to date. The linked docs are the upstream source of truth."
+    },
+    {
+      "id": "readme-literacy",
+      "title": "Reading a README",
+      "blurb": "Find Quick Start, run it as written. Turns a strange repo into a working tool.",
+      "level": "beginner",
+      "tracks": [
+        "game",
+        "app",
+        "portfolio",
+        "media"
+      ],
+      "requires": [],
+      "links": [
+        {
+          "label": "GitHub: about READMEs",
+          "url": "https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/about-readmes",
+          "kind": "docs"
+        }
+      ],
+      "repo": null,
+      "stars": null,
+      "last_commit": null,
+      "status": "emerging",
+      "zone": "main",
+      "first_indexed": "2026-08-18",
+      "verified_at": "2026-08-18",
+      "note": "Concept node, not a released artifact; there is no commit history to date. The linked docs are the upstream source of truth."
+    },
+    {
+      "id": "tokens",
+      "title": "Tokens",
+      "blurb": "Models bill and think in word-fragments. Explains cost and why long chats drift.",
+      "level": "beginner",
+      "tracks": [
+        "game",
+        "app",
+        "portfolio",
+        "media"
+      ],
+      "requires": [
+        "prompting"
+      ],
+      "links": [
+        {
+          "label": "OpenAI tokenizer",
+          "url": "https://platform.openai.com/tokenizer",
+          "kind": "playground"
+        }
+      ],
+      "repo": null,
+      "stars": null,
+      "last_commit": null,
+      "status": "emerging",
+      "zone": "main",
+      "first_indexed": "2026-08-18",
+      "verified_at": "2026-08-18",
+      "note": "Concept node, not a released artifact; there is no commit history to date. The linked docs are the upstream source of truth."
+    },
+    {
+      "id": "context-window",
+      "title": "Context window",
+      "blurb": "Fixed amount of text a model can see at once. Ends the mystery of sudden amnesia.",
+      "level": "beginner",
+      "tracks": [
+        "game",
+        "app",
+        "portfolio",
+        "media"
+      ],
+      "requires": [
+        "tokens"
+      ],
+      "links": [
+        {
+          "label": "Anthropic: context windows",
+          "url": "https://docs.claude.com/en/docs/build-with-claude/context-windows",
+          "kind": "docs"
+        }
+      ],
+      "repo": null,
+      "stars": null,
+      "last_commit": null,
+      "status": "emerging",
+      "zone": "main",
+      "first_indexed": "2026-08-18",
+      "verified_at": "2026-08-18",
+      "note": "Concept node, not a released artifact; there is no commit history to date. The linked docs are the upstream source of truth."
+    },
+    {
+      "id": "hallucination",
+      "title": "Why models make things up",
+      "blurb": "They predict likely text, not verified fact. Learn to check before you trust.",
+      "level": "beginner",
+      "tracks": [
+        "game",
+        "app",
+        "portfolio",
+        "media"
+      ],
+      "requires": [
+        "prompting"
+      ],
+      "links": [
+        {
+          "label": "Anthropic: reduce hallucinations",
+          "url": "https://docs.claude.com/en/docs/test-and-evaluate/strengthen-guardrails/reduce-hallucinations",
+          "kind": "docs"
+        }
+      ],
+      "repo": null,
+      "stars": null,
+      "last_commit": null,
+      "status": "emerging",
+      "zone": "main",
+      "first_indexed": "2026-08-18",
+      "verified_at": "2026-08-18",
+      "note": "Concept node, not a released artifact; there is no commit history to date. The linked docs are the upstream source of truth."
+    },
+    {
+      "id": "temperature",
+      "title": "Temperature",
+      "blurb": "One dial from focused to inventive. Same prompt, wild art or clean code.",
+      "level": "beginner",
+      "tracks": [
+        "game",
+        "app",
+        "portfolio",
+        "media"
+      ],
+      "requires": [
+        "prompting"
+      ],
+      "links": [
+        {
+          "label": "Messages API parameters",
+          "url": "https://docs.claude.com/en/api/messages",
+          "kind": "docs"
+        }
+      ],
+      "repo": null,
+      "stars": null,
+      "last_commit": null,
+      "status": "emerging",
+      "zone": "main",
+      "first_indexed": "2026-08-18",
+      "verified_at": "2026-08-18",
+      "note": "Concept node, not a released artifact; there is no commit history to date. The linked docs are the upstream source of truth."
+    },
+    {
+      "id": "model-chat-agent",
+      "title": "Model vs chat vs agent",
+      "blurb": "Model is the brain, chat is the window, agent is brain plus tools plus a loop.",
+      "level": "beginner",
+      "tracks": [
+        "game",
+        "app",
+        "portfolio",
+        "media"
+      ],
+      "requires": [
+        "prompting"
+      ],
+      "links": [
+        {
+          "label": "Building effective agents",
+          "url": "https://www.anthropic.com/engineering/building-effective-agents",
+          "kind": "article"
+        }
+      ],
+      "repo": null,
+      "stars": null,
+      "last_commit": null,
+      "status": "emerging",
+      "zone": "main",
+      "first_indexed": "2026-08-18",
+      "verified_at": "2026-08-18",
+      "note": "Concept node, not a released artifact; there is no commit history to date. The linked docs are the upstream source of truth."
+    },
+    {
+      "id": "api-keys",
+      "title": "API keys",
+      "blurb": "The secret string that lets an app or plugin talk to a model on your behalf.",
+      "level": "beginner",
+      "tracks": [
+        "game",
+        "app",
+        "portfolio",
+        "media"
+      ],
+      "requires": [
+        "model-chat-agent"
+      ],
+      "links": [
+        {
+          "label": "Where your OpenAI key lives",
+          "url": "https://help.openai.com/en/articles/4936850-where-do-i-find-my-openai-api-key",
+          "kind": "docs"
+        },
+        {
+          "label": "Anthropic API keys",
+          "url": "https://docs.claude.com/en/api/admin-api/apikeys/get-api-key",
+          "kind": "docs"
+        }
+      ],
+      "repo": null,
+      "stars": null,
+      "last_commit": null,
+      "status": "emerging",
+      "zone": "main",
+      "first_indexed": "2026-08-18",
+      "verified_at": "2026-08-18",
+      "note": "Concept node, not a released artifact; there is no commit history to date. The linked docs are the upstream source of truth."
+    },
+    {
+      "id": "claude-code",
+      "title": "Claude Code",
+      "blurb": "Anthropic's coding agent: plans, edits real files, runs commands, opens PRs.",
+      "level": "intermediate",
+      "tracks": [
+        "game",
+        "app",
+        "portfolio",
+        "media"
+      ],
+      "requires": [
+        "model-chat-agent"
+      ],
+      "links": [
+        {
+          "label": "Repo",
+          "url": "https://github.com/anthropics/claude-code",
+          "kind": "repo"
+        },
+        {
+          "label": "Docs",
+          "url": "https://code.claude.com/docs/en/overview",
+          "kind": "docs"
+        },
+        {
+          "label": "Web version",
+          "url": "https://claude.ai/code",
+          "kind": "playground"
+        }
+      ],
+      "repo": "anthropics/claude-code",
+      "stars": 141826,
+      "last_commit": "2026-08-17",
+      "status": "core",
+      "zone": "main",
+      "first_indexed": "2026-08-18",
+      "verified_at": "2026-08-18"
+    },
+    {
+      "id": "cursor",
+      "title": "Cursor",
+      "blurb": "Editor built around agents. Stay in one window while it rewrites many files.",
+      "level": "intermediate",
+      "tracks": [
+        "app",
+        "game",
+        "portfolio"
+      ],
+      "requires": [
+        "model-chat-agent"
+      ],
+      "links": [
+        {
+          "label": "Cursor",
+          "url": "https://cursor.com",
+          "kind": "docs"
+        },
+        {
+          "label": "Agent modes",
+          "url": "https://cursor.com/docs/agent/modes",
+          "kind": "docs"
+        }
+      ],
+      "repo": null,
+      "stars": null,
+      "last_commit": null,
+      "status": "emerging",
+      "zone": "main",
+      "first_indexed": "2026-08-18",
+      "verified_at": "2026-08-18",
+      "note": "Hosted product with no public commit history; freshness not verifiable from a repo."
+    },
+    {
+      "id": "github-copilot",
+      "title": "GitHub Copilot",
+      "blurb": "AI that lives inside GitHub and VS Code, including an agent that files PRs.",
+      "level": "beginner",
+      "tracks": [
+        "app",
+        "portfolio"
+      ],
+      "requires": [
+        "model-chat-agent"
+      ],
+      "links": [
+        {
+          "label": "Product page",
+          "url": "https://github.com/features/copilot",
+          "kind": "docs"
+        },
+        {
+          "label": "Coding agent docs",
+          "url": "https://docs.github.com/en/copilot/using-github-copilot/coding-agent",
+          "kind": "docs"
+        }
+      ],
+      "repo": null,
+      "stars": null,
+      "last_commit": null,
+      "status": "emerging",
+      "zone": "main",
+      "first_indexed": "2026-08-18",
+      "verified_at": "2026-08-18",
+      "note": "Hosted product with no public commit history; freshness not verifiable from a repo."
+    },
+    {
+      "id": "claude-md",
+      "title": "CLAUDE.md",
+      "blurb": "One markdown file that tells the agent how your project works. Memory that sticks.",
+      "level": "intermediate",
+      "tracks": [
+        "app",
+        "game",
+        "portfolio"
+      ],
+      "requires": [
+        "claude-code"
+      ],
+      "links": [
+        {
+          "label": "Memory docs",
+          "url": "https://docs.claude.com/en/docs/claude-code/memory",
+          "kind": "docs"
+        },
+        {
+          "label": "Best practices",
+          "url": "https://www.anthropic.com/engineering/claude-code-best-practices",
+          "kind": "article"
+        }
+      ],
+      "repo": null,
+      "stars": null,
+      "last_commit": null,
+      "status": "emerging",
+      "zone": "main",
+      "first_indexed": "2026-08-18",
+      "verified_at": "2026-08-18",
+      "note": "Concept node, not a released artifact; there is no commit history to date. The linked docs are the upstream source of truth."
+    },
+    {
+      "id": "cursor-rules",
+      "title": "Cursor rules",
+      "blurb": "Same idea as CLAUDE.md, for Cursor. Keeps the agent on your conventions.",
+      "level": "intermediate",
+      "tracks": [
+        "app",
+        "game",
+        "portfolio"
+      ],
+      "requires": [
+        "cursor"
+      ],
+      "links": [
+        {
+          "label": "Rules docs",
+          "url": "https://cursor.com/docs/context/rules",
+          "kind": "docs"
+        }
+      ],
+      "repo": null,
+      "stars": null,
+      "last_commit": null,
+      "status": "emerging",
+      "zone": "main",
+      "first_indexed": "2026-08-18",
+      "verified_at": "2026-08-18",
+      "note": "Hosted product with no public commit history; freshness not verifiable from a repo."
+    },
+    {
+      "id": "what-is-a-skill",
+      "title": "What a skill is",
+      "blurb": "A small add-on that teaches a coding agent one job well. Portable, plain markdown.",
+      "level": "intermediate",
+      "tracks": [
+        "game",
+        "app",
+        "portfolio",
+        "media"
+      ],
+      "requires": [
+        "claude-code"
+      ],
+      "links": [
+        {
+          "label": "Agent Skills docs",
+          "url": "https://docs.claude.com/en/docs/claude-code/skills",
+          "kind": "docs"
+        },
+        {
+          "label": "Anthropic skills repo",
+          "url": "https://github.com/anthropics/skills",
+          "kind": "repo"
+        }
+      ],
+      "repo": "anthropics/skills",
+      "stars": 170130,
+      "last_commit": "2026-08-17",
+      "status": "core",
+      "zone": "main",
+      "first_indexed": "2026-08-18",
+      "verified_at": "2026-08-18"
+    },
+    {
+      "id": "install-a-skill",
+      "title": "Installing a skill",
+      "blurb": "`npx skills add ...` drops a new workflow into every agent you have installed.",
+      "level": "intermediate",
+      "tracks": [
+        "game",
+        "app",
+        "portfolio",
+        "media"
+      ],
+      "requires": [
+        "what-is-a-skill"
+      ],
+      "links": [
+        {
+          "label": "skills CLI repo",
+          "url": "https://github.com/vercel-labs/skills",
+          "kind": "repo"
+        },
+        {
+          "label": "Registry",
+          "url": "https://skills.sh",
+          "kind": "docs"
+        }
+      ],
+      "repo": "vercel-labs/skills",
+      "stars": 29129,
+      "last_commit": "2026-08-14",
+      "status": "core",
+      "zone": "main",
+      "first_indexed": "2026-08-18",
+      "verified_at": "2026-08-18"
+    },
+    {
+      "id": "what-is-mcp",
+      "title": "Model Context Protocol",
+      "blurb": "The standard that lets an agent reach real tools and data instead of guessing.",
+      "level": "intermediate",
+      "tracks": [
+        "game",
+        "app",
+        "portfolio",
+        "media"
+      ],
+      "requires": [
+        "model-chat-agent"
+      ],
+      "links": [
+        {
+          "label": "Intro",
+          "url": "https://modelcontextprotocol.io/docs/getting-started/intro",
+          "kind": "docs"
+        },
+        {
+          "label": "Spec repo",
+          "url": "https://github.com/modelcontextprotocol/modelcontextprotocol",
+          "kind": "repo"
+        },
+        {
+          "label": "Reference servers",
+          "url": "https://github.com/modelcontextprotocol/servers",
+          "kind": "repo"
+        }
+      ],
+      "repo": "modelcontextprotocol/modelcontextprotocol",
+      "stars": 8986,
+      "last_commit": "2026-08-17",
+      "status": "core",
+      "zone": "main",
+      "first_indexed": "2026-08-18",
+      "verified_at": "2026-08-18"
+    },
+    {
+      "id": "add-an-mcp-server",
+      "title": "Adding an MCP server",
+      "blurb": "Paste a short JSON block or run one command. New agent powers, no install.",
+      "level": "intermediate",
+      "tracks": [
+        "game",
+        "app",
+        "portfolio",
+        "media"
+      ],
+      "requires": [
+        "what-is-mcp"
+      ],
+      "links": [
+        {
+          "label": "MCP quickstart",
+          "url": "https://modelcontextprotocol.io/quickstart/user",
+          "kind": "docs"
+        },
+        {
+          "label": "Claude Code MCP setup",
+          "url": "https://docs.claude.com/en/docs/claude-code/mcp",
+          "kind": "docs"
+        },
+        {
+          "label": "Cursor MCP setup",
+          "url": "https://cursor.com/docs/context/mcp",
+          "kind": "docs"
+        }
+      ],
+      "repo": null,
+      "stars": null,
+      "last_commit": null,
+      "status": "emerging",
+      "zone": "main",
+      "first_indexed": "2026-08-18",
+      "verified_at": "2026-08-18",
+      "note": "Concept node, not a released artifact; there is no commit history to date. The linked docs are the upstream source of truth."
+    },
+    {
+      "id": "mcp-github",
+      "title": "GitHub MCP server",
+      "blurb": "Agent opens issues, reads PRs and searches code in your real repo. First one to add.",
+      "level": "intermediate",
+      "tracks": [
+        "app",
+        "portfolio"
+      ],
+      "requires": [
+        "add-an-mcp-server"
+      ],
+      "links": [
+        {
+          "label": "Repo",
+          "url": "https://github.com/github/github-mcp-server",
+          "kind": "repo"
+        }
+      ],
+      "repo": "github/github-mcp-server",
+      "stars": 32325,
+      "last_commit": "2026-08-17",
+      "status": "core",
+      "zone": "main",
+      "first_indexed": "2026-08-18",
+      "verified_at": "2026-08-18"
+    },
+    {
+      "id": "mcp-context7",
+      "title": "Context7 MCP server",
+      "blurb": "Feeds the agent current library docs so it stops writing last year's API.",
+      "level": "intermediate",
+      "tracks": [
+        "app",
+        "portfolio"
+      ],
+      "requires": [
+        "add-an-mcp-server"
+      ],
+      "links": [
+        {
+          "label": "Repo",
+          "url": "https://github.com/upstash/context7",
+          "kind": "repo"
+        },
+        {
+          "label": "Hosted",
+          "url": "https://context7.com",
+          "kind": "docs"
+        }
+      ],
+      "repo": "upstash/context7",
+      "stars": 60906,
+      "last_commit": "2026-08-18",
+      "status": "core",
+      "zone": "main",
+      "first_indexed": "2026-08-18",
+      "verified_at": "2026-08-18"
+    },
+    {
+      "id": "mcp-brave-search",
+      "title": "Brave Search MCP server",
+      "blurb": "Gives the agent live web search so it can check facts without you pasting links.",
+      "level": "intermediate",
+      "tracks": [
+        "game",
+        "app",
+        "portfolio",
+        "media"
+      ],
+      "requires": [
+        "add-an-mcp-server"
+      ],
+      "links": [
+        {
+          "label": "Repo",
+          "url": "https://github.com/brave/brave-search-mcp-server",
+          "kind": "repo"
+        }
+      ],
+      "repo": "brave/brave-search-mcp-server",
+      "stars": 1388,
+      "last_commit": "2026-08-14",
+      "status": "core",
+      "zone": "main",
+      "first_indexed": "2026-08-18",
+      "verified_at": "2026-08-18"
+    },
+    {
+      "id": "remote-mcp-servers",
+      "title": "Remote MCP servers",
+      "blurb": "Connect by URL and key, no local process. The zero-install shape of MCP.",
+      "level": "advanced",
+      "tracks": [
+        "app",
+        "media"
+      ],
+      "requires": [
+        "add-an-mcp-server"
+      ],
+      "links": [
+        {
+          "label": "Remote server setup",
+          "url": "https://docs.claude.com/en/docs/claude-code/mcp",
+          "kind": "docs"
+        }
+      ],
+      "repo": null,
+      "stars": null,
+      "last_commit": null,
+      "status": "emerging",
+      "zone": "main",
+      "first_indexed": "2026-08-18",
+      "verified_at": "2026-08-18",
+      "note": "Concept node, not a released artifact; there is no commit history to date. The linked docs are the upstream source of truth."
+    },
+    {
+      "id": "vercel",
+      "title": "Vercel",
+      "blurb": "Push a project, get a public link in under a minute. No server knowledge needed.",
+      "level": "beginner",
+      "tracks": [
+        "app",
+        "portfolio",
+        "game"
+      ],
+      "requires": [
+        "readme-literacy"
+      ],
+      "links": [
+        {
+          "label": "Vercel",
+          "url": "https://vercel.com",
+          "kind": "docs"
+        },
+        {
+          "label": "Deployments docs",
+          "url": "https://vercel.com/docs/deployments",
+          "kind": "docs"
+        }
+      ],
+      "repo": null,
+      "stars": null,
+      "last_commit": null,
+      "status": "emerging",
+      "zone": "main",
+      "first_indexed": "2026-08-18",
+      "verified_at": "2026-08-18",
+      "note": "Hosted product with no public commit history; freshness not verifiable from a repo."
+    },
+    {
+      "id": "netlify-cf-pages",
+      "title": "Netlify / Cloudflare Pages",
+      "blurb": "The other two free static hosts. Same deal: connect a repo, get a URL.",
+      "level": "beginner",
+      "tracks": [
+        "app",
+        "portfolio",
+        "game"
+      ],
+      "requires": [
+        "readme-literacy"
+      ],
+      "links": [
+        {
+          "label": "Netlify",
+          "url": "https://www.netlify.com",
+          "kind": "docs"
+        },
+        {
+          "label": "Cloudflare Pages",
+          "url": "https://pages.cloudflare.com",
+          "kind": "docs"
+        },
+        {
+          "label": "Pages docs",
+          "url": "https://developers.cloudflare.com/pages/",
+          "kind": "docs"
+        }
+      ],
+      "repo": null,
+      "stars": null,
+      "last_commit": null,
+      "status": "emerging",
+      "zone": "main",
+      "first_indexed": "2026-08-18",
+      "verified_at": "2026-08-18",
+      "note": "Hosted product with no public commit history; freshness not verifiable from a repo."
+    },
+    {
+      "id": "ideogram",
+      "title": "Ideogram",
+      "blurb": "Image tool that renders readable text. Logos, posters and mockups with real words.",
+      "level": "beginner",
+      "tracks": [
+        "media",
+        "portfolio"
+      ],
+      "requires": [
+        "prompting"
+      ],
+      "links": [
+        {
+          "label": "Ideogram",
+          "url": "https://ideogram.ai",
+          "kind": "playground"
+        }
+      ],
+      "repo": null,
+      "stars": null,
+      "last_commit": null,
+      "status": "emerging",
+      "zone": "main",
+      "first_indexed": "2026-08-18",
+      "verified_at": "2026-08-18",
+      "note": "Hosted product with no public commit history; freshness not verifiable from a repo."
+    },
+    {
+      "id": "leonardo",
+      "title": "Leonardo AI",
+      "blurb": "Image platform with daily free credits and strong models. No local setup.",
+      "level": "beginner",
+      "tracks": [
+        "media",
+        "portfolio"
+      ],
+      "requires": [
+        "prompting"
+      ],
+      "links": [
+        {
+          "label": "Leonardo",
+          "url": "https://leonardo.ai",
+          "kind": "playground"
+        }
+      ],
+      "repo": null,
+      "stars": null,
+      "last_commit": null,
+      "status": "emerging",
+      "zone": "main",
+      "first_indexed": "2026-08-18",
+      "verified_at": "2026-08-18",
+      "note": "Hosted product with no public commit history; freshness not verifiable from a repo."
+    },
+    {
+      "id": "krea",
+      "title": "Krea",
+      "blurb": "Real-time image generation you steer as you type. Fastest way to feel the dials.",
+      "level": "beginner",
+      "tracks": [
+        "media",
+        "portfolio"
+      ],
+      "requires": [
+        "prompting"
+      ],
+      "links": [
+        {
+          "label": "Krea",
+          "url": "https://www.krea.ai",
+          "kind": "playground"
+        }
+      ],
+      "repo": null,
+      "stars": null,
+      "last_commit": null,
+      "status": "emerging",
+      "zone": "main",
+      "first_indexed": "2026-08-18",
+      "verified_at": "2026-08-18",
+      "note": "Hosted product with no public commit history; freshness not verifiable from a repo."
+    },
+    {
+      "id": "perchance",
+      "title": "Perchance",
+      "blurb": "Free image generator, no account. Zero friction when you only want to try an idea.",
+      "level": "beginner",
+      "tracks": [
+        "media"
+      ],
+      "requires": [
+        "prompting"
+      ],
+      "links": [
+        {
+          "label": "Perchance",
+          "url": "https://perchance.org",
+          "kind": "playground"
+        }
+      ],
+      "repo": null,
+      "stars": null,
+      "last_commit": null,
+      "status": "emerging",
+      "zone": "main",
+      "first_indexed": "2026-08-18",
+      "verified_at": "2026-08-18",
+      "note": "Hosted product with no public commit history; freshness not verifiable from a repo."
+    },
+    {
+      "id": "grok-imagine",
+      "title": "Grok Imagine",
+      "blurb": "xAI's image and short video generation with audio, inside the Grok interface.",
+      "level": "beginner",
+      "tracks": [
+        "media"
+      ],
+      "requires": [
+        "prompting"
+      ],
+      "links": [
+        {
+          "label": "Grok",
+          "url": "https://grok.com",
+          "kind": "playground"
+        },
+        {
+          "label": "xAI",
+          "url": "https://x.ai",
+          "kind": "docs"
+        }
+      ],
+      "repo": null,
+      "stars": null,
+      "last_commit": null,
+      "status": "emerging",
+      "zone": "main",
+      "first_indexed": "2026-08-18",
+      "verified_at": "2026-08-18",
+      "note": "Hosted product with no public commit history; freshness not verifiable from a repo."
+    },
+    {
+      "id": "kling",
+      "title": "Kling",
+      "blurb": "Image-to-video and text-to-video in the browser. Strong on people and motion.",
+      "level": "intermediate",
+      "tracks": [
+        "media"
+      ],
+      "requires": [
+        "prompting"
+      ],
+      "links": [
+        {
+          "label": "Kling",
+          "url": "https://kling.ai",
+          "kind": "playground"
+        },
+        {
+          "label": "App",
+          "url": "https://app.klingai.com",
+          "kind": "playground"
+        }
+      ],
+      "repo": null,
+      "stars": null,
+      "last_commit": null,
+      "status": "emerging",
+      "zone": "main",
+      "first_indexed": "2026-08-18",
+      "verified_at": "2026-08-18",
+      "note": "Hosted product with no public commit history; freshness not verifiable from a repo."
+    },
+    {
+      "id": "runway",
+      "title": "Runway",
+      "blurb": "Video workspace with generation plus light editing. The long-standing production one.",
+      "level": "intermediate",
+      "tracks": [
+        "media"
+      ],
+      "requires": [
+        "prompting"
+      ],
+      "links": [
+        {
+          "label": "Runway",
+          "url": "https://runwayml.com",
+          "kind": "playground"
+        }
+      ],
+      "repo": null,
+      "stars": null,
+      "last_commit": null,
+      "status": "emerging",
+      "zone": "main",
+      "first_indexed": "2026-08-18",
+      "verified_at": "2026-08-18",
+      "note": "Hosted product with no public commit history; freshness not verifiable from a repo."
+    },
+    {
+      "id": "veo",
+      "title": "Veo",
+      "blurb": "Google's video model with native audio. Short films that already have sound.",
+      "level": "intermediate",
+      "tracks": [
+        "media"
+      ],
+      "requires": [
+        "gemini"
+      ],
+      "links": [
+        {
+          "label": "Veo",
+          "url": "https://deepmind.google/technologies/veo/",
+          "kind": "docs"
+        },
+        {
+          "label": "Use via Gemini",
+          "url": "https://gemini.google.com",
+          "kind": "playground"
+        }
+      ],
+      "repo": null,
+      "stars": null,
+      "last_commit": null,
+      "status": "emerging",
+      "zone": "main",
+      "first_indexed": "2026-08-18",
+      "verified_at": "2026-08-18",
+      "note": "Hosted product with no public commit history; freshness not verifiable from a repo."
+    },
+    {
+      "id": "capcut-dreamina",
+      "title": "CapCut / Dreamina",
+      "blurb": "Free editor with AI image and video baked in. A whole short-form pipeline in one tab.",
+      "level": "beginner",
+      "tracks": [
+        "media"
+      ],
+      "requires": [
+        "prompting"
+      ],
+      "links": [
+        {
+          "label": "Dreamina",
+          "url": "https://dreamina.capcut.com",
+          "kind": "playground"
+        }
+      ],
+      "repo": null,
+      "stars": null,
+      "last_commit": null,
+      "status": "emerging",
+      "zone": "main",
+      "first_indexed": "2026-08-18",
+      "verified_at": "2026-08-18",
+      "note": "Hosted product with no public commit history; freshness not verifiable from a repo."
+    },
+    {
+      "id": "suno",
+      "title": "Suno",
+      "blurb": "Type a prompt, get a finished song. Instant soundtrack for a game or a video.",
+      "level": "beginner",
+      "tracks": [
+        "media",
+        "game"
+      ],
+      "requires": [
+        "prompting"
+      ],
+      "links": [
+        {
+          "label": "Suno",
+          "url": "https://suno.com",
+          "kind": "playground"
+        }
+      ],
+      "repo": null,
+      "stars": null,
+      "last_commit": null,
+      "status": "emerging",
+      "zone": "main",
+      "first_indexed": "2026-08-18",
+      "verified_at": "2026-08-18",
+      "note": "Hosted product with no public commit history; freshness not verifiable from a repo."
+    },
+    {
+      "id": "elevenlabs",
+      "title": "ElevenLabs",
+      "blurb": "Voice generation and cloning in the browser. Any character gets a real voice.",
+      "level": "beginner",
+      "tracks": [
+        "media",
+        "game"
+      ],
+      "requires": [
+        "prompting"
+      ],
+      "links": [
+        {
+          "label": "ElevenLabs",
+          "url": "https://elevenlabs.io",
+          "kind": "playground"
+        }
+      ],
+      "repo": null,
+      "stars": null,
+      "last_commit": null,
+      "status": "emerging",
+      "zone": "main",
+      "first_indexed": "2026-08-18",
+      "verified_at": "2026-08-18",
+      "note": "Hosted product with no public commit history; freshness not verifiable from a repo."
+    },
+    {
+      "id": "hyperframes",
+      "title": "HyperFrames",
+      "blurb": "Write HTML, render video. Built so an agent can author the motion graphic for you.",
+      "level": "intermediate",
+      "tracks": [
+        "media",
+        "portfolio"
+      ],
+      "requires": [
+        "claude-code"
+      ],
+      "links": [
+        {
+          "label": "Repo",
+          "url": "https://github.com/heygen-com/hyperframes",
+          "kind": "repo"
+        },
+        {
+          "label": "Docs",
+          "url": "https://hyperframes.mintlify.app",
+          "kind": "docs"
+        }
+      ],
+      "repo": "heygen-com/hyperframes",
+      "stars": 41453,
+      "last_commit": "2026-08-18",
+      "status": "core",
+      "zone": "main",
+      "first_indexed": "2026-08-18",
+      "verified_at": "2026-08-18"
+    },
+    {
+      "id": "hyperframes-skills",
+      "title": "HyperFrames skills",
+      "blurb": "Slash commands that teach your agent the whole write-render-publish video loop.",
+      "level": "intermediate",
+      "tracks": [
+        "media",
+        "portfolio"
+      ],
+      "requires": [
+        "hyperframes",
+        "install-a-skill"
+      ],
+      "links": [
+        {
+          "label": "Skills docs",
+          "url": "https://hyperframes.mintlify.app",
+          "kind": "docs"
+        }
+      ],
+      "repo": null,
+      "stars": null,
+      "last_commit": null,
+      "status": "emerging",
+      "zone": "main",
+      "first_indexed": "2026-08-18",
+      "verified_at": "2026-08-18",
+      "note": "Documentation surface of its parent tool; freshness follows the parent repo, not a repo of its own."
+    },
+    {
+      "id": "remotion",
+      "title": "Remotion",
+      "blurb": "Make video with React components. Programmatic explainers and data clips.",
+      "level": "intermediate",
+      "tracks": [
+        "media",
+        "portfolio"
+      ],
+      "requires": [
+        "claude-code"
+      ],
+      "links": [
+        {
+          "label": "Repo",
+          "url": "https://github.com/remotion-dev/remotion",
+          "kind": "repo"
+        },
+        {
+          "label": "Docs",
+          "url": "https://www.remotion.dev",
+          "kind": "docs"
+        }
+      ],
+      "repo": "remotion-dev/remotion",
+      "stars": 56663,
+      "last_commit": "2026-08-18",
+      "status": "core",
+      "zone": "main",
+      "first_indexed": "2026-08-18",
+      "verified_at": "2026-08-18"
+    },
+    {
+      "id": "remotion-skills",
+      "title": "Remotion agent skills",
+      "blurb": "Official skills so an agent writes correct Remotion code you can still edit by hand.",
+      "level": "intermediate",
+      "tracks": [
+        "media",
+        "portfolio"
+      ],
+      "requires": [
+        "remotion",
+        "install-a-skill"
+      ],
+      "links": [
+        {
+          "label": "Coding agents docs",
+          "url": "https://www.remotion.dev/docs/ai/coding-agents",
+          "kind": "docs"
+        }
+      ],
+      "repo": null,
+      "stars": null,
+      "last_commit": null,
+      "status": "emerging",
+      "zone": "main",
+      "first_indexed": "2026-08-18",
+      "verified_at": "2026-08-18",
+      "note": "Documentation surface of its parent tool; freshness follows the parent repo, not a repo of its own."
+    },
+    {
+      "id": "bmad-method",
+      "title": "BMAD Method",
+      "blurb": "Multi-agent process that turns an idea into planned software that actually finishes.",
+      "level": "advanced",
+      "tracks": [
+        "app",
+        "game",
+        "portfolio"
+      ],
+      "requires": [
+        "claude-md"
+      ],
+      "links": [
+        {
+          "label": "Repo",
+          "url": "https://github.com/bmad-code-org/BMAD-METHOD",
+          "kind": "repo"
+        }
+      ],
+      "repo": "bmad-code-org/BMAD-METHOD",
+      "stars": 52006,
+      "last_commit": "2026-08-18",
+      "status": "core",
+      "zone": "main",
+      "first_indexed": "2026-08-18",
+      "verified_at": "2026-08-18"
+    },
+    {
+      "id": "caveman-skill",
+      "title": "Caveman skill",
+      "blurb": "Forces ultra-short agent replies. Same answer, a fraction of the tokens.",
+      "level": "intermediate",
+      "tracks": [
+        "game",
+        "app",
+        "portfolio",
+        "media"
+      ],
+      "requires": [
+        "install-a-skill"
+      ],
+      "links": [
+        {
+          "label": "Repo",
+          "url": "https://github.com/JuliusBrussee/caveman",
+          "kind": "repo"
+        },
+        {
+          "label": "Site",
+          "url": "https://caveman.so/",
+          "kind": "docs"
+        }
+      ],
+      "repo": "JuliusBrussee/caveman",
+      "stars": 98817,
+      "last_commit": "2026-08-18",
+      "status": "core",
+      "zone": "main",
+      "first_indexed": "2026-08-18",
+      "verified_at": "2026-08-18"
+    },
+    {
+      "id": "agent-plugins-spec",
+      "title": "Agent Plugins 1.0",
+      "blurb": "One package format bundling skills and MCP config so a plugin works in any agent.",
+      "level": "advanced",
+      "tracks": [
+        "app",
+        "media"
+      ],
+      "requires": [
+        "what-is-a-skill",
+        "what-is-mcp"
+      ],
+      "links": [
+        {
+          "label": "Spec repo",
+          "url": "https://github.com/agentplugins/agent-plugins-spec",
+          "kind": "repo"
+        },
+        {
+          "label": "Specification",
+          "url": "https://agent-plugins.org/specification",
+          "kind": "docs"
+        },
+        {
+          "label": "Claude Code plugins",
+          "url": "https://code.claude.com/docs/en/plugins",
+          "kind": "docs"
+        }
+      ],
+      "repo": "agentplugins/agent-plugins-spec",
+      "stars": 1070,
+      "last_commit": "2026-08-06",
+      "status": "core",
+      "zone": "main",
+      "first_indexed": "2026-08-18",
+      "verified_at": "2026-08-18",
+      "note": "Seed said AAIF governs this; it does not. Steered by Amazon, Cursor, Microsoft, OpenAI and Vercel."
+    },
+    {
+      "id": "mcp-playwright",
+      "title": "Playwright MCP server",
+      "blurb": "Lets an agent drive a real browser: click, fill, screenshot, assert.",
+      "level": "intermediate",
+      "tracks": [
+        "app",
+        "portfolio"
+      ],
+      "requires": [
+        "add-an-mcp-server"
+      ],
+      "links": [
+        {
+          "label": "Repo",
+          "url": "https://github.com/microsoft/playwright-mcp",
+          "kind": "repo"
+        }
+      ],
+      "repo": "microsoft/playwright-mcp",
+      "stars": 36230,
+      "last_commit": "2026-08-17",
+      "status": "core",
+      "zone": "frontier",
+      "first_indexed": "2026-08-18",
+      "verified_at": "2026-08-18"
+    },
+    {
+      "id": "mcp-chrome-devtools",
+      "title": "Chrome DevTools MCP",
+      "blurb": "Agent reads the console, network and performance traces of a live page.",
+      "level": "advanced",
+      "tracks": [
+        "app",
+        "portfolio"
+      ],
+      "requires": [
+        "add-an-mcp-server"
+      ],
+      "links": [
+        {
+          "label": "Repo",
+          "url": "https://github.com/ChromeDevTools/chrome-devtools-mcp",
+          "kind": "repo"
+        }
+      ],
+      "repo": "ChromeDevTools/chrome-devtools-mcp",
+      "stars": 49327,
+      "last_commit": "2026-08-17",
+      "status": "core",
+      "zone": "frontier",
+      "first_indexed": "2026-08-18",
+      "verified_at": "2026-08-18"
+    },
+    {
+      "id": "mcp-supabase",
+      "title": "Supabase MCP server",
+      "blurb": "Agent queries and migrates a real database. Useful once your app needs storage.",
+      "level": "advanced",
+      "tracks": [
+        "app"
+      ],
+      "requires": [
+        "add-an-mcp-server"
+      ],
+      "links": [
+        {
+          "label": "Repo",
+          "url": "https://github.com/supabase/mcp",
+          "kind": "repo"
+        },
+        {
+          "label": "Docs",
+          "url": "https://supabase.com/mcp",
+          "kind": "docs"
+        }
+      ],
+      "repo": "supabase/mcp",
+      "stars": 2867,
+      "last_commit": "2026-08-18",
+      "status": "core",
+      "zone": "frontier",
+      "first_indexed": "2026-08-18",
+      "verified_at": "2026-08-18"
+    },
+    {
+      "id": "mcp-registry",
+      "title": "MCP Registry",
+      "blurb": "Official index of MCP servers. Where to look before trusting a random install line.",
+      "level": "intermediate",
+      "tracks": [
+        "app",
+        "portfolio",
+        "media"
+      ],
+      "requires": [
+        "what-is-mcp"
+      ],
+      "links": [
+        {
+          "label": "Repo",
+          "url": "https://github.com/modelcontextprotocol/registry",
+          "kind": "repo"
+        },
+        {
+          "label": "Registry",
+          "url": "https://registry.modelcontextprotocol.io",
+          "kind": "docs"
+        }
+      ],
+      "repo": "modelcontextprotocol/registry",
+      "stars": 7165,
+      "last_commit": "2026-08-12",
+      "status": "core",
+      "zone": "frontier",
+      "first_indexed": "2026-08-18",
+      "verified_at": "2026-08-18"
+    },
+    {
+      "id": "awesome-mcp-servers",
+      "title": "awesome-mcp-servers",
+      "blurb": "Community list of hundreds of MCP servers. Browse it, then verify before installing.",
+      "level": "intermediate",
+      "tracks": [
+        "game",
+        "app",
+        "portfolio",
+        "media"
+      ],
+      "requires": [
+        "what-is-mcp"
+      ],
+      "links": [
+        {
+          "label": "Repo",
+          "url": "https://github.com/punkpeye/awesome-mcp-servers",
+          "kind": "repo"
+        }
+      ],
+      "repo": "punkpeye/awesome-mcp-servers",
+      "stars": 92502,
+      "last_commit": "2026-08-17",
+      "status": "core",
+      "zone": "frontier",
+      "first_indexed": "2026-08-18",
+      "verified_at": "2026-08-18"
+    },
+    {
+      "id": "fastmcp",
+      "title": "FastMCP",
+      "blurb": "Python framework for writing your own MCP server when nothing existing fits.",
+      "level": "advanced",
+      "tracks": [
+        "app"
+      ],
+      "requires": [
+        "what-is-mcp"
+      ],
+      "links": [
+        {
+          "label": "Repo",
+          "url": "https://github.com/PrefectHQ/fastmcp",
+          "kind": "repo"
+        },
+        {
+          "label": "Docs",
+          "url": "https://gofastmcp.com",
+          "kind": "docs"
+        }
+      ],
+      "repo": "PrefectHQ/fastmcp",
+      "stars": 27258,
+      "last_commit": "2026-08-18",
+      "status": "core",
+      "zone": "frontier",
+      "first_indexed": "2026-08-18",
+      "verified_at": "2026-08-18"
+    },
+    {
+      "id": "one-mcp",
+      "title": "One MCP",
+      "blurb": "One server, one key, many SaaS apps. OAuth is proxied so you hold no tokens.",
+      "level": "advanced",
+      "tracks": [
+        "app"
+      ],
+      "requires": [
+        "remote-mcp-servers"
+      ],
+      "links": [
+        {
+          "label": "Repo",
+          "url": "https://github.com/withoneai/mcp",
+          "kind": "repo"
+        },
+        {
+          "label": "Product",
+          "url": "https://www.withone.ai/products/mcp",
+          "kind": "docs"
+        }
+      ],
+      "repo": "withoneai/mcp",
+      "stars": 9,
+      "last_commit": "2026-08-17",
+      "status": "emerging",
+      "zone": "frontier",
+      "first_indexed": "2026-08-18",
+      "verified_at": "2026-08-18",
+      "note": "Repo has 9 stars; the product is real but adoption is unproven. Watch, do not depend."
+    },
+    {
+      "id": "superpowers",
+      "title": "Superpowers",
+      "blurb": "A large skills library and method for Claude Code: TDD, debugging, planning loops.",
+      "level": "advanced",
+      "tracks": [
+        "app",
+        "game",
+        "portfolio"
+      ],
+      "requires": [
+        "install-a-skill"
+      ],
+      "links": [
+        {
+          "label": "Repo",
+          "url": "https://github.com/obra/superpowers",
+          "kind": "repo"
+        }
+      ],
+      "repo": "obra/superpowers",
+      "stars": 273392,
+      "last_commit": "2026-08-13",
+      "status": "core",
+      "zone": "frontier",
+      "first_indexed": "2026-08-18",
+      "verified_at": "2026-08-18"
+    },
+    {
+      "id": "awesome-claude-skills",
+      "title": "awesome-claude-skills",
+      "blurb": "Curated index of published skills. Good hunting ground once one skill has clicked.",
+      "level": "intermediate",
+      "tracks": [
+        "app",
+        "media",
+        "portfolio"
+      ],
+      "requires": [
+        "what-is-a-skill"
+      ],
+      "links": [
+        {
+          "label": "Repo",
+          "url": "https://github.com/travisvn/awesome-claude-skills",
+          "kind": "repo"
+        }
+      ],
+      "repo": "travisvn/awesome-claude-skills",
+      "stars": 14698,
+      "last_commit": "2026-04-28",
+      "status": "emerging",
+      "zone": "frontier",
+      "first_indexed": "2026-08-18",
+      "verified_at": "2026-08-18",
+      "note": "Last push 2026-04-28, over 60 days stale. Real and useful, but drifting."
+    },
+    {
+      "id": "opencode",
+      "title": "OpenCode",
+      "blurb": "Provider-agnostic terminal agent. Point it at whichever model you actually pay for.",
+      "level": "advanced",
+      "tracks": [
+        "app",
+        "game",
+        "portfolio"
+      ],
+      "requires": [
+        "claude-code"
+      ],
+      "links": [
+        {
+          "label": "Repo",
+          "url": "https://github.com/anomalyco/opencode",
+          "kind": "repo"
+        },
+        {
+          "label": "Site",
+          "url": "https://opencode.ai",
+          "kind": "docs"
+        }
+      ],
+      "repo": "anomalyco/opencode",
+      "stars": 198617,
+      "last_commit": "2026-08-18",
+      "status": "core",
+      "zone": "frontier",
+      "first_indexed": "2026-08-18",
+      "verified_at": "2026-08-18"
+    },
+    {
+      "id": "codex-cli",
+      "title": "Codex CLI",
+      "blurb": "OpenAI's sandboxed terminal agent. Apache-2.0 and tuned for their own models.",
+      "level": "advanced",
+      "tracks": [
+        "app",
+        "game",
+        "portfolio"
+      ],
+      "requires": [
+        "claude-code"
+      ],
+      "links": [
+        {
+          "label": "Repo",
+          "url": "https://github.com/openai/codex",
+          "kind": "repo"
+        }
+      ],
+      "repo": "openai/codex",
+      "stars": 106574,
+      "last_commit": "2026-08-18",
+      "status": "core",
+      "zone": "frontier",
+      "first_indexed": "2026-08-18",
+      "verified_at": "2026-08-18"
+    },
+    {
+      "id": "cline",
+      "title": "Cline",
+      "blurb": "Model-agnostic agent living in your IDE, CLI and SDK. Bring your own key.",
+      "level": "intermediate",
+      "tracks": [
+        "app",
+        "game",
+        "portfolio"
+      ],
+      "requires": [
+        "cursor"
+      ],
+      "links": [
+        {
+          "label": "Repo",
+          "url": "https://github.com/cline/cline",
+          "kind": "repo"
+        },
+        {
+          "label": "Site",
+          "url": "https://cline.bot",
+          "kind": "docs"
+        }
+      ],
+      "repo": "cline/cline",
+      "stars": 66388,
+      "last_commit": "2026-08-18",
+      "status": "core",
+      "zone": "frontier",
+      "first_indexed": "2026-08-18",
+      "verified_at": "2026-08-18"
+    },
+    {
+      "id": "phaser",
+      "title": "Phaser",
+      "blurb": "The classic open source 2D web game framework. Agents write good Phaser code.",
+      "level": "intermediate",
+      "tracks": [
+        "game"
+      ],
+      "requires": [
+        "claude-code"
+      ],
+      "links": [
+        {
+          "label": "Repo",
+          "url": "https://github.com/phaserjs/phaser",
+          "kind": "repo"
+        }
+      ],
+      "repo": "phaserjs/phaser",
+      "stars": 40163,
+      "last_commit": "2026-07-09",
+      "status": "core",
+      "zone": "frontier",
+      "first_indexed": "2026-08-18",
+      "verified_at": "2026-08-18",
+      "note": "phaser.io blocks automated requests; the repo is the verified link."
+    },
+    {
+      "id": "kaplay",
+      "title": "KAPLAY",
+      "blurb": "Tiny, playful JS game library. Small enough that one prompt makes a whole game.",
+      "level": "beginner",
+      "tracks": [
+        "game"
+      ],
+      "requires": [
+        "claude-code"
+      ],
+      "links": [
+        {
+          "label": "Repo",
+          "url": "https://github.com/kaplayjs/kaplay",
+          "kind": "repo"
+        },
+        {
+          "label": "Docs",
+          "url": "https://kaplayjs.com",
+          "kind": "docs"
+        }
+      ],
+      "repo": "kaplayjs/kaplay",
+      "stars": 1773,
+      "last_commit": "2026-08-17",
+      "status": "core",
+      "zone": "frontier",
+      "first_indexed": "2026-08-18",
+      "verified_at": "2026-08-18"
+    },
+    {
+      "id": "threejs",
+      "title": "three.js",
+      "blurb": "The 3D layer of the web. Every agent knows it, which makes 3D prototypes cheap.",
+      "level": "advanced",
+      "tracks": [
+        "game",
+        "portfolio"
+      ],
+      "requires": [
+        "claude-code"
+      ],
+      "links": [
+        {
+          "label": "Repo",
+          "url": "https://github.com/mrdoob/three.js",
+          "kind": "repo"
+        },
+        {
+          "label": "Docs",
+          "url": "https://threejs.org/",
+          "kind": "docs"
+        }
+      ],
+      "repo": "mrdoob/three.js",
+      "stars": 114582,
+      "last_commit": "2026-08-18",
+      "status": "core",
+      "zone": "frontier",
+      "first_indexed": "2026-08-18",
+      "verified_at": "2026-08-18"
+    },
+    {
+      "id": "rosebud-ai",
+      "title": "Rosebud AI",
+      "blurb": "Describe a game, get a playable browser build and a share link. Phaser underneath.",
+      "level": "beginner",
+      "tracks": [
+        "game"
+      ],
+      "requires": [
+        "prompting"
+      ],
+      "links": [
+        {
+          "label": "Rosebud",
+          "url": "https://rosebud.ai",
+          "kind": "playground"
+        }
+      ],
+      "repo": null,
+      "stars": null,
+      "last_commit": null,
+      "status": "emerging",
+      "zone": "frontier",
+      "first_indexed": "2026-08-18",
+      "verified_at": "2026-08-18",
+      "note": "Hosted product with no public commit history; freshness not verifiable from a repo."
+    },
+    {
+      "id": "websim",
+      "title": "Websim",
+      "blurb": "Prompts an entire interactive page into existence. Remix-first creative sandbox.",
+      "level": "beginner",
+      "tracks": [
+        "game",
+        "media"
+      ],
+      "requires": [
+        "prompting"
+      ],
+      "links": [
+        {
+          "label": "Websim",
+          "url": "https://websim.com",
+          "kind": "playground"
+        }
+      ],
+      "repo": null,
+      "stars": null,
+      "last_commit": null,
+      "status": "emerging",
+      "zone": "frontier",
+      "first_indexed": "2026-08-18",
+      "verified_at": "2026-08-18",
+      "note": "Hosted product with no public commit history; freshness not verifiable from a repo."
+    },
+    {
+      "id": "itch-io",
+      "title": "itch.io",
+      "blurb": "Where browser games get published and played. The finish line for the game track.",
+      "level": "beginner",
+      "tracks": [
+        "game"
+      ],
+      "requires": [
+        "vercel"
+      ],
+      "links": [
+        {
+          "label": "itch.io",
+          "url": "https://itch.io",
+          "kind": "docs"
+        }
+      ],
+      "repo": null,
+      "stars": null,
+      "last_commit": null,
+      "status": "emerging",
+      "zone": "frontier",
+      "first_indexed": "2026-08-18",
+      "verified_at": "2026-08-18",
+      "note": "Hosted product with no public commit history; freshness not verifiable from a repo."
+    },
+    {
+      "id": "v0",
+      "title": "v0",
+      "blurb": "Prompt a React UI, get code you own. Fastest path from idea to a real screen.",
+      "level": "beginner",
+      "tracks": [
+        "app",
+        "portfolio"
+      ],
+      "requires": [
+        "prompting"
+      ],
+      "links": [
+        {
+          "label": "v0",
+          "url": "https://v0.app",
+          "kind": "playground"
+        }
+      ],
+      "repo": null,
+      "stars": null,
+      "last_commit": null,
+      "status": "emerging",
+      "zone": "frontier",
+      "first_indexed": "2026-08-18",
+      "verified_at": "2026-08-18",
+      "note": "Hosted product with no public commit history; freshness not verifiable from a repo."
+    },
+    {
+      "id": "lovable",
+      "title": "Lovable",
+      "blurb": "Chat a full app into existence, then export the repo when you outgrow the chat.",
+      "level": "beginner",
+      "tracks": [
+        "app",
+        "portfolio"
+      ],
+      "requires": [
+        "prompting"
+      ],
+      "links": [
+        {
+          "label": "Lovable",
+          "url": "https://lovable.dev",
+          "kind": "playground"
+        }
+      ],
+      "repo": null,
+      "stars": null,
+      "last_commit": null,
+      "status": "emerging",
+      "zone": "frontier",
+      "first_indexed": "2026-08-18",
+      "verified_at": "2026-08-18",
+      "note": "Hosted product with no public commit history; freshness not verifiable from a repo."
+    },
+    {
+      "id": "github-pages",
+      "title": "GitHub Pages",
+      "blurb": "Free static hosting straight off a repo. Zero new accounts for a portfolio site.",
+      "level": "beginner",
+      "tracks": [
+        "portfolio",
+        "game"
+      ],
+      "requires": [
+        "readme-literacy"
+      ],
+      "links": [
+        {
+          "label": "GitHub Pages",
+          "url": "https://pages.github.com/",
+          "kind": "docs"
+        }
+      ],
+      "repo": null,
+      "stars": null,
+      "last_commit": null,
+      "status": "emerging",
+      "zone": "frontier",
+      "first_indexed": "2026-08-18",
+      "verified_at": "2026-08-18",
+      "note": "Hosted product with no public commit history; freshness not verifiable from a repo."
+    },
+    {
+      "id": "remocn-studio",
+      "title": "Remocn Studio",
+      "blurb": "Describe a video and an agent builds a real Remotion project you can preview.",
+      "level": "intermediate",
+      "tracks": [
+        "media",
+        "portfolio"
+      ],
+      "requires": [
+        "remotion"
+      ],
+      "links": [
+        {
+          "label": "Remocn Studio",
+          "url": "https://remocn.studio",
+          "kind": "playground"
+        }
+      ],
+      "repo": null,
+      "stars": null,
+      "last_commit": null,
+      "status": "emerging",
+      "zone": "frontier",
+      "first_indexed": "2026-08-18",
+      "verified_at": "2026-08-18",
+      "note": "Hosted product with no public commit history; freshness not verifiable from a repo. New agent-native Remotion surface; no public repo found."
+    },
+    {
+      "id": "framepack",
+      "title": "Framepack",
+      "blurb": "Planning layer that turns a messy brief into a structured HyperFrames project.",
+      "level": "advanced",
+      "tracks": [
+        "media"
+      ],
+      "requires": [
+        "hyperframes"
+      ],
+      "links": [
+        {
+          "label": "Repo",
+          "url": "https://github.com/ARTHUR-BBU/framepack",
+          "kind": "repo"
+        }
+      ],
+      "repo": "ARTHUR-BBU/framepack",
+      "stars": 3,
+      "last_commit": "2026-07-15",
+      "status": "emerging",
+      "zone": "frontier",
+      "first_indexed": "2026-08-18",
+      "verified_at": "2026-08-18",
+      "note": "3 stars, single maintainer, last push 2026-07-15. Real, but effectively unproven."
+    }
+  ]
+}
