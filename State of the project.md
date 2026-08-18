@@ -57,7 +57,7 @@ spec at a time, inside the session that builds it.
 | 06 | `specs/spec-06-panel.md` | `DONE` | 01, 05 |
 | 07 | `specs/spec-07-character.md` | `DONE` | 04 |
 | 08 | `specs/spec-08-progress.md` | `DONE` | 04, 05, 07 |
-| 09 | `specs/spec-09-frontier.md` | `READY FOR DEVELOPMENT` | 04, 05 |
+| 09 | `specs/spec-09-frontier.md` | `IN PROGRESS` | 04, 05 |
 | 10 | `specs/spec-10-navigation.md` | `SPEC PENDING` | 04, 08, 09 |
 | 11 | `specs/spec-11-portability.md` | `READY FOR DEVELOPMENT` | 08 |
 | 12 | `specs/spec-12-ship.md` | `SPEC PENDING` | 01–11 |
@@ -764,7 +764,7 @@ cleanly. Zero console errors or warnings throughout.
 
 ## 09 — The frontier branch
 
-**State:** `READY FOR DEVELOPMENT`  **Depends on:** 04, 05
+**State:** `IN PROGRESS` — 2026-08-18  **Depends on:** 04, 05
 
 Frontier nodes render as spurs off their `anchor` node, using the branch path geometry in
 `tracks.json`. Visually distinct from the main path and explicitly marked unproven. 23 of
