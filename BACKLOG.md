@@ -84,6 +84,23 @@ bottom rather than done inline.
 - [x] T059 — Verify: build, typecheck, browser (position vs path point, facing both ways,
       walk start/restart/settle, reduced motion, 360px, zero-node act, zero-act track)
 
+## Spec 08 — Progress and fog of war
+
+- [x] T063 — Write `specs/spec-08-progress.md`
+- [x] T064 — `src/data/progress.ts` — storage (mirrors `intake.ts`) plus `computeTrackProgress`
+- [x] T065 — `src/data/ProgressContext.ts` — context and `useProgressContext`
+- [x] T066 — `src/hooks/useProgress.ts` — React state over the storage half
+- [x] T067 — `src/hooks/useTweenedT.ts` — constant-speed rAF tween, snaps on mount
+- [x] T068 — `src/components/ActPath.tsx` — `progress` prop, the two dash-clipped strokes, memo
+- [x] T069 — `src/components/PathNode.tsx` — `state` prop on the dot
+- [x] T070 — `src/components/NodeCard.tsx` — completion from the shared set
+- [x] T071 — `src/components/TrackMap.tsx` — derive, tween, distribute per act
+- [x] T072 — `src/App.tsx` — own progress, provide the context, `n / m DONE` in the masthead
+- [x] T073 — `src/styles/path.css` — reached/walked strokes, three dot states, one transition
+- [x] T074 — Verify: build, typecheck, a 4-track × 20-subset derivation suite, and browser
+      (persistence both ways, cross-track, corrupt storage, act crossing, tween retarget,
+      reduced motion, all-complete, advanced level, 360px, zero-node act, zero-act track)
+
 ## Noticed, not done
 
 Appended by sessions that spotted work outside their one task. Do not do these inline.
@@ -110,3 +127,14 @@ Appended by sessions that spotted work outside their one task. Do not do these i
 - [ ] T062 — The placeholder's legs are one block, not two. A gap would need either a
       third pseudo-element per layer or a cut painted in `--surface-base` over the path
       line; neither was worth it before real sprites.
+- [ ] T075 — `useProgress`'s `resetProgress` and `data/progress.ts`'s `clearCompleted` are
+      written and exported but nothing calls them. Spec 11 (portability) owns the reset
+      affordance; wire them there rather than adding a control now.
+- [ ] T076 — `App` calls `computeTrackProgress` for the masthead count and `TrackMap` calls
+      it again for the map. Same pure function, same inputs, so they cannot disagree — but
+      if the derivation ever gets expensive, the fix is to lift the map branch into its own
+      component (App's early return blocks a hook there today).
+- [ ] T077 — The built CSS still defines a bare `.backdrop-filter` utility (5 hits in
+      `dist/assets/*.css`). Nothing uses it and `--blur-*: initial` means `backdrop-blur-*`
+      does not exist, so nothing renders frosted — but spec 12's hardcoded-colour gate is
+      the right place to also assert the banned utilities are absent from the output.

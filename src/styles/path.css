@@ -1,11 +1,27 @@
 /**
  * path.css — the act path screen. @layer components, tokens only.
  *
- * Bare by design (spec 04): a hairline path, a small dot per node — the title
- * lives on spec 05's card now, not a second label here. `--accent` is not
- * used on this screen — spec 02 spent it on selection, the focus ring, and
- * track-row hover; it stays free for spec 08's completed-progress glow, the
- * state that actually warrants it here.
+ * Three strokes share one geometry string (spec 08). Bottom to top:
+ *
+ *   .path-map__line      --rule          full length   the road, unwalked
+ *   .path-map__reached   --accent        clipped       as far as the learner got
+ *   .path-map__walked    --accent-quiet  clipped       the stretch behind them
+ *
+ * The clip is `stroke-dasharray` + `stroke-dashoffset`, set inline from the
+ * measured path length — CONTEXT.md section 9's fog of war, and its "completed
+ * glow" too. Glow there means a second *stroke*; section 8 bans coloured
+ * shadows and neon halos outright, and none appear here.
+ *
+ * Reading the strokes in that order is what keeps the accent sparing. The
+ * walked stroke paints over the reached one, so the only bright accent left on
+ * the whole track is the short segment between what is finished and where the
+ * learner is standing — accent as "here", which is section 8's own wording,
+ * rather than accent as "everything I have done". A finished act draws in the
+ * quiet ember and recedes; the first build lit a completed act end to end in
+ * full accent and the screen turned orange.
+ *
+ * All three strokes carry the same width, so the top one covers the one beneath
+ * rather than fringing it: every colour change lands on a hard edge.
  */
 
 @layer components {
@@ -18,13 +34,55 @@
     overflow: visible;
   }
 
-  .path-map__line {
+  .path-map__line,
+  .path-map__reached,
+  .path-map__walked {
     fill: none;
-    stroke: var(--rule);
     stroke-width: calc(var(--hairline) * 2);
   }
 
+  .path-map__line {
+    stroke: var(--rule);
+  }
+
+  /* ---- Fog of war -------------------------------------------------------
+   * Motion here is a state change and nothing else: the strokes grow only when
+   * the learner marks something done, and they take roughly a one-node walk to
+   * do it, so the line and the figure arrive together. `base.css` already
+   * collapses every duration under `prefers-reduced-motion: reduce`; there is
+   * no second rule for it here.
+   */
+
+  .path-map__reached,
+  .path-map__walked {
+    transition: stroke-dashoffset calc(var(--dur-state) * 4) var(--ease-state);
+  }
+
+  .path-map__reached {
+    stroke: var(--accent);
+  }
+
+  .path-map__walked {
+    stroke: var(--accent-quiet);
+  }
+
+  /* ---- Dots -------------------------------------------------------------
+   * One node, one state, and the same reading as the strokes: done recedes into
+   * the quiet ember, the road ahead stays plainly legible, and the one bright
+   * dot on the whole track is where the learner is standing — the point the
+   * character stands on too.
+   */
+
   .path-node__dot {
     fill: var(--text-secondary);
+    transition: fill var(--dur-state) var(--ease-state);
+  }
+
+  .path-node[data-state='current'] .path-node__dot {
+    fill: var(--accent);
+  }
+
+  .path-node[data-state='complete'] .path-node__dot {
+    fill: var(--accent-quiet);
   }
 }

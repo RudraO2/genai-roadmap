@@ -1,5 +1,6 @@
-import { useLayoutEffect, useMemo, useRef, useState, type ReactNode } from 'react'
+import { memo, useLayoutEffect, useMemo, useRef, useState, type ReactNode } from 'react'
 
+import type { ActProgress } from '../data/progress.ts'
 import { PathContext } from '../path/PathContext.ts'
 import { parseViewBoxSize } from '../path/viewBox.ts'
 import type { Act, Level } from '../types.ts'
@@ -10,8 +11,28 @@ import { PathNode } from './PathNode.tsx'
 export interface ActPathProps {
   act: Act
   level: Level
+  /** This act's slice of the derived progress (spec 08). */
+  progress: ActProgress
   /** `t` of the walker, when this act is the one hosting it (spec 07). */
   characterT?: number | null
+}
+
+/**
+ * The dash pattern that draws the first `fraction` of a path and nothing else.
+ *
+ * `stroke-dasharray: L` lays out a dash of L followed by a gap of L; a
+ * `stroke-dashoffset` of `L * (1 - fraction)` slides that pattern back so the
+ * visible dash covers exactly `[0, L * fraction]`. This is `CONTEXT.md` section
+ * 9's fog of war, and the same two properties clip the completed stroke.
+ */
+function dashToFraction(totalLength: number, fraction: number): {
+  strokeDasharray: number
+  strokeDashoffset: number
+} {
+  return {
+    strokeDasharray: totalLength,
+    strokeDashoffset: totalLength * (1 - fraction),
+  }
 }
 
 /**
@@ -19,6 +40,14 @@ export interface ActPathProps {
  * `CONTEXT.md` section 9 describes. Measures the path's total length once on
  * mount (SVG user-unit length, unaffected by container resize) and provides it
  * to every `PathNode`/`NodeCard` underneath via `PathContext`.
+ *
+ * Three strokes share that one geometry string, layered bottom to top: the road
+ * (`--rule`, full length), the stretch the learner has reached (`--accent`,
+ * clipped to `revealT`), and the stretch they have walked (`--accent-quiet`,
+ * clipped to `completeT`) painted over it. What survives is one short bright
+ * segment between the two — the learner's position. Only the first path is
+ * measured; the other two read the same `totalLength`, so there is no second
+ * measurement and no cloned DOM node.
  *
  * The character (spec 07) sits in `.act-stage__path`, a wrapper around the
  * `<svg>` alone. It cannot share the card overlay: below 640px the cards drop
@@ -30,8 +59,15 @@ export interface ActPathProps {
  * text wrapping and buttons. It shares `.act-stage`'s box with the `<svg>`
  * (auto height, set by the svg) so percentage positions line up with the
  * rendered path without a second size measurement.
+ *
+ * Memoised, because the walker's tween sets a new `t` every frame and without
+ * it all seven of a track's acts would re-render each of those frames. Its
+ * props are all referentially stable between tweens: `act` comes from the
+ * frozen registry, `progress` from one `useMemo` in `TrackMap`, and only the
+ * hosting act's `characterT` changes mid-walk. Measured mid-walk on the `game`
+ * track at 45fps without it and 56fps with it, against 62fps idle.
  */
-export function ActPath({ act, level, characterT = null }: ActPathProps): ReactNode {
+function ActPathImpl({ act, level, progress, characterT = null }: ActPathProps): ReactNode {
   const pathRef = useRef<SVGPathElement | null>(null)
   const [totalLength, setTotalLength] = useState(0)
 
@@ -51,7 +87,28 @@ export function ActPath({ act, level, characterT = null }: ActPathProps): ReactN
         <div className="act-stage__path">
           <svg className="path-map" viewBox={act.viewBox} role="img" aria-label={`${act.title} path`}>
             <path ref={pathRef} className="path-map__line" d={act.path} />
-            {totalLength > 0 && act.nodes.map((placed) => <PathNode key={placed.id} placed={placed} />)}
+            {totalLength > 0 && (
+              <>
+                <path
+                  className="path-map__reached"
+                  d={act.path}
+                  style={dashToFraction(totalLength, progress.revealT)}
+                />
+                <path
+                  className="path-map__walked"
+                  d={act.path}
+                  style={dashToFraction(totalLength, progress.completeT)}
+                />
+              </>
+            )}
+            {totalLength > 0 &&
+              act.nodes.map((placed) => (
+                <PathNode
+                  key={placed.id}
+                  placed={placed}
+                  state={progress.states.get(placed.id) ?? 'ahead'}
+                />
+              ))}
           </svg>
           {totalLength > 0 && characterT !== null && (
             <div className="act-stage__character" aria-hidden="true">
@@ -80,3 +137,5 @@ export function ActPath({ act, level, characterT = null }: ActPathProps): ReactN
     </PathContext.Provider>
   )
 }
+
+export const ActPath = memo(ActPathImpl)

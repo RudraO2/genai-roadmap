@@ -40,7 +40,7 @@ spec at a time, inside the session that builds it.
 | Phase | What | State |
 | --- | --- | --- |
 | A | Research the node registry → `data/nodes.json`, `data/tracks.json` | `DONE` — 2026-08-18 |
-| B | Write the specs → `specs/*.md` | `IN PROGRESS` — folded into each spec's own session; 7 of 12 written |
+| B | Write the specs → `specs/*.md` | `IN PROGRESS` — folded into each spec's own session; 8 of 12 written |
 | C | Build the backlog → `BACKLOG.md` | `IN PROGRESS` — `BACKLOG.md` created 2026-08-18, appended per session |
 
 ---
@@ -56,10 +56,10 @@ spec at a time, inside the session that builds it.
 | 05 | `specs/spec-05-cards.md` | `DONE` | 01, 04 |
 | 06 | `specs/spec-06-panel.md` | `DONE` | 01, 05 |
 | 07 | `specs/spec-07-character.md` | `DONE` | 04 |
-| 08 | `specs/spec-08-progress.md` | `IN PROGRESS` | 04, 05, 07 |
+| 08 | `specs/spec-08-progress.md` | `DONE` | 04, 05, 07 |
 | 09 | `specs/spec-09-frontier.md` | `READY FOR DEVELOPMENT` | 04, 05 |
 | 10 | `specs/spec-10-navigation.md` | `SPEC PENDING` | 04, 08, 09 |
-| 11 | `specs/spec-11-portability.md` | `SPEC PENDING` | 08 |
+| 11 | `specs/spec-11-portability.md` | `READY FOR DEVELOPMENT` | 08 |
 | 12 | `specs/spec-12-ship.md` | `SPEC PENDING` | 01–11 |
 
 ---
@@ -631,7 +631,7 @@ throughout.
 
 ## 08 — Progress and fog of war
 
-**State:** `IN PROGRESS` — claimed 2026-08-18  **Depends on:** 04, 05, 07
+**State:** `DONE` — 2026-08-18  **Depends on:** 04, 05, 07
 
 Mark a node complete or incomplete; persist to localStorage. Fog of war is
 `stroke-dasharray` and `stroke-dashoffset` on the same path from spec 04. Completed glow is
@@ -640,6 +640,125 @@ progress frontier.
 
 **Watch for:** "completed glow" here means a second stroke, not a `box-shadow` with colour.
 Section 8 bans glow shadows and neon halos outright.
+
+### Session notes — 2026-08-18
+
+**Built:** `src/data/progress.ts` (localStorage half mirroring `intake.ts`, plus the pure
+`computeTrackProgress`), `src/data/ProgressContext.ts`, `src/hooks/useProgress.ts`,
+`src/hooks/useTweenedT.ts` (constant-speed `requestAnimationFrame` tween), a `progress` prop
+and two dash-clipped `<path>` elements on `ActPath`, a `state` prop on `PathNode`, completion
+read from the shared set in `NodeCard`, derivation + tween + per-act distribution in
+`TrackMap`, and `n / m DONE` in `App`'s masthead. `path.css` gained the two strokes and the
+three dot states.
+
+**Decided:**
+
+- **The accent marks *where you are*, not everything you have done.** The first build
+  painted the completed stretch in full `--accent` and a finished act came out as an
+  unbroken orange line across the screen — the opposite of section 8's "exactly one accent
+  hue used sparingly". Final layering, bottom to top: `.path-map__line` (`--rule`, full
+  length), `.path-map__reached` (`--accent`, clipped to `revealT`), `.path-map__walked`
+  (`--accent-quiet`, clipped to `completeT`) painted **over** it. What survives is one short
+  bright segment between finished and standing, with the character at its far end, and
+  nothing bright at all once a track is complete. Completed dots use `--accent-quiet`, the
+  one `current` dot uses `--accent`. `--accent-quiet` had been declared since spec 02 and
+  used nowhere; this is its first use.
+- **`current` is scoped to the track, not the act.** Scoping it per act (the first build)
+  lit the first dot of every act the learner had not reached and stubbed a little trail out
+  to each — seven simultaneous "you are here"s. The frontier act is now decided before its
+  slice is computed, and it is the only act that marks a `current` node or draws a reveal
+  ahead of its finished stretch. Acts beyond it get `revealT === completeT`.
+- **The line draws the completed *prefix*, the dot draws the node.** Marking node 4 done
+  before node 1 lights node 4's dot and leaves the stroke where it was. That is a display
+  of what the learner actually did, not a rule about what they may do — nothing gates
+  completion on prerequisites, and nothing here should.
+- **Progress is one flat set of node ids, never per track.** The registry is one flat node
+  list shared across tracks, so "ChatGPT" finished on `game` is finished on `portfolio`.
+  Verified: switching tracks shows it done with no second write.
+- **Ids in storage that the registry does not know are kept, not filtered.** Section 6 never
+  deletes a node; an id from a track the learner has not opened, or from a later registry
+  revision, must survive a visit that could not render it.
+- **`ActPath` is memoised.** The tween sets a new `t` every frame and without `memo` all
+  seven of a track's acts re-rendered on each of them. Measured mid-walk on `game`: 45fps
+  without, 56fps with, against 62fps idle. Its props are referentially stable between
+  tweens — `act` from the frozen registry, `progress` from one `useMemo`, and only the
+  hosting act's `characterT` moves. `NodeCard` reads the completed set through context, so
+  a toggle still reaches every card through the memo, as it must.
+- **`useTweenedT` restarts a cross-act walk during render, not in an effect.** Doing it in
+  the effect left one painted frame holding the old act's `t` resolved against the new
+  act's geometry, which put the figure somewhere it had never stood. Caught by sampling
+  every frame across an act boundary; the first frame on the new act is now exactly `t = 0`.
+- **No second reduced-motion rule.** `base.css` already collapses every transition and
+  animation duration under `prefers-reduced-motion: reduce`, so the block first written into
+  `path.css` was deleted rather than kept as a duplicate. The JS tween checks the query
+  itself and snaps, because a rAF loop is not a CSS duration.
+- **The masthead count is a second `computeTrackProgress` call, deliberately.** `App`'s
+  early return for the intake branch cannot hold a hook, and the walker's tween is one, so
+  the derivation lives in `TrackMap`. Both calls are the same pure function over the same
+  inputs and cannot disagree. Logged as T076 if it ever needs to change.
+
+**Verified:** `npm run build` and `npx tsc --noEmit` both exit 0. A 4-track × ~20-completion-
+subset suite over the real `tracks.json` plus synthetic edge cases (52 assertions) confirms
+`computeTrackProgress` is total: every act present, `0 ≤ completeT ≤ revealT ≤ 1`, no `NaN`,
+correct counts, exactly one `current` per track, none outside the frontier act, no trail stub
+beyond it, and clamped output for deliberately non-monotonic / out-of-range / `NaN` `t`. The
+suite was confirmed to actually fire by breaking an invariant and watching it fail. Grepped
+the whole diff for hex/`rgb(`/`hsl(`/gradient/`backdrop-filter`/`box-shadow`/`text-shadow`/
+default-palette tokens/emoji — the only regex hits are the substring "Inter" inside
+"interface". `getTotalLength` appears exactly once in `src/`, `getPointAtLength` only in
+`pointAtT.ts`, and there is no `cloneNode` or `querySelector` anywhere in `src/`.
+
+In a real Chrome tab: a cleared-storage first run goes intake → map without creating the
+progress key, and the key appears only on the first toggle. Marking a node writes
+`{"completed":["chatgpt"]}`, flips the button to `Done`/`aria-pressed="true"` in `--accent`,
+turns its dot ember, advances the strokes and the count, and survives a reload; un-marking
+survives a reload too. `ChatGPT` completed on `game` reads as done on `portfolio` with the
+stored value byte-identical, and the count reads `1 / 34` — branch nodes and the unknown id
+`ghost-node` counted nowhere, and `ghost-node` came back out of a load/save round trip
+intact. Twelve malformed storage values (`not json`, `null`, `42`, `"str"`, `[]`, `{}`,
+`{"completed":"x"}`, `{"completed":[1,{},"ok",null,true]}`, duplicates, absent) all returned
+a usable set and none threw; `Storage.prototype.getItem`/`setItem` stubbed to throw returned
+an empty set and swallowed the write. Sampling every frame with `prefers-reduced-motion`
+stubbed off: the walker holds still on mount, moves over ~68 distinct positions when a node
+is marked, continues from its current position (never restarts) when a second node is marked
+mid-walk, and enters a new act at exactly `t = 0` — `9.17%`, matching `getPointAtLength(0)`.
+With the browser's real `reduce` preference the same actions snap and the stroke transitions
+compute to `none`. Completing a whole track leaves every act at `reached = walked = 1`, zero
+`current` dots, 34 complete dots, and the figure at the last act's path end (`11.6667% /
+68.4211%`, exactly `getPointAtLength(L)`), facing left. Mounting `TrackMap` in a throwaway
+React root: a zero-act track renders nothing and does not throw; an act with no placed nodes
+renders a bare path with no dots, no cards and no walker, and the walker skips it to the next
+real act; a single-node act renders one dot, one card and the figure. At `advanced` level 25
+of 26 cards are stubs, the frontier sits on one, and expanding it exposes a working toggle.
+At a 360px viewport `scrollWidth` equals `innerWidth`, the cards are in static flow, and the
+character's feet land on the path end to the pixel. Switching tracks mid-tween unmounts
+cleanly. Zero console errors or warnings throughout.
+
+**Next session should know:**
+
+- **`computeTrackProgress` is the only thing that may decide what progress looks like.** The
+  strokes, the dots, the counts and the walker all read one call. Spec 09 adds branch nodes;
+  they are excluded here on purpose (they sit on a different path and are unrendered), so
+  that spec has to decide whether finishing a branch node counts toward the act's frontier
+  and totals — and it should extend this function rather than compute anything beside it.
+- **`ActPath` is wrapped in `memo`.** Anything a later spec adds as a prop must be
+  referentially stable across a tween frame, or the memo silently stops helping. Derive it
+  in `TrackMap`'s existing `useMemo`, not inline in the JSX.
+- **`ProgressContext` must wrap anything that renders a `NodeCard`.** `useProgressContext`
+  throws outside a provider by design. `App` provides it around both branches.
+- Spec 07's `TrackMap.character` prop still works as an explicit override; `TrackMap` only
+  falls back to the progress frontier when it is absent. `CharacterPlacement` moved to
+  `data/progress.ts` and is re-exported from `TrackMap` so spec 07's import path still
+  resolves.
+- `WALK_SETTLE_MS` is 400ms and `TWEEN_MS_PER_T` is 2400ms, clamped to 180–1200ms. A
+  one-node hop on the real geometry is ~0.17–0.21 of `t`, so ~410–510ms of walking — just
+  under the settle, which is why the bob covers the whole walk and stops shortly after.
+- The stroke transition is `calc(var(--dur-state) * 4)` = 480ms, chosen to land with the
+  walker rather than to match it exactly. They are independent systems and do not need to
+  be reconciled.
+- The dev server for verification ran on port 5185 (5183, 5184 and 5199 were left untouched)
+  and was killed by PID afterwards.
+
 
 ---
 
@@ -670,7 +789,7 @@ Act counts per track: game 7, app 6, portfolio 8, media 8.
 
 ## 11 — Progress portability
 
-**State:** `SPEC PENDING`  **Depends on:** 08
+**State:** `READY FOR DEVELOPMENT`  **Depends on:** 08
 
 Export progress to a JSON file, import it back, reset it. This is how a learner moves
 between devices without an account. It is the entire sync story and it must stay that way.
@@ -717,6 +836,9 @@ Newest first. One line per state change. Whoever changes a state writes the line
 - 2026-08-18 — Spec 04 `DONE`. Path engine: `usePathPoint`, one `<svg>`/`<path>` per act,
   plain dots. Specs 05 and 07 promoted `SPEC PENDING` → `READY FOR DEVELOPMENT` (deps 01, 04
   and 04 respectively, both now `DONE`).
+- 2026-08-18 — Spec 08 `DONE`. Progress in localStorage, fog of war and the walked stroke
+  as two dash-clipped paths on the act's own `d`, and the character tweening to the frontier.
+  Spec 11 promoted `SPEC PENDING` → `READY FOR DEVELOPMENT` (its only dependency, 08, landed).
 - 2026-08-18 — Spec 05 `DONE`. Node cards positioned in the path's pockets, level-filter
   stubs, inert completion toggle for spec 08 to wire up. Spec 06 promoted `SPEC PENDING` →
   `READY FOR DEVELOPMENT` (deps 01, 05 both now `DONE`). Spec 08 still `SPEC PENDING` — 07

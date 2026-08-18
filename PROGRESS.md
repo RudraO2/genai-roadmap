@@ -253,3 +253,58 @@ will ever move `t`, and moving it is all that is needed to start the bob; drive 
 on the path belongs in `.act-stage__path`, not the card overlay; `pointToPercent` is the one
 SVG-point → percentage conversion and should not be inlined a third time; and T060 records a
 pre-existing spec 05 overflow of left-side cards at mid viewport widths.
+
+## Spec 08 — Progress and fog of war — 2026-08-18
+
+**Did:** Gave the map a memory. `src/data/progress.ts` holds both halves — a `localStorage`
+reader/writer that mirrors `intake.ts` and never throws, and `computeTrackProgress`, the one
+pure function that turns a set of completed node ids into everything the map draws about
+progress. `ProgressContext` carries the set and its toggle to every card; `useProgress` owns
+it in `App`; `useTweenedT` walks the character to the frontier on `requestAnimationFrame`.
+`ActPath` gained two more `<path>` elements on the act's own `d` string, dash-clipped, and
+`PathNode` gained a state. `NodeCard`'s completion toggle finally does something.
+
+**Decided:** The two design calls both came out of looking at the running app rather than
+the spec. First, the accent: painting the completed stretch in full `--accent` turned a
+finished act into an unbroken orange line, so the strokes were reordered — the walked
+stretch paints over the reached one in `--accent-quiet`, leaving exactly one short bright
+segment between what is finished and where the learner stands. That is section 8's "accent
+means *here*, not decoration" taken literally, and it retires `--accent-quiet` from the list
+of tokens declared but never used. Second, `current`: scoping it per act lit the first dot
+of every act the learner had not reached, so it is now scoped to the track and exactly one
+dot carries it. Beyond that: progress is one flat set shared across tracks because the
+registry is one flat node list; unknown ids in storage are kept rather than filtered, since
+section 6 never deletes a node; and the strokes draw an act's completed *prefix*, so an
+out-of-order completion lights its own dot and leaves the line alone — a display of what
+happened, not a rule about what is allowed. Full reasoning in the spec 08 session notes in
+`State of the project.md`.
+
+**Verified:** `npm run build` and `npx tsc --noEmit` both exit 0. A 52-assertion suite ran
+`computeTrackProgress` over all four real tracks against ~20 completion subsets each, plus
+synthetic tracks with no acts, an empty act, one node, out-of-order completions and
+deliberately non-monotonic / out-of-range / `NaN` `t` values — and was itself checked by
+breaking an invariant and watching it fail. In a real Chrome tab: persistence both
+directions across reloads, cross-track completion with no second write, twelve malformed
+storage values and a `localStorage` stubbed to throw all degrading cleanly, per-frame
+sampling of the walk (snaps on mount, retargets mid-walk without restarting, enters a new
+act at exactly `t = 0`), the reduced-motion snap, a fully completed track, `advanced` level
+where the frontier sits on a collapsed stub, 360px, and a throwaway React root for the
+zero-act and zero-node-act cases. Zero console errors or warnings.
+
+**Found in review, then fixed:** three things, none of which the first build got wrong on
+paper. The per-act `current` scoping and the accent inversion above, both caught by
+screenshotting rather than reading. And a one-frame artifact crossing an act boundary — the
+walker painted the old act's `t` against the new act's geometry for a single frame, because
+the reset lived in an effect; moving it into the render pass fixed it, and per-frame
+sampling confirmed the first frame on the new act is now the path's start exactly. A fourth
+change was performance, not correctness: the tween re-rendered all seven acts every frame
+(45fps against 62 idle), so `ActPath` is memoised, which puts it back to 56fps.
+
+**Next iteration should know:** everything under "Next session should know" in the spec 08
+notes in `State of the project.md`. Short version: `computeTrackProgress` is the single
+place progress may be decided, and spec 09 should extend it rather than compute beside it
+when branch nodes arrive — they are excluded here deliberately. `ActPath` is now wrapped in
+`memo`, so any prop a later spec adds must be referentially stable across a tween frame.
+`ProgressContext` must wrap anything rendering a `NodeCard`; its reader throws outside a
+provider on purpose. Spec 07's `TrackMap.character` override still works — the frontier is
+only the fallback. Specs 09 and 11 are both claimable now.

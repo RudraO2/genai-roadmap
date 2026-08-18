@@ -1,6 +1,7 @@
 import { useState, type CSSProperties, type ReactNode } from 'react'
 
 import { LEVEL_RANK } from '../constants.ts'
+import { useProgressContext } from '../data/ProgressContext.ts'
 import { registry } from '../data/registry.ts'
 import { usePathPoint } from '../hooks/usePathPoint.ts'
 import { pointToPercent } from '../path/viewBox.ts'
@@ -20,8 +21,10 @@ export interface NodeCardProps {
  * `PathNode` makes — converted to a percentage of the act's viewBox. Never
  * takes x/y as a prop; there is exactly one position implementation.
  *
- * The completion toggle here is local state only. Spec 08 replaces it with a
- * localStorage-backed version behind the same markup and class names.
+ * The completion toggle reads and writes the one shared set (spec 08) through
+ * `ProgressContext`, so the dot, the fog strokes, the walker and this button
+ * can never disagree. The markup, class names, `aria-pressed` and the two
+ * labels are exactly what spec 05 shipped; only the state source changed.
  *
  * The detail panel (spec 06) is also local state: whether *this* card's
  * `NodePanel` is open. It does not lift to `TrackMap`/`App` — only one
@@ -35,11 +38,13 @@ export function NodeCard({
   learnerLevel,
 }: NodeCardProps): ReactNode {
   const point = usePathPoint(placed.t)
+  const { completed, toggle } = useProgressContext()
   const [expanded, setExpanded] = useState(false)
-  const [complete, setComplete] = useState(false)
   const [detailOpen, setDetailOpen] = useState(false)
 
   if (!point) return null
+
+  const complete = completed.has(placed.id)
 
   const node = registry.getNode(placed.id)
   const belowLearnerLevel = LEVEL_RANK[node.level] < LEVEL_RANK[learnerLevel]
@@ -80,7 +85,7 @@ export function NodeCard({
           type="button"
           className="node-card__complete"
           aria-pressed={complete}
-          onClick={() => setComplete((c) => !c)}
+          onClick={() => toggle(placed.id)}
         >
           {complete ? 'Done' : 'Mark done'}
         </button>
