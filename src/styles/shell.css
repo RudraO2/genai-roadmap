@@ -147,6 +147,23 @@
     border-left-color: var(--accent);
   }
 
+  /* Spec 03: a <button class="track-row"> replaces the static <li> when the row
+   * is selectable. Reset the button chrome so it renders identically to the
+   * static row it replaces; keep every layout/colour rule above shared. */
+  button.track-row {
+    width: 100%;
+    background: none;
+    border-top: none;
+    border-right: none;
+    font: inherit;
+    text-align: left;
+    cursor: pointer;
+  }
+
+  .track-row--selected {
+    border-left-color: var(--accent);
+  }
+
   .track-row__id {
     font-size: var(--size-meta);
     color: var(--text-muted);

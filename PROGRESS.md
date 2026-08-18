@@ -68,3 +68,35 @@ notes in `State of the project.md`. The short version: `--size-title` is intenti
 unused so far (reserved for a later sub-heading), `Shell` reads `registry`/`registryWarnings`
 directly for its colophon line, and the current `.track-row` styling is for a *static* index
 — spec 03 will very likely need to merge in interactive states rather than inherit it as-is.
+
+---
+
+## Spec 03 — Intake: track and level — 2026-08-18
+
+**Did:** Built the first stateful, localStorage-backed screen: `data/intake.ts` (defensive
+read/write/clear), `hooks/useIntake.ts`, `components/Intake.tsx` (track list + level list
+on one screen, no wizard), `styles/intake.css`, and rewrote `App.tsx` to branch on stored
+intake — none/editing shows `Intake`, stored shows a minimal confirmation with a "Change"
+control in the masthead.
+
+**Decided:** Merged the interactive-rows question `BACKLOG.md` T022 had flagged since spec
+02 — `.track-row` became a `<button>`, reset and `--selected` modifier added to
+`shell.css` since they extend a class spec 02 already owns, while the genuinely new level
+list and controls got their own `intake.css`. `IntakeState` lives next to the storage
+functions in `data/intake.ts`, not in `types.ts` (that file is registry-shape-only by its
+own header). Full reasoning in the spec 03 session notes in `State of the project.md`.
+
+**Verified:** `npm run build` and `npx tsc --noEmit` both exit 0. Full interactive pass in
+a real Chrome tab: first-visit picker, selection highlighting, submit-and-swap with no
+reload, reload-skips-to-confirmation, change-reopens-prefilled, resubmit-overwrites,
+two flavors of corrupted `localStorage` both fall back to a clean picker with zero console
+errors, no horizontal overflow at 360px, and a real `Tab` keypress confirmed the existing
+`:focus-visible` accent ring applies to the new rows without a new focus style.
+
+**Next iteration should know:** everything under "Next session should know" in the spec 03
+notes in `State of the project.md`. Short version: the confirmation view in `App.tsx` is a
+deliberate placeholder for spec 04 to replace outright; `resetIntake` exists but is unused
+so far; the `roadmap:intake:v1` key should stay behind `loadIntake`/`saveIntake` if spec 11
+ever needs to touch it; and verifying focus rings via the browser MCP needs a real `Tab`
+keypress, not a synthetic `click` (Chromium applies a different, non-accent outline to the
+latter).

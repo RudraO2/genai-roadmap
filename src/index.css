@@ -23,6 +23,7 @@
 @import './theme.css';
 @import './styles/base.css';
 @import './styles/shell.css';
+@import './styles/intake.css';
 
 @theme {
   /* Colour: the entire default palette, deleted. theme.css is the only source. */

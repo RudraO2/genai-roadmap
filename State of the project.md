@@ -51,7 +51,7 @@ spec at a time, inside the session that builds it.
 | --- | --- | --- | --- |
 | 01 | `specs/spec-01-schema.md` | `DONE` | — |
 | 02 | `specs/spec-02-shell.md` | `DONE` | 01 |
-| 03 | `specs/spec-03-intake.md` | `IN PROGRESS` | 01, 02 |
+| 03 | `specs/spec-03-intake.md` | `DONE` | 01, 02 |
 | 04 | `specs/spec-04-path.md` | `READY FOR DEVELOPMENT` | 01, 02 |
 | 05 | `specs/spec-05-cards.md` | `SPEC PENDING` | 01, 04 |
 | 06 | `specs/spec-06-panel.md` | `SPEC PENDING` | 01, 05 |
@@ -211,13 +211,74 @@ matching `--frame-max: 78rem` — the measure stops growing rather than filling 
 
 ## 03 — Intake: track and level
 
-**State:** `IN PROGRESS`  **Depends on:** 01, 02
+**State:** `DONE` — 2026-08-18  **Depends on:** 01, 02
 
 One screen: pick a track (game / app / portfolio / media), pick a level (beginner /
 intermediate / advanced). Choice persists to localStorage. Re-entry skips the screen and
 offers a way back to change it.
 
 First real exercise of the shell with real data from the registry.
+
+### Session notes — 2026-08-18
+
+**Built:** `src/data/intake.ts` (`IntakeState`, localStorage read/write/clear, defensive
+against missing/corrupt/invalid-value storage — never throws), `src/hooks/useIntake.ts`
+(React-state wrapper so a write re-renders without reload), `src/components/Intake.tsx`
+(track list + level list on one screen, no wizard step), `src/styles/intake.css` (level
+list, submit control, "Change" control), and rewrote `src/App.tsx` to branch on stored
+intake: none or editing → `Intake`; stored → a minimal confirmation Section plus a
+"Change track / level" control in the masthead slot.
+
+**Decided:**
+
+- Merged T022 as flagged: `.track-row` moved from static `<li>` to `<li><button
+  class="track-row">`, with a `button.track-row` reset block and a
+  `.track-row--selected` modifier added to `shell.css` (not `intake.css`) because
+  they extend a class spec 02 already owns. Everything genuinely new — `.level-list`/
+  `.level-row`, `.intake__submit`/`.intake__continue`, `.intake-change` — went in the
+  new `intake.css`.
+- `IntakeState` lives in `src/data/intake.ts`, not `src/types.ts` — `types.ts`'s own
+  header restricts it to shapes mirroring `data/nodes.json`/`data/tracks.json`, and
+  intake state is not part of the registry.
+- The confirmation view is deliberately one Section with one sentence of body text.
+  Spec 04 replaces it wholesale; anything more built here would be thrown away.
+- `Intake` takes optional `initialTrack`/`initialLevel` so first-run and "change" are
+  the same component — no second picker implementation to keep in sync.
+
+**Verified:** `npm run build` and `npx tsc --noEmit` both exit 0. Grepped `intake.css`/
+`shell.css` additions/`App.tsx`/`Intake.tsx` for hex/`rgb(`/`gradient`/`backdrop-filter`/
+colored shadow — none outside `theme.css`. Loaded in a real Chrome tab
+(`chrome-devtools` MCP): first visit renders `Intake` with Continue disabled; selecting a
+track and a level highlights exactly one row each and enables Continue; submitting swaps
+to confirmation in the same render (no reload) and shows the right destination/level;
+reloading with stored intake skips straight to confirmation; clicking "Change" reopens
+`Intake` with both rows pre-selected (`pressed`); changing the level and resubmitting
+overwrites the stored value and the confirmation text updates; setting the stored key to
+`"not json"` and separately to `{"track":"nope","level":"beginner"}` and reloading both
+fall back to a clean `Intake` screen with zero console errors — no crash. At a real
+360×740 emulated viewport, `scrollWidth` equals `innerWidth` (no horizontal overflow).
+A real `Tab` keypress (not a synthetic click) lands focus on a track row with computed
+`outline: 2px solid rgb(228, 85, 46)` — `--accent`, the existing global `:focus-visible`
+rule, no new focus style added.
+
+**Next session should know:**
+
+- The confirmation view (`App.tsx`'s non-editing branch) is a placeholder by design.
+  Spec 04 should replace its body outright rather than extend it; keep the `!intake ||
+  editing` branch and the masthead "Change" control, since nothing later should need a
+  second navigation model for this.
+- `useIntake`'s `resetIntake` is defined and exported but nothing currently calls it —
+  "Change" reopens `Intake` pre-filled without clearing storage first, so a value is
+  only overwritten on submit, never blanked mid-edit. Wire `resetIntake` to something
+  (a hard "start over") only if a later spec actually needs a full-clear affordance.
+- `roadmap:intake:v1` is the localStorage key. If spec 11 (progress portability) ever
+  needs to export/import this alongside progress data, read/write it through
+  `loadIntake`/`saveIntake`, not a second `localStorage` call — the corrupt-value
+  guards live only in those two functions.
+- A mouse click via CDP produced a *different* outline (UA default, `--text-primary`,
+  3px) than a real `Tab` keypress (`--accent`, 2px, matching `:focus-visible`). This is
+  Chromium's own focus-visible heuristic, not a bug — when verifying focus rings in
+  browser, use `press_key: Tab`, not `click`.
 
 ---
 
@@ -361,3 +422,5 @@ Newest first. One line per state change. Whoever changes a state writes the line
 - 2026-08-18 — Spec 02 `SPEC PENDING` → `READY FOR DEVELOPMENT`, its only dependency landed.
 - 2026-08-18 — Spec 02 `DONE`. Shell, theme, Section pattern, and the track-index screen.
   Specs 03 and 04 promoted `SPEC PENDING` → `READY FOR DEVELOPMENT` (deps 01, 02 both `DONE`).
+- 2026-08-18 — Spec 03 `DONE`. Intake screen (track + level), localStorage persistence,
+  change flow. No spec's dependencies changed — nothing else depends on 03 alone.

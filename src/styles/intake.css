@@ -1,0 +1,110 @@
+/**
+ * intake.css — spec 03's own surfaces: the level list, the submit control, and
+ * the confirmation view's "Change" control. `.track-list`/`.track-row` stay in
+ * shell.css (spec 02 owns them); this file only adds what did not exist before.
+ */
+
+@layer components {
+  /* ---- Level list -------------------------------------------------------
+   * Three rows, same hairline-and-accent language as .track-row, but its own
+   * class: there is no per-row node/act meta column, just a title and a hint.
+   */
+
+  .level-list {
+    list-style: none;
+    border-top: var(--hairline) solid var(--rule);
+    max-width: var(--measure);
+  }
+
+  .level-row {
+    display: flex;
+    width: 100%;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: calc(var(--space-unit) * 2) calc(var(--space-unit) * 6);
+    padding: calc(var(--space-unit) * 5) 0 calc(var(--space-unit) * 5)
+      calc(var(--space-unit) * 4);
+    background: none;
+    border: none;
+    border-bottom: var(--hairline) solid var(--rule);
+    border-left: calc(var(--hairline) * 3) solid transparent;
+    font: inherit;
+    text-align: left;
+    cursor: pointer;
+    transition: border-left-color var(--dur-state) var(--ease-state);
+  }
+
+  .level-row:hover {
+    border-left-color: var(--accent);
+  }
+
+  .level-row--selected {
+    border-left-color: var(--accent);
+  }
+
+  .level-row__title {
+    font-family: var(--font-display);
+    font-size: var(--size-lead);
+    color: var(--text-primary);
+    flex: 1 1 10rem;
+  }
+
+  .level-row__hint {
+    font-size: var(--size-meta);
+    color: var(--text-secondary);
+    flex: 2 1 16rem;
+  }
+
+  /* ---- Submit -------------------------------------------------------- */
+
+  .intake__submit {
+    margin-top: calc(var(--space-unit) * 10);
+  }
+
+  .intake__continue {
+    background: none;
+    border: var(--hairline) solid var(--text-primary);
+    color: var(--text-primary);
+    font: inherit;
+    font-size: var(--size-meta);
+    letter-spacing: var(--tracking-caps);
+    text-transform: uppercase;
+    padding: calc(var(--space-unit) * 3) calc(var(--space-unit) * 6);
+    cursor: pointer;
+    transition:
+      border-color var(--dur-state) var(--ease-state),
+      color var(--dur-state) var(--ease-state);
+  }
+
+  .intake__continue:not(:disabled):hover {
+    border-color: var(--accent);
+    color: var(--accent);
+  }
+
+  .intake__continue:disabled {
+    border-color: var(--rule);
+    color: var(--text-muted);
+    cursor: not-allowed;
+  }
+
+  /* ---- Confirmation change control ------------------------------------ */
+
+  .intake-change {
+    background: none;
+    border: none;
+    padding: 0;
+    font: inherit;
+    font-size: var(--size-micro);
+    letter-spacing: var(--tracking-caps);
+    text-transform: uppercase;
+    color: var(--text-secondary);
+    cursor: pointer;
+    text-decoration: underline;
+    text-underline-offset: 0.2em;
+    transition: color var(--dur-state) var(--ease-state);
+  }
+
+  .intake-change:hover {
+    color: var(--accent);
+  }
+}

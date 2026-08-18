@@ -1,47 +1,59 @@
-import type { ReactNode } from 'react'
+import { useState, type ReactNode } from 'react'
 
+import { Intake } from './components/Intake.tsx'
 import { Section } from './components/Section.tsx'
 import { Shell } from './components/Shell.tsx'
 import { registry } from './data/registry.ts'
+import { useIntake } from './hooks/useIntake.ts'
 
 /**
- * The first real screen: a static index of the four tracks, read from the live
- * registry. Not links, not buttons — track selection is spec 03. This exists to
- * exercise theme.css against real strings before any product feature lands.
+ * Root screen. No stored intake: the picker. Stored intake and not editing: a
+ * minimal confirmation of the choice, with a "Change" control that reopens the
+ * picker pre-filled. Spec 04 replaces the confirmation body with the real map;
+ * the branch on `intake` and the "Change" control stay as they are.
  */
 export default function App(): ReactNode {
-  const trackIds = registry.trackIds
+  const { intake, setIntake } = useIntake()
+  const [editing, setEditing] = useState(false)
+
+  if (!intake || editing) {
+    return (
+      <Shell
+        masthead={
+          <span className="shell__masthead-meta">
+            {registry.nodes.length} NODES / {registry.trackIds.length} TRACKS
+          </span>
+        }
+      >
+        <Intake
+          initialTrack={intake?.track}
+          initialLevel={intake?.level}
+          onComplete={(state) => {
+            setIntake(state)
+            setEditing(false)
+          }}
+        />
+      </Shell>
+    )
+  }
+
+  const track = registry.tracks[intake.track]
+
   return (
     <Shell
       masthead={
-        <span className="shell__masthead-meta">
-          {registry.nodes.length} NODES / {trackIds.length} TRACKS
-        </span>
+        <button type="button" className="intake-change" onClick={() => setEditing(true)}>
+          Change track / level
+        </button>
       }
     >
       <Section
         index="01"
         kicker="Interactive Roadmap"
-        title="Pick a track"
-        standfirst="Four ways to ship something real. Nodes are shared freely across all of them."
+        title="You're set"
+        standfirst={`${track.destination} — ${intake.level} level.`}
       >
-        <ul className="track-list">
-          {trackIds.map((id, i) => {
-            const track = registry.tracks[id]
-            const nodeCount = registry.orderedNodeIds(id).length
-            const actCount = registry.actsForTrack(id).length
-            return (
-              <li className="track-row" key={id}>
-                <span className="track-row__id">{String(i + 1).padStart(2, '0')}</span>
-                <span className="track-row__title">{track.title}</span>
-                <span className="track-row__destination">{track.destination}</span>
-                <span className="track-row__meta">
-                  {nodeCount} nodes / {actCount} acts
-                </span>
-              </li>
-            )
-          })}
-        </ul>
+        <p>The path for this track and level arrives next.</p>
       </Section>
     </Shell>
   )

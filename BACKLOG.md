@@ -30,6 +30,16 @@ bottom rather than done inline.
 - [x] T015 — App frame: hairline rules, hard edges, generous space
 - [x] T016 — Replace the `src/main.tsx` smoke test with the real shell
 
+## Spec 03 — Intake: track and level
+
+- [x] T023 — Write `specs/spec-03-intake.md`
+- [x] T024 — `src/data/intake.ts` — `IntakeState`, storage read/write/clear, defensive
+- [x] T025 — `src/hooks/useIntake.ts` — React-state wrapper
+- [x] T026 — `src/components/Intake.tsx` — track list + level list, one screen
+- [x] T027 — `src/styles/intake.css` — level list, submit control, change control
+- [x] T028 — Rewrite `src/App.tsx` — branch on stored intake, "Change" masthead control
+- [x] T029 — Verify: build, typecheck, browser (fresh/reload/change/corrupt storage/360px/keyboard)
+
 ## Noticed, not done
 
 Appended by sessions that spotted work outside their one task. Do not do these inline.
@@ -42,6 +52,6 @@ Appended by sessions that spotted work outside their one task. Do not do these i
       Revisit if a spec ever mutates them by accident.
 - [ ] T021 — `--size-title` is now defined in `theme.css` but unused anywhere in `src/`.
       Reserved for a sub-heading a later spec introduces inside a `Section`; not a bug.
-- [ ] T022 — `.track-row`/`.track-list` in `src/styles/shell.css` style a static index.
-      Spec 03 will likely need interactive (focusable/clickable) rows — check whether the
-      hover/focus states need merging rather than assuming the current styling survives.
+- [x] T022 — `.track-row`/`.track-list` in `src/styles/shell.css` style a static index.
+      Resolved in spec 03: `button.track-row` reset + `.track-row--selected` modifier
+      added to `shell.css`, hover/focus states merged rather than duplicated.
