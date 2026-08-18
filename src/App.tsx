@@ -1,16 +1,15 @@
 import { useState, type ReactNode } from 'react'
 
 import { Intake } from './components/Intake.tsx'
-import { Section } from './components/Section.tsx'
 import { Shell } from './components/Shell.tsx'
+import { TrackMap } from './components/TrackMap.tsx'
 import { registry } from './data/registry.ts'
 import { useIntake } from './hooks/useIntake.ts'
 
 /**
- * Root screen. No stored intake: the picker. Stored intake and not editing: a
- * minimal confirmation of the choice, with a "Change" control that reopens the
- * picker pre-filled. Spec 04 replaces the confirmation body with the real map;
- * the branch on `intake` and the "Change" control stay as they are.
+ * Root screen. No stored intake: the picker. Stored intake and not editing: the
+ * track map (spec 04) for the chosen track, with a "Change" control that
+ * reopens the picker pre-filled.
  */
 export default function App(): ReactNode {
   const { intake, setIntake } = useIntake()
@@ -47,14 +46,7 @@ export default function App(): ReactNode {
         </button>
       }
     >
-      <Section
-        index="01"
-        kicker="Interactive Roadmap"
-        title="You're set"
-        standfirst={`${track.destination} — ${intake.level} level.`}
-      >
-        <p>The path for this track and level arrives next.</p>
-      </Section>
+      <TrackMap track={track} />
     </Shell>
   )
 }

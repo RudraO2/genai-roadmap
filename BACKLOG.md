@@ -40,6 +40,17 @@ bottom rather than done inline.
 - [x] T028 — Rewrite `src/App.tsx` — branch on stored intake, "Change" masthead control
 - [x] T029 — Verify: build, typecheck, browser (fresh/reload/change/corrupt storage/360px/keyboard)
 
+## Spec 04 — The path engine
+
+- [x] T030 — Write `specs/spec-04-path.md`
+- [x] T031 — `src/path/pointAtT.ts` — pure point/angle math
+- [x] T032 — `src/path/PathContext.ts` and `src/hooks/usePathPoint.ts`
+- [x] T033 — `src/components/ActPath.tsx` — one `<svg>`/`<path>` per act, measures length
+- [x] T034 — `src/components/PathNode.tsx` — bare dot + label
+- [x] T035 — `src/components/TrackMap.tsx` — one `Section` per act
+- [x] T036 — Rewrite `src/App.tsx` confirmation branch to render `TrackMap`
+- [x] T037 — Verify: build, typecheck, browser (positions, track switch, 360px, no accent)
+
 ## Noticed, not done
 
 Appended by sessions that spotted work outside their one task. Do not do these inline.

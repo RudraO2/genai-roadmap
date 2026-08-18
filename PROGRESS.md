@@ -100,3 +100,39 @@ so far; the `roadmap:intake:v1` key should stay behind `loadIntake`/`saveIntake`
 ever needs to touch it; and verifying focus rings via the browser MCP needs a real `Tab`
 keypress, not a synthetic `click` (Chromium applies a different, non-accent outline to the
 latter).
+
+---
+
+## Spec 04 — The path engine — 2026-08-18
+
+**Did:** Built the load-bearing position system `CONTEXT.md` section 9 describes: a pure
+`pointAtT` function (`getPointAtLength` plus a clamped `atan2` sample for facing angle), a
+`PathContext` + `usePathPoint` hook pair so every node under an act's `<path>` can read its
+position without prop-threading, `ActPath` (one `<svg>`/`<path>` per act, measures total
+length once on mount), `PathNode` (one bare dot plus a mono label), and `TrackMap` (one
+`Section` per act). Rewrote `App.tsx`'s post-intake branch to render `TrackMap` in place of
+the spec 03 placeholder confirmation.
+
+**Decided:** Dot/line/label colour comes from `--text-secondary`/`--rule`, not `--accent` —
+spec 02 spent the one accent hue on exactly three uses and every node here renders
+identically, so it isn't "state" yet; `--accent` stays reserved for spec 08's completed-
+progress glow. `usePathPoint` reads a `React.Context` rather than taking a ref as an
+argument so a `TrackMap`/`ActPath` never has to thread a path ref through props per node,
+while the underlying `pointAtT` stays a plain, context-free function later specs can reuse
+without React. Full reasoning in the spec 04 session notes in `State of the project.md`.
+
+**Verified:** `npm run build` and `npx tsc --noEmit` both exit 0. Grepped every new file for
+hardcoded colour/gradient/glow — none. In a real Chrome tab: 7 `<svg>` for `game` (one per
+act, one `<path>` each), every dot a finite `translate(x y)` with no `NaN`/stale-zero at
+first paint, computed fill/stroke never the accent colour, switching track via Change to
+`portfolio` swapped to 8 `<svg>` with no leftover `game`-track act titles (clean unmount), no
+horizontal overflow at 360px, zero console errors. Found and fixed one real bug by
+screenshot, not by re-reading the spec: SVG's default `overflow: hidden` clipped a label
+near `t = 1` past the `viewBox` edge — fixed with `overflow: visible` on `.path-map`.
+
+**Next iteration should know:** everything under "Next session should know" in the spec 04
+notes in `State of the project.md`. Short version: `pointAtT`/`PathContext`/`usePathPoint`
+are the one position implementation — spec 07 (character) and spec 08 (fog/glow) must reuse
+them, and spec 08's second path should reuse `act.path` as data rather than clone the
+mounted DOM node; `TrackMap` renders every act unconditionally (no act nav yet, that's spec
+10) so tracks with 7–8 acts are a long scroll right now, which is expected.

@@ -40,7 +40,7 @@ spec at a time, inside the session that builds it.
 | Phase | What | State |
 | --- | --- | --- |
 | A | Research the node registry → `data/nodes.json`, `data/tracks.json` | `DONE` — 2026-08-18 |
-| B | Write the specs → `specs/*.md` | `IN PROGRESS` — folded into each spec's own session; 1 of 12 written |
+| B | Write the specs → `specs/*.md` | `IN PROGRESS` — folded into each spec's own session; 4 of 12 written |
 | C | Build the backlog → `BACKLOG.md` | `IN PROGRESS` — `BACKLOG.md` created 2026-08-18, appended per session |
 
 ---
@@ -52,10 +52,10 @@ spec at a time, inside the session that builds it.
 | 01 | `specs/spec-01-schema.md` | `DONE` | — |
 | 02 | `specs/spec-02-shell.md` | `DONE` | 01 |
 | 03 | `specs/spec-03-intake.md` | `DONE` | 01, 02 |
-| 04 | `specs/spec-04-path.md` | `IN PROGRESS` | 01, 02 |
-| 05 | `specs/spec-05-cards.md` | `SPEC PENDING` | 01, 04 |
+| 04 | `specs/spec-04-path.md` | `DONE` | 01, 02 |
+| 05 | `specs/spec-05-cards.md` | `READY FOR DEVELOPMENT` | 01, 04 |
 | 06 | `specs/spec-06-panel.md` | `SPEC PENDING` | 01, 05 |
-| 07 | `specs/spec-07-character.md` | `SPEC PENDING` | 04 |
+| 07 | `specs/spec-07-character.md` | `READY FOR DEVELOPMENT` | 04 |
 | 08 | `specs/spec-08-progress.md` | `SPEC PENDING` | 04, 05, 07 |
 | 09 | `specs/spec-09-frontier.md` | `SPEC PENDING` | 04, 05 |
 | 10 | `specs/spec-10-navigation.md` | `SPEC PENDING` | 04, 08, 09 |
@@ -284,7 +284,7 @@ rule, no new focus style added.
 
 ## 04 — The path engine
 
-**State:** `IN PROGRESS`  **Depends on:** 01, 02
+**State:** `DONE` — 2026-08-18  **Depends on:** 01, 02
 
 The load-bearing spec. One SVG `<path>` element per act. Node position is
 `path.getPointAtLength(total * t)` — nodes never store x/y. A `usePathPoint(t)` hook returns
@@ -297,6 +297,78 @@ theme. Ugly is correct here.
 position, completed glow. If any later spec computes a position a second way, the fog will
 not line up with the nodes and the bug will be near-impossible to see. Reject any second
 implementation.
+
+### Session notes — 2026-08-18
+
+**Built:** `src/path/pointAtT.ts` (pure position math: `getPointAtLength` plus a clamped
+`atan2` sample for facing angle, with the `t = 1` edge sampling backward instead of
+overflowing past the path's end), `src/path/PathContext.ts` (carries the mounted path ref
+and its measured total length to every node under it), `src/hooks/usePathPoint.ts` (the
+public hook, returns `null` until measured), `src/components/ActPath.tsx` (one act's
+`<svg>`/`<path>`, measures total length once on mount, provides the context),
+`src/components/PathNode.tsx` (one dot plus a mono label, gated on a non-null point),
+`src/components/TrackMap.tsx` (one `Section` per act in `track.acts` order), and rewrote
+`src/App.tsx`'s confirmation branch to render `TrackMap` instead of the spec 03 placeholder.
+Added `src/styles/path.css`.
+
+**Decided:**
+
+- The dot, line, and label use `--text-secondary`/`--rule` — not `--accent`. Spec 02 spent
+  the one accent hue on exactly three uses (selection, focus ring, track-row hover);
+  reaching for it again here for something that isn't state (every node renders identically
+  right now) would drift past `CONTEXT.md` section 8's "accent means state, not decoration."
+  It stays free for spec 08's completed-progress glow, which is an actual state to mark.
+- `usePathPoint` reads a `React.Context` rather than taking the path element as an argument,
+  so every `PathNode` under one `ActPath` can call it without `TrackMap`/`ActPath` threading
+  a ref through props for each of an act's several nodes. `pointAtT` itself stays a plain,
+  context-free function — that's the one later specs (character, fog, glow) should keep
+  reusing without needing React at all if they don't want to.
+- Total path length is measured once in a `useLayoutEffect` keyed on `act.path`, not on a
+  resize listener. `getTotalLength()` is in the path's own SVG user-unit space, which does
+  not change when the container's CSS pixel width changes — only the `viewBox` scaling does.
+  Confirmed this by resizing the emulated viewport from 1440 to 360 and reading unchanged
+  `x`/`y` values on the same node.
+- `.path-map` needed `overflow: visible`. Found by screenshot, not by reading the spec: the
+  first and last node on the `game` track's `ground` act sit close enough to `t = 0`/`t = 1`
+  that their labels' rendered width pushed past the `viewBox` boundary, and SVG's default
+  `overflow: hidden` clipped "Prompting that works" down to "...mpting that works". Fixed
+  with one property rather than touching `tracks.json` geometry, which is out of scope here.
+
+**Verified:** `npm run build` and `npx tsc --noEmit` both exit 0 (re-run after the
+`overflow: visible` fix). Grepped every new file plus `path.css` for hex/`rgb(`/`rgba(`/
+`hsl(`/gradient/`backdrop-filter`/`box-shadow`/`text-shadow`/`rounded-2xl` — zero matches.
+Loaded in a real Chrome tab (`chrome-devtools` MCP): picked `game`/`beginner`, confirmed 7
+`<svg class="path-map">` elements (one per act) each with exactly one `<path>`, 26 dots
+total (the acts' own placed nodes — `game`'s 38-node count in the intake screen includes
+frontier-branch nodes, which are spec 09's, not rendered here), every dot's `transform` a
+real finite `translate(x y)` (no `NaN`, no stray `(0, 0)` at first paint), and computed
+`fill`/`stroke` on dot/line/label all resolving to `--text-secondary`/`--rule` — never the
+accent's `rgb(228, 85, 46)`. Changed track via Change → `portfolio`/`advanced`: dot/kicker
+count changed to 8 `<svg>` (portfolio's 8 acts) and every kicker read "Portfolio" only — no
+leftover `game`-track act titles in the DOM, confirming the unmount/remount is clean (shared
+foundation nodes like "ChatGPT" reappearing under the new track is expected — they're the
+same registry ids on both tracks, not stale DOM). At a 360×740 emulated viewport,
+`document.documentElement.scrollWidth` (517) stayed under `window.innerWidth` (540) — no
+horizontal overflow — and a screenshot confirmed dots/labels scale down with the `<svg>`
+rather than overflowing the frame. Zero console errors throughout.
+
+**Next session should know:**
+
+- `pointAtT`, `PathContext`, and `usePathPoint` are the one position implementation
+  `CONTEXT.md` section 9 asks for. Spec 07 (character) and spec 08 (fog of war / completed
+  glow) should import these rather than recomputing anything — spec 08's second, dash-clipped
+  path should reuse the same `act.path` string (it's already just data on `Act`), not clone
+  the mounted DOM node.
+- `ActPath` only renders dots once `totalLength > 0`; before that (one render, pre-layout-
+  effect) the `<svg>` shows just the bare `<path>`. This is intentional per the interface
+  contract (`usePathPoint` returns `null`, never a stale point) and was not treated as a bug.
+- `TrackMap` renders every act in the track unconditionally — there is no act-to-act
+  navigation yet (spec 10 owns it) and no branches (spec 09). On tracks with 7–8 acts this is
+  a long scroll; that's expected for this spec and not something to "fix" here.
+- `--size-title` (flagged unused in the spec 02 notes) is still unused — this spec's act
+  headings reuse `Section`'s existing `--size-display` title, not a new size.
+- The dev server used for verification was started on port 5183 (5199 was already running
+  from something else and was left untouched) and killed by PID afterward.
 
 ---
 
@@ -424,3 +496,6 @@ Newest first. One line per state change. Whoever changes a state writes the line
   Specs 03 and 04 promoted `SPEC PENDING` → `READY FOR DEVELOPMENT` (deps 01, 02 both `DONE`).
 - 2026-08-18 — Spec 03 `DONE`. Intake screen (track + level), localStorage persistence,
   change flow. No spec's dependencies changed — nothing else depends on 03 alone.
+- 2026-08-18 — Spec 04 `DONE`. Path engine: `usePathPoint`, one `<svg>`/`<path>` per act,
+  plain dots. Specs 05 and 07 promoted `SPEC PENDING` → `READY FOR DEVELOPMENT` (deps 01, 04
+  and 04 respectively, both now `DONE`).
