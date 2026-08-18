@@ -1,6 +1,7 @@
-import { memo, useLayoutEffect, useMemo, useRef, useState, type ReactNode } from 'react'
+import { memo, useMemo, type ReactNode } from 'react'
 
 import type { ActProgress } from '../data/progress.ts'
+import { usePathLength } from '../hooks/usePathLength.ts'
 import { PathContext } from '../path/PathContext.ts'
 import { parseViewBoxSize } from '../path/viewBox.ts'
 import type { Act, Level } from '../types.ts'
@@ -68,14 +69,7 @@ function dashToFraction(totalLength: number, fraction: number): {
  * track at 45fps without it and 56fps with it, against 62fps idle.
  */
 function ActPathImpl({ act, level, progress, characterT = null }: ActPathProps): ReactNode {
-  const pathRef = useRef<SVGPathElement | null>(null)
-  const [totalLength, setTotalLength] = useState(0)
-
-  useLayoutEffect(() => {
-    setTotalLength(pathRef.current?.getTotalLength() ?? 0)
-  }, [act.path])
-
-  const contextValue = useMemo(() => ({ pathRef, totalLength }), [totalLength])
+  const { pathRef, totalLength, contextValue } = usePathLength(act.path)
   const { width: viewBoxWidth, height: viewBoxHeight } = useMemo(
     () => parseViewBoxSize(act.viewBox),
     [act.viewBox],
@@ -107,6 +101,7 @@ function ActPathImpl({ act, level, progress, characterT = null }: ActPathProps):
                   key={placed.id}
                   placed={placed}
                   state={progress.states.get(placed.id) ?? 'ahead'}
+                  anchor={progress.anchors.has(placed.id)}
                 />
               ))}
           </svg>

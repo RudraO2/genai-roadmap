@@ -57,8 +57,8 @@ spec at a time, inside the session that builds it.
 | 06 | `specs/spec-06-panel.md` | `DONE` | 01, 05 |
 | 07 | `specs/spec-07-character.md` | `DONE` | 04 |
 | 08 | `specs/spec-08-progress.md` | `DONE` | 04, 05, 07 |
-| 09 | `specs/spec-09-frontier.md` | `IN PROGRESS` | 04, 05 |
-| 10 | `specs/spec-10-navigation.md` | `SPEC PENDING` | 04, 08, 09 |
+| 09 | `specs/spec-09-frontier.md` | `DONE` | 04, 05 |
+| 10 | `specs/spec-10-navigation.md` | `READY FOR DEVELOPMENT` | 04, 08, 09 |
 | 11 | `specs/spec-11-portability.md` | `READY FOR DEVELOPMENT` | 08 |
 | 12 | `specs/spec-12-ship.md` | `SPEC PENDING` | 01–11 |
 
@@ -764,7 +764,7 @@ cleanly. Zero console errors or warnings throughout.
 
 ## 09 — The frontier branch
 
-**State:** `IN PROGRESS` — 2026-08-18  **Depends on:** 04, 05
+**State:** `DONE` — 2026-08-18  **Depends on:** 04, 05
 
 Frontier nodes render as spurs off their `anchor` node, using the branch path geometry in
 `tracks.json`. Visually distinct from the main path and explicitly marked unproven. 23 of
@@ -774,11 +774,129 @@ Also renders demotion: a node with no commits in 12 months greys out and is mark
 kept visible with its successor linked if one is known. Dead tools are useful information.
 Nothing is ever deleted.
 
+### Session notes — 2026-08-18
+
+**Built:** `src/data/dormancy.ts` (the twelve-month rule as one pure `dormancyOf`),
+`src/hooks/usePathLength.ts` (the measure-once logic lifted out of `ActPath` so a second
+path can use it), `src/components/BranchPath.tsx` (one memoised spur: head, dashed path,
+dots, cards), `BranchProgress` / `frontier` / `ActProgress.anchors` inside the existing
+`computeTrackProgress`, an optional `successor` on `Node` with three validator rules plus an
+`EMPTY_BRANCH` warning, registry-read zone and dormancy on `PathNode` with an `anchor` ring
+prop, dormant styling and a successor line on `NodeCard`, a `Freshness` fact and a successor
+link on `NodePanel`, `· n / m FRONTIER` in `App`'s masthead, and `src/styles/branch.css`.
+
+**Decided:**
+
+- **A branch renders under its act, not on top of it.** A branch's viewBox is `0 0 640 320`
+  and an act's is `0 0 1200 760`; they share no coordinate space. Drawing the spur out of
+  the anchor's real point would mean inventing a transform between two unrelated viewBoxes
+  and then fighting the act's card overlay for the same pixels. The attachment is stated
+  instead — the head names the anchor ("Spur from Claude Code") and the anchor's dot on the
+  main path wears a hairline ring.
+- **A branch stacks its cards; it does not pocket them.** This one was found by measuring,
+  not by reading. The first build floated branch cards in the spur's negative space exactly
+  as `ActPath` does; on `portfolio` two pairs overlapped, and the largest spur in the
+  registry (`app` / "Deeper tooling") places **seven** nodes on that 320-unit box, which no
+  stage width fixes. So the spur is the diagram — order, dots, completion, unproven dashes —
+  and the cards read below it in placed order, which is the layout `cards.css` already falls
+  back to under 640px. One behaviour at every width instead of two.
+- **Unproven is dashes, not colour.** The spur uses the road's `--rule` hairline with
+  `stroke-dasharray`. Dashes read as provisional for free; the accent stays spent on where
+  the learner is standing (section 8). Frontier dots are hollow — the same circle drawn as
+  an outline — so they read provisional beside a filled one without a second hue.
+- **Dormancy is derived from `last_commit`, not stored.** Section 6 says demotion is
+  *automatic*, so the rule is applied at render against today's date rather than typed into
+  `nodes.json` by a session that happened to notice. A `status` of `dormant` or `superseded`
+  is honoured too, because a project can be abandoned while its last commit is recent.
+  Nothing in the registry is dormant today; the rendering was verified by patching two nodes
+  in a scratch copy of `nodes.json` and restoring it.
+- **On a dot: `current` beats dormancy beats completion.** A finished dead tool is still
+  dead, and the card and the counts already say it was finished — but exactly one dot on a
+  track says "here", and the map must not lose it because the tool the learner is standing
+  on stopped moving.
+- **The frontier is counted beside the road, never into it.** `computeTrackProgress` returns
+  branch tallies separately: each branch head shows `n / m explored` and the masthead shows
+  `· n / m FRONTIER`. Marking a branch node moves neither the fog, the walker, nor
+  `n / m DONE`. Spec 08 left this question open on purpose; this is the answer.
+- **`successor` is a node id, never a URL.** The card prints "Superseded by <title>"; the
+  panel links it through the successor's own first registry link, which is a URL already
+  verified in the registry.
+- **An empty branch is not drawn, and the validator says so.** `EMPTY_BRANCH` is a warning
+  rather than an error: the data is usable, just pointless, and something the map declines
+  to draw has to be said out loud.
+
+**Verified:** `npm run build` and `npx tsc --noEmit` both exit 0; the registry still
+validates 0 errors / 0 warnings. An 824-assertion suite ran `computeTrackProgress` over all
+four real tracks against five completion subsets each — branch map size, per-branch
+done/total, no `current` on any branch, the frontier tally, the road's totals unaffected by
+branch completions, and anchors landing only on the act that actually places the anchor —
+plus synthetic tracks with no branches, an empty branch, a branch naming an act that does
+not exist, and an act with no nodes. The suite was checked against deliberately wrong
+expectations to confirm it can fail. Nine `dormancyOf` cases cover null, fresh, exactly 365
+days, 366, declared-dormant-with-a-fresh-date, superseded, a future date, an unparseable
+date and an empty string. Five validator mutations confirm `UNKNOWN_SUCCESSOR`,
+`SELF_SUCCESSOR`, the `BAD_NODE_FIELD` type check, a clean pass on a valid successor, and
+`EMPTY_BRANCH`.
+
+In a real Chrome tab: all 21 branches render — 5 on `game`, 4 on `app`, 7 on `portfolio`,
+5 on `media` — each inside the `Section` of the act it names, in `track.branches` order,
+with anchor rings on exactly the distinct anchors (4 / 4 / 6 / 5, `claude-code` anchoring
+two branches on three tracks). Branch dots match `getPointAtLength(total * t)` to two
+decimal places. Marking a branch node flips its button, turns its dot, advances the branch
+tally and the masthead's `FRONTIER` count, leaves `DONE` and the fog stroke untouched, and
+survives a reload. Panels open from branch cards; stubs expand, complete and collapse. A
+geometric overlap scan (card/card, card/head, card outside its block) reports zero across
+all four tracks at three levels at 1440px and at an emulated 360px, where `scrollWidth`
+equals `clientWidth`. Dormancy was exercised by patching `what-is-a-skill` to a 2024 commit
+date and `cline` to `status: dormant` with `successor: opencode`: both cards greyed and said
+`dormant`, `cline` printed "Superseded by OpenCode" and linked it in the panel, and the
+panel's Freshness read "dormant — 956 days since last commit" and 'dormant — registry status
+"dormant"' respectively, against "active — 1 day since last commit" for a live node.
+`data/nodes.json` was restored byte-for-byte afterwards. Throwaway React roots covered a
+track with no branches, a one-node branch, an empty branch (not drawn), a branch on a
+missing act, and a track with no acts — none threw. Mid-tween on `portfolio`: 55fps against
+62 idle, with zero mutations observed in a branch subtree, so the `memo` holds. Zero console
+errors or warnings throughout.
+
+**Found in review, then fixed:** eight things. The anchor ring in `--rule` was invisible at
+20px, so it moved to `--text-muted`. Branch heads and cards collided at 8px, then left-side
+cards reached back past the branch's own hairline, then — after two rounds of widening and
+narrowing — the pocket layout was abandoned for the stacked one above; that is the real fix
+and the earlier two were symptoms of it. Branch cards kept a pocket width at 360px because
+the new rule outranked `cards.css` by specificity. The panel said "1 days". An empty branch
+drew a spur to nowhere with "0 / 0 explored". A dormant `current` dot lost its accent. And
+one line ran past 100 columns.
+
+**Next session should know:**
+
+- **`computeTrackProgress` is still the only place progress may be decided**, and it now
+  covers branches. Spec 10 wants the frontier act and the per-act slices that are already
+  there; do not recompute either.
+- **The branch layout is deliberate and load-bearing.** `.act-stage--branch` overrides the
+  pocket positioning with static flow at every width. If a later spec restores floating
+  cards on a spur, it has to solve seven nodes on a `640x320` viewBox first — the numbers
+  are in `branch.css`.
+- **`BranchPath` is memoised like `ActPath`.** Any prop a later spec adds must be
+  referentially stable across a tween frame; derive it in `TrackMap`'s existing `useMemo`.
+- **`usePathLength(d)` is the one path measurement.** `getTotalLength` appears exactly once
+  in `src/`. A third path (spec 10's overview map) should use the hook, not re-measure.
+- **`dormancyOf` reads the clock.** Rendering therefore depends on the date: a node with a
+  `last_commit` older than 365 days greys out with no data edit at all. That is section 6's
+  "automatic", and it means a screenshot taken a year from now will differ from today's.
+  `now` is injectable for tests.
+- **Nothing in the registry is dormant or has a `successor` today.** The field and the
+  rendering exist and were verified against patched data; the data that uses them arrives
+  when a tool actually goes dormant.
+- **`PathNode` now reads the registry** for zone and dormancy, so it throws on an id the
+  registry does not know — the same contract `NodeCard` already had, and one the validator
+  makes unreachable.
+- The dev server for verification ran on port 5186 and was killed by PID afterwards.
+
 ---
 
 ## 10 — Act navigation and the overview map
 
-**State:** `SPEC PENDING`  **Depends on:** 04, 08, 09
+**State:** `READY FOR DEVELOPMENT`  **Depends on:** 04, 08, 09
 
 Move between acts. Each act is its own serpentine screen. A zoomed-out overview chains the
 acts into one map so the whole road is legible at once.
@@ -820,6 +938,11 @@ a backend. v1 is the map only. If one of these appears in a task, the task is wr
 
 Newest first. One line per state change. Whoever changes a state writes the line.
 
+- 2026-08-18 — Spec 09 `DONE`. The frontier branch: 21 spurs rendered under their acts,
+  dashed and marked unproven, with hollow dots, anchor rings and their own explored tallies;
+  demotion derived from `last_commit` with a linked successor. Spec 10 promoted `SPEC
+  PENDING` → `READY FOR DEVELOPMENT` (deps 04, 08, 09 all now `DONE`). Spec 12 stays `SPEC
+  PENDING` — it needs 10 and 11.
 - 2026-08-18 — Phase A `DONE`. Registry: 67 nodes, 44 main / 23 frontier, 98 URLs verified 200.
 - 2026-08-18 — Registry revised: freshness rule applied literally, `core` 61 → 25, `emerging` 6 → 42.
 - 2026-08-18 — Phase B opened. Twelve spec titles approved. All specs `SPEC PENDING`.

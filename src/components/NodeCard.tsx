@@ -1,6 +1,7 @@
 import { useState, type CSSProperties, type ReactNode } from 'react'
 
 import { LEVEL_RANK } from '../constants.ts'
+import { dormancyOf } from '../data/dormancy.ts'
 import { useProgressContext } from '../data/ProgressContext.ts'
 import { registry } from '../data/registry.ts'
 import { usePathPoint } from '../hooks/usePathPoint.ts'
@@ -30,6 +31,11 @@ export interface NodeCardProps {
  * `NodePanel` is open. It does not lift to `TrackMap`/`App` — only one
  * `<dialog>` is ever the caller's, and the native `<dialog>` itself already
  * guarantees only one can be the top layer's modal at a time.
+ *
+ * A dormant node (spec 09) greys out, says so, and names its successor when the
+ * registry knows one. It is not hidden, not moved and not made unclickable:
+ * CONTEXT.md section 6 keeps dead tools visible because knowing a tool is dead
+ * is useful information.
  */
 export function NodeCard({
   placed,
@@ -49,6 +55,9 @@ export function NodeCard({
   const node = registry.getNode(placed.id)
   const belowLearnerLevel = LEVEL_RANK[node.level] < LEVEL_RANK[learnerLevel]
   const collapsed = belowLearnerLevel && !expanded
+  const { dormant } = dormancyOf(node)
+  const successor = node.successor ? registry.nodesById.get(node.successor) : undefined
+  const dormantClass = dormant ? ' node-card--dormant' : ''
 
   const { leftPct, topPct } = pointToPercent(point, {
     width: viewBoxWidth,
@@ -61,7 +70,10 @@ export function NodeCard({
 
   if (collapsed) {
     return (
-      <div className={`node-card node-card--stub node-card--${placed.side}`} style={position}>
+      <div
+        className={`node-card node-card--stub node-card--${placed.side}${dormantClass}`}
+        style={position}
+      >
         <button type="button" className="node-card__stub-expand" onClick={() => setExpanded(true)}>
           {node.title}
         </button>
@@ -70,8 +82,11 @@ export function NodeCard({
   }
 
   return (
-    <article className={`node-card node-card--${placed.side}`} style={position}>
-      <p className="node-card__level">{node.level}</p>
+    <article className={`node-card node-card--${placed.side}${dormantClass}`} style={position}>
+      <p className="node-card__level">
+        {node.level}
+        {dormant ? <span className="node-card__dormant"> / dormant</span> : null}
+      </p>
       <button
         type="button"
         className="node-card__title-button"
@@ -80,6 +95,9 @@ export function NodeCard({
         <h3 className="node-card__title">{node.title}</h3>
       </button>
       <p className="node-card__blurb">{node.blurb}</p>
+      {successor ? (
+        <p className="node-card__successor">Superseded by {successor.title}</p>
+      ) : null}
       <div className="node-card__foot">
         <button
           type="button"

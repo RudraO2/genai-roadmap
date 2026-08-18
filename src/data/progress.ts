@@ -15,7 +15,7 @@
  * track-scoped store would let the same node hold two truths.
  */
 
-import type { Act, Track } from '../types.ts'
+import type { Act, Branch, Track } from '../types.ts'
 
 export const PROGRESS_KEY = 'roadmap:progress:v1'
 
@@ -89,6 +89,23 @@ export interface ActProgress {
   states: ReadonlyMap<string, NodeProgressState>
   done: number
   total: number
+  /**
+   * Ids of this act's placed nodes that a branch spurs off (spec 09). Derived
+   * here so `ActPath` can mark the anchor dot without walking `track.branches`
+   * itself — one pass over the track, one place that decides.
+   */
+  anchors: ReadonlySet<string>
+}
+
+/**
+ * One frontier branch's slice. Never carries `current`: exactly one dot on a
+ * track is the learner's position and it belongs on the main road. A branch is
+ * a side trip, so its states are `complete` or `ahead` only.
+ */
+export interface BranchProgress {
+  states: ReadonlyMap<string, NodeProgressState>
+  done: number
+  total: number
 }
 
 export interface CharacterPlacement {
@@ -98,6 +115,8 @@ export interface CharacterPlacement {
 
 export interface TrackProgress {
   acts: ReadonlyMap<string, ActProgress>
+  /** Keyed by `branch.id` (spec 09). */
+  branches: ReadonlyMap<string, BranchProgress>
   /**
    * Where the walker belongs: the first act holding an incomplete node, at that
    * act's `revealT`. Null only when the track places no nodes at all.
@@ -105,12 +124,26 @@ export interface TrackProgress {
   placement: CharacterPlacement | null
   done: number
   total: number
+  /**
+   * The branches' totals for the whole track. Deliberately separate from
+   * `done` / `total`: a branch is off the main path, so folding it in would make
+   * the road's progress depend on optional side trips.
+   */
+  frontier: { done: number; total: number }
 }
 
 /** An act with no placed nodes. Exported so no caller branches on `undefined`. */
 export const EMPTY_ACT_PROGRESS: ActProgress = Object.freeze({
   revealT: 0,
   completeT: 0,
+  states: new Map<string, NodeProgressState>(),
+  done: 0,
+  total: 0,
+  anchors: new Set<string>(),
+})
+
+/** A branch with no placed nodes. Same contract as `EMPTY_ACT_PROGRESS`. */
+export const EMPTY_BRANCH_PROGRESS: BranchProgress = Object.freeze({
   states: new Map<string, NodeProgressState>(),
   done: 0,
   total: 0,
@@ -133,10 +166,12 @@ function computeActProgress(
   act: Act,
   completed: ReadonlySet<string>,
   isFrontierAct: boolean,
+  anchorIds: ReadonlySet<string>,
 ): ActResult {
   if (act.nodes.length === 0) return { progress: EMPTY_ACT_PROGRESS, firstIncomplete: -1 }
 
   const states = new Map<string, NodeProgressState>()
+  const anchors = new Set<string>()
   let firstIncomplete = -1
   let done = 0
 
@@ -145,6 +180,7 @@ function computeActProgress(
     if (isComplete) done += 1
     if (!isComplete && firstIncomplete === -1) firstIncomplete = index
     states.set(placed.id, isComplete ? 'complete' : 'ahead')
+    if (anchorIds.has(placed.id)) anchors.add(placed.id)
   }
 
   if (firstIncomplete !== -1 && isFrontierAct) {
@@ -167,28 +203,66 @@ function computeActProgress(
   else if (isFrontierAct) revealT = Math.max(completeT, clamp01(act.nodes[firstIncomplete]!.t))
 
   return {
-    progress: { revealT, completeT, states, done, total: act.nodes.length },
+    progress: { revealT, completeT, states, done, total: act.nodes.length, anchors },
     firstIncomplete,
   }
+}
+
+/**
+ * A branch's slice. No fog geometry and no `current`: a branch draws its whole
+ * path at once, marked unproven, and its nodes are optional side trips rather
+ * than positions on the road.
+ */
+function computeBranchProgress(
+  branch: Branch,
+  completed: ReadonlySet<string>,
+): BranchProgress {
+  if (branch.nodes.length === 0) return EMPTY_BRANCH_PROGRESS
+
+  const states = new Map<string, NodeProgressState>()
+  let done = 0
+  for (const placed of branch.nodes) {
+    const isComplete = completed.has(placed.id)
+    if (isComplete) done += 1
+    states.set(placed.id, isComplete ? 'complete' : 'ahead')
+  }
+
+  return { states, done, total: branch.nodes.length }
 }
 
 /**
  * Everything the map needs to draw progress for one track, derived from the set
  * of completed node ids.
  *
- * Act nodes only. Branch (frontier) nodes are unrendered until spec 09 and sit
- * on a different path, so they take no part in an act's fog geometry and none
- * in the totals. Their ids stay in the set untouched.
+ * Branch (frontier) nodes are derived here too (spec 09) but kept in their own
+ * slices: they sit on a different path, so they take no part in an act's fog
+ * geometry, none in the walker's frontier, and none in `done` / `total`. Their
+ * tally is `frontier`, reported separately and never folded in.
  */
 export function computeTrackProgress(
   track: Track,
   completed: ReadonlySet<string>,
 ): TrackProgress {
   const acts = new Map<string, ActProgress>()
+  const branches = new Map<string, BranchProgress>()
   let placement: CharacterPlacement | null = null
   let lastActWithNodes: CharacterPlacement | null = null
   let done = 0
   let total = 0
+  let frontierDone = 0
+  let frontierTotal = 0
+
+  // Keyed by the anchor's own id rather than by `branch.act`, so the ring lands
+  // on the node a branch actually spurs off even if the data ever names an act
+  // that does not hold it.
+  const anchorIds = new Set(track.branches.map((branch) => branch.anchor))
+
+  for (const branch of track.branches) {
+    const progress = computeBranchProgress(branch, completed)
+    branches.set(branch.id, progress)
+    frontierDone += progress.done
+    frontierTotal += progress.total
+  }
 
   for (const act of track.acts) {
     // The frontier act is the first one still holding an unfinished node, and
@@ -196,7 +270,12 @@ export function computeTrackProgress(
     // fields depend on it.
     const isFrontierAct =
       placement === null && act.nodes.some((placed) => !completed.has(placed.id))
-    const { progress, firstIncomplete } = computeActProgress(act, completed, isFrontierAct)
+    const { progress, firstIncomplete } = computeActProgress(
+      act,
+      completed,
+      isFrontierAct,
+      anchorIds,
+    )
     acts.set(act.id, progress)
     done += progress.done
     total += progress.total
@@ -208,5 +287,12 @@ export function computeTrackProgress(
     }
   }
 
-  return { acts, placement: placement ?? lastActWithNodes, done, total }
+  return {
+    acts,
+    branches,
+    placement: placement ?? lastActWithNodes,
+    done,
+    total,
+    frontier: { done: frontierDone, total: frontierTotal },
+  }
 }

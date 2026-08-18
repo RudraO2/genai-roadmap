@@ -308,3 +308,56 @@ when branch nodes arrive — they are excluded here deliberately. `ActPath` is n
 `ProgressContext` must wrap anything rendering a `NodeCard`; its reader throws outside a
 provider on purpose. Spec 07's `TrackMap.character` override still works — the frontier is
 only the fallback. Specs 09 and 11 are both claimable now.
+## Spec 09 — The frontier branch — 2026-08-18
+
+**Did:** Drew the 23 frontier nodes the registry has always held and nothing had ever
+rendered. Each of the 21 `Branch` entries in `tracks.json` now renders as its own spur under
+the act that holds its anchor: a head naming that anchor and the branch's own `n / m
+explored`, a dashed hairline path marked unproven, hollow dots that fill when a node is
+finished, and the cards below. The anchor's dot on the main road wears a hairline ring so
+the spur reads as leaving from somewhere. The spec's second half is demotion:
+`src/data/dormancy.ts` applies `CONTEXT.md` section 6's twelve-month rule to `last_commit`
+at render time, a dormant card greys out and says so, and an optional `successor` node id
+(new on `Node`, validated three ways) prints on the card and links out through the
+successor's own registry link in the panel.
+
+**Decided:** Two calls came from measuring rather than reading. First, the branch is a block
+below its act, not a line drawn out of the anchor dot — a branch's viewBox is `0 0 640 320`
+against an act's `0 0 1200 760`, and faking a transform between them would have fought the
+card overlay for the same pixels; the attachment is stated in the head and marked with the
+ring instead. Second, and this replaced the first build: branch cards stack below the spur
+rather than floating in its pockets, because the largest spur in the registry places seven
+nodes on that 320-unit box and no stage width makes seven cards fit. Beyond that: unproven
+is dashes, not colour; dormancy is derived from dates, never typed into the registry; on a
+dot `current` beats dormancy beats completion; and the frontier is counted beside the road
+(`· n / m FRONTIER` in the masthead, `n / m explored` per spur) and never folded into
+`n / m DONE`, which answers the question spec 08 deliberately left open. Full reasoning in
+the spec 09 session notes in `State of the project.md`.
+
+**Verified:** `npm run build` and `npx tsc --noEmit` both exit 0; the registry still
+validates 0 errors / 0 warnings. An 824-assertion suite over all four real tracks and five
+completion subsets each, plus synthetic tracks (no branches, empty branch, branch on a
+missing act, act with no nodes), confirms branch slices, the frontier tally, untouched road
+totals and anchors landing on the act that actually places them — and the suite was checked
+against deliberately wrong expectations to prove it can fail. Nine `dormancyOf` cases and
+five validator mutations cover the rest of the logic. In a real Chrome tab: all 21 spurs in
+the right sections in `track.branches` order, anchor rings on exactly the distinct anchors,
+dot positions matching `getPointAtLength` to two decimals, tallies and persistence, panels
+and stubs from branch cards, a geometric overlap scan reporting zero across four tracks,
+three levels and two viewports, dormancy exercised against a patched-then-restored
+`nodes.json`, and 55fps mid-tween with zero mutations inside a branch subtree. Zero console
+errors.
+
+**Found in review, then fixed:** eight, listed in the spec 09 notes. The one worth repeating
+is that the first branch layout was wrong in a way reading could not catch: it inherited the
+act's pocket positioning, which quietly overlapped cards on `portfolio` and could never have
+worked for `app`'s seven-node spur. Two rounds of widening the stage were treating symptoms;
+stacking the cards was the fix.
+
+**Next iteration should know:** everything under "Next session should know" in the spec 09
+notes in `State of the project.md`. Short version: `computeTrackProgress` now decides
+branches too and must not be recomputed beside; `usePathLength` is the only path
+measurement, so spec 10's overview map should use it; `.act-stage--branch`'s stacked layout
+is load-bearing and the numbers behind it are in `branch.css`; `dormancyOf` reads the clock,
+so the map's appearance genuinely changes with the date; and nothing in the registry is
+dormant today, so those paths live only against patched data until a real tool dies.

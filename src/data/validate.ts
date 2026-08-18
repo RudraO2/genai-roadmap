@@ -187,6 +187,14 @@ function checkNode(r: Report, raw: unknown, path: string): Node | null {
     r.error('BAD_NODE_FIELD', `${path}.note`, `expected a string when present, got ${describe(raw['note'])}`)
     ok = false
   }
+  if (raw['successor'] !== undefined && typeof raw['successor'] !== 'string') {
+    r.error(
+      'BAD_NODE_FIELD',
+      `${path}.successor`,
+      `expected a node id string when present, got ${describe(raw['successor'])}`,
+    )
+    ok = false
+  }
 
   if (raw['last_commit'] !== null && !isDate(raw['last_commit'])) {
     r.error(
@@ -325,6 +333,22 @@ function checkNodeIntegrity(r: Report, nodes: Node[], byId: Map<string, Node>): 
       }
     }
 
+    // Section 6 keeps a demoted node visible with its successor linked. The link
+    // is a node id, so it has to resolve here rather than at render time — a
+    // dangling one would print a dead end on a card that is already a dead end.
+    if (node.successor !== undefined) {
+      const sp = `${path}.successor`
+      if (node.successor === node.id) {
+        r.error('SELF_SUCCESSOR', sp, `node "${node.id}" succeeds itself`)
+      } else if (!byId.has(node.successor)) {
+        r.error(
+          'UNKNOWN_SUCCESSOR',
+          sp,
+          `node "${node.id}" names unknown successor "${node.successor}"`,
+        )
+      }
+    }
+
     node.requires.forEach((req, j) => {
       const rp = `${path}.requires[${j}]`
       if (req === node.id) {
@@ -457,6 +481,12 @@ function checkTrackIntegrity(
     }
     if (!actIds.has(branch.act)) {
       r.error('UNKNOWN_BRANCH_ACT', `${bp}.act`, `"${branch.act}" is not an act of track "${trackId}"`)
+    }
+    // A spur with nothing on it is not information, and the map does not draw
+    // one (spec 09). A warning rather than an error: the data is usable, it is
+    // just pointless, and it must not disappear without being said.
+    if (branch.nodes.length === 0) {
+      r.warn('EMPTY_BRANCH', `${bp}.nodes`, `branch "${branch.id}" places no nodes`)
     }
     branch.nodes.forEach((placed, ni) => {
       visit(placed.id, `${bp}.nodes[${ni}]`)

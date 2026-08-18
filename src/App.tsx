@@ -52,7 +52,7 @@ export default function App(): ReactNode {
   // pure and runs over one track's placed nodes, so the second call is cheaper
   // than lifting the whole derivation past this branch — which cannot hold a
   // hook, and the walker's tween is one.
-  const { done, total } = computeTrackProgress(track, progress.completed)
+  const { done, total, frontier } = computeTrackProgress(track, progress.completed)
 
   return (
     <ProgressContext.Provider value={progress}>
@@ -63,6 +63,10 @@ export default function App(): ReactNode {
                 the count needs no new class and no new rule. */}
             <span className="shell__masthead-meta">
               {done} / {total} DONE
+              {/* The frontier is counted beside the road, never into it: a spur
+                  is optional, so folding it in would make the road's progress
+                  depend on side trips (spec 09). */}
+              {frontier.total > 0 ? ` · ${frontier.done} / ${frontier.total} FRONTIER` : null}
             </span>
             <button type="button" className="intake-change" onClick={() => setEditing(true)}>
               Change track / level

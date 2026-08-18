@@ -85,4 +85,52 @@
   .path-node[data-state='complete'] .path-node__dot {
     fill: var(--accent-quiet);
   }
+
+  /* ---- Frontier and demotion (spec 09) ----------------------------------
+   * A frontier dot is hollow: the same circle, drawn as an outline rather than
+   * filled, which reads as provisional beside a solid one without a second
+   * colour. A dormant node greys back to `--text-muted` — visible, still
+   * clickable, plainly no longer moving (CONTEXT.md section 6 never deletes).
+   */
+
+  .path-node[data-zone='frontier'] .path-node__dot {
+    fill: none;
+    stroke: var(--text-secondary);
+    stroke-width: calc(var(--hairline) * 2);
+    r: 4;
+    transition: stroke var(--dur-state) var(--ease-state);
+  }
+
+  .path-node[data-zone='frontier'][data-state='complete'] .path-node__dot {
+    fill: var(--accent-quiet);
+    stroke: var(--accent-quiet);
+  }
+
+  .path-node[data-dormant='true'] .path-node__dot {
+    fill: var(--text-muted);
+  }
+
+  .path-node[data-dormant='true'][data-zone='frontier'] .path-node__dot {
+    fill: none;
+    stroke: var(--text-muted);
+  }
+
+  /* Precedence, deliberately: dormancy outranks completion on the dot — a
+   * finished dead tool is still dead, and the card and the count both already
+   * say it was finished. `current` outranks dormancy, because exactly one dot
+   * on a track says "here" and the map must not lose it just because the tool
+   * the learner is standing on stopped moving. */
+  .path-node[data-dormant='true'][data-state='current'] .path-node__dot {
+    fill: var(--accent);
+  }
+
+  /* The ring says a spur leaves from this node. A hairline outline in the
+   * muted text step — structure, not a halo. `--rule` was the first choice and
+   * disappeared: it is sized for a line hundreds of pixels long, not for a
+   * 20px circle, and the mark has to be legible to mean anything. */
+  .path-node__anchor {
+    fill: none;
+    stroke: var(--text-muted);
+    stroke-width: var(--hairline);
+  }
 }

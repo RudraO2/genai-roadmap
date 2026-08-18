@@ -87,6 +87,27 @@
     color: var(--text-primary);
   }
 
+  /* Section 6's "successor linked if one is known" (spec 09). The link goes to
+   * the successor node's own first registry URL — already verified there, never
+   * invented here. */
+  .node-panel__successor {
+    margin-top: calc(var(--space-unit) * 4);
+    font-family: var(--font-mono);
+    font-size: var(--size-meta);
+    color: var(--text-secondary);
+  }
+
+  .node-panel__successor a {
+    color: var(--text-primary);
+    text-decoration: underline;
+    text-underline-offset: 0.2em;
+    transition: color var(--dur-state) var(--ease-state);
+  }
+
+  .node-panel__successor a:hover {
+    color: var(--accent);
+  }
+
   .node-panel__note {
     margin-top: calc(var(--space-unit) * 4);
     font-size: var(--size-meta);

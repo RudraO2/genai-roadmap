@@ -101,6 +101,26 @@ bottom rather than done inline.
       (persistence both ways, cross-track, corrupt storage, act crossing, tween retarget,
       reduced motion, all-complete, advanced level, 360px, zero-node act, zero-act track)
 
+## Spec 09 — The frontier branch
+
+- [x] T078 — Write `specs/spec-09-frontier.md`
+- [x] T079 — `src/data/dormancy.ts` — `dormancyOf`, section 6's twelve-month rule, pure
+- [x] T080 — `src/types.ts` + `src/data/validate.ts` — optional `successor`, three rules,
+      plus an `EMPTY_BRANCH` warning
+- [x] T081 — `src/data/progress.ts` — `BranchProgress`, the `frontier` tally, `ActProgress.anchors`
+- [x] T082 — `src/hooks/usePathLength.ts` — the one path measurement, lifted out of `ActPath`
+- [x] T083 — `src/components/BranchPath.tsx` — head, dashed spur, dots, stacked cards, memoised
+- [x] T084 — `src/components/PathNode.tsx` — registry-read zone/dormancy, `anchor` ring prop
+- [x] T085 — `src/components/TrackMap.tsx` — branches rendered under their own act
+- [x] T086 — `src/components/NodeCard.tsx` — dormant card, dormant marker, successor line
+- [x] T087 — `src/components/NodePanel.tsx` — `Freshness` fact and the successor link
+- [x] T088 — `src/App.tsx` — `· n / m FRONTIER` beside the masthead's road count
+- [x] T089 — `src/styles/branch.css` (+ `path.css`, `cards.css`, `panel.css`, `index.css`)
+- [x] T090 — Verify: build, typecheck, an 824-assertion branch/anchor suite, nine `dormancyOf`
+      cases, five validator mutations, and browser (all 21 spurs, dot geometry, tallies,
+      persistence, panels, stubs, overlap scan at 1440px and 360px, patched-dormancy render,
+      throwaway roots for the empty cases, mid-tween fps and branch mutation count)
+
 ## Noticed, not done
 
 Appended by sessions that spotted work outside their one task. Do not do these inline.
@@ -138,3 +158,18 @@ Appended by sessions that spotted work outside their one task. Do not do these i
       `dist/assets/*.css`). Nothing uses it and `--blur-*: initial` means `backdrop-blur-*`
       does not exist, so nothing renders frosted — but spec 12's hardcoded-colour gate is
       the right place to also assert the banned utilities are absent from the output.
+- [ ] T091 — A branch's cards no longer sit against their dots: `branch.css` stacks them
+      below the spur at every width because seven nodes cannot be pocketed on a `640x320`
+      viewBox. If spec 10's overview map ever gives branches more room, revisit — the
+      measurements that forced it are in the comment at `.act-stage--branch`.
+- [ ] T092 — `dormancyOf` reads `Date.now()` at render, so the map's appearance depends on
+      the day it is opened. Correct per `CONTEXT.md` section 6 ("demotion is automatic"),
+      but it means no snapshot test of a card can be date-independent without injecting
+      `now`, which the function already accepts.
+- [ ] T093 — No node in `nodes.json` is `dormant` or carries a `successor`, so both render
+      paths are only exercised by hand-patched data today. Whoever revises the registry
+      next should check the freshness rule against every `last_commit` while they are in
+      there.
+- [ ] T094 — `BranchPath` still passes `viewBoxWidth`/`viewBoxHeight` to `NodeCard` and the
+      card still computes a percentage position, which `branch.css` then overrides. Kept so
+      `NodeCard` has one contract; drop it only if branches never float again.

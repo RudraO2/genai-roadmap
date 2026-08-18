@@ -39,6 +39,12 @@ export interface Node {
   verified_at: string
   /** Required whenever `last_commit` is null: says why freshness is unverifiable. */
   note?: string
+  /**
+   * Id of the node that replaced this one. CONTEXT.md section 6 keeps a demoted
+   * node visible "with its successor linked if one is known" — a node id, never
+   * a URL, so the link resolves through the registry and invents nothing.
+   */
+  successor?: string
 }
 
 /**

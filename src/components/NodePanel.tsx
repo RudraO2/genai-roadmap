@@ -1,6 +1,8 @@
 import { useEffect, useRef, type ReactNode } from 'react'
 
 import { KINDS } from '../constants.ts'
+import { dormancyOf } from '../data/dormancy.ts'
+import { registry } from '../data/registry.ts'
 import type { Node } from '../types.ts'
 
 export interface NodePanelProps {
@@ -18,6 +20,12 @@ export interface NodePanelProps {
  * `dialog.close()` to the `open` prop rather than exposing an imperative
  * handle, so `Escape` (which fires the native `close` event) and an explicit
  * close button both funnel through the same `onClose`.
+ *
+ * Freshness is derived, not stored (spec 09): `CONTEXT.md` section 6 demotes a
+ * node automatically after twelve months without a commit, so the panel states
+ * what the dates actually say rather than what a past session typed. A known
+ * successor links out through the successor's own first registry link — a URL
+ * already verified in the registry, never one invented here.
  */
 export function NodePanel({ node, open, onClose }: NodePanelProps): ReactNode {
   const dialogRef = useRef<HTMLDialogElement | null>(null)
@@ -35,6 +43,18 @@ export function NodePanel({ node, open, onClose }: NodePanelProps): ReactNode {
   })).filter((group) => group.links.length > 0)
 
   const titleId = `node-panel-title-${node.id}`
+
+  const { dormant, stale, daysSinceCommit } = dormancyOf(node)
+  const since =
+    daysSinceCommit === 1 ? '1 day since last commit' : `${daysSinceCommit} days since last commit`
+  let freshness: string
+  if (dormant && stale) freshness = `dormant — ${since}`
+  else if (dormant) freshness = `dormant — registry status "${node.status}"`
+  else if (daysSinceCommit !== null) freshness = `active — ${since}`
+  else freshness = 'unverified'
+
+  const successor = node.successor ? registry.nodesById.get(node.successor) : undefined
+  const successorLink = successor?.links[0]
 
   return (
     <dialog
@@ -67,7 +87,24 @@ export function NodePanel({ node, open, onClose }: NodePanelProps): ReactNode {
             <dt>Last commit</dt>
             <dd>{node.last_commit ?? 'unverified'}</dd>
           </div>
+          <div className="node-panel__fact">
+            <dt>Freshness</dt>
+            <dd>{freshness}</dd>
+          </div>
         </dl>
+
+        {successor ? (
+          <p className="node-panel__successor">
+            Superseded by{' '}
+            {successorLink ? (
+              <a href={successorLink.url} target="_blank" rel="noreferrer">
+                {successor.title}
+              </a>
+            ) : (
+              successor.title
+            )}
+          </p>
+        ) : null}
 
         {node.note ? <p className="node-panel__note">{node.note}</p> : null}
 

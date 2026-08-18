@@ -113,6 +113,35 @@
     color: var(--accent);
   }
 
+  .node-card__successor {
+    margin-top: calc(var(--space-unit) * 2);
+    font-family: var(--font-mono);
+    font-size: var(--size-micro);
+    letter-spacing: var(--tracking-caps);
+    text-transform: uppercase;
+    color: var(--text-muted);
+  }
+
+  /* ---- Dormant (spec 09) ------------------------------------------------
+   * No commits in twelve months. The card recedes to the muted step and its
+   * rule to the faint one — still readable, still completable, still there.
+   * CONTEXT.md section 6: dead tools are useful information.
+   */
+
+  .node-card--dormant {
+    border-top-color: var(--rule-faint);
+  }
+
+  .node-card--dormant .node-card__title,
+  .node-card--dormant .node-card__blurb,
+  .node-card--dormant .node-card__stub-expand {
+    color: var(--text-muted);
+  }
+
+  .node-card__dormant {
+    color: var(--text-secondary);
+  }
+
   /* Collapsed: a hairline and a title, nothing else. Below the learner's
    * chosen level, not deleted — CONTEXT.md section 5. */
   .node-card--stub {
