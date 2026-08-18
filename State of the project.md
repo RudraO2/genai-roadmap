@@ -50,9 +50,9 @@ spec at a time, inside the session that builds it.
 | # | File | State | Depends on |
 | --- | --- | --- | --- |
 | 01 | `specs/spec-01-schema.md` | `DONE` | — |
-| 02 | `specs/spec-02-shell.md` | `IN PROGRESS` | 01 |
-| 03 | `specs/spec-03-intake.md` | `SPEC PENDING` | 01, 02 |
-| 04 | `specs/spec-04-path.md` | `SPEC PENDING` | 01, 02 |
+| 02 | `specs/spec-02-shell.md` | `DONE` | 01 |
+| 03 | `specs/spec-03-intake.md` | `READY FOR DEVELOPMENT` | 01, 02 |
+| 04 | `specs/spec-04-path.md` | `READY FOR DEVELOPMENT` | 01, 02 |
 | 05 | `specs/spec-05-cards.md` | `SPEC PENDING` | 01, 04 |
 | 06 | `specs/spec-06-panel.md` | `SPEC PENDING` | 01, 05 |
 | 07 | `specs/spec-07-character.md` | `SPEC PENDING` | 04 |
@@ -136,7 +136,7 @@ warnings; a 45-case corruption suite confirms every rule code fires.
 
 ## 02 — Visual shell: theme, type scale, app frame
 
-**State:** `IN PROGRESS`  **Depends on:** 01
+**State:** `DONE` — 2026-08-18  **Depends on:** 01
 
 Vite + React + TypeScript scaffold. One `theme.css` holding every colour and type custom
 property so the whole aesthetic is swappable in one file. Serif display face plus mono for
@@ -148,6 +148,64 @@ rebuilding the look after the map exists is far more expensive than rebuilding i
 **Watch for:** `CONTEXT.md` section 8 is a hard constraint, not a mood board. No gradients,
 no glassmorphism, no glow shadows, no emoji icons, no default Tailwind palette tokens, no
 Inter. Tailwind is for layout only.
+
+### Session notes — 2026-08-18
+
+**Built:** finished the work a prior session in this claim left mid-flight (theme tokens,
+vendored fonts, and the Tailwind namespace resets in `index.css` were already committed).
+Added `vite.config.ts`'s `tailwindcss()` plugin (installed but not wired), `src/styles/base.css`
+and `src/styles/shell.css`, `src/components/Shell.tsx` and `Section.tsx`, replaced `App.tsx`
+and `main.tsx` wholesale, added `src/assets.d.ts`, and gave `index.html` a description meta
+and a `data:` icon.
+
+**Decided:**
+
+- `Section`'s `title` renders at `--size-display`, not `--size-title`, even though the type
+  name suggests otherwise. `--size-title` sized the heading at only ~1.6–2.4× the body size
+  depending on viewport, short of acceptance criterion 11's 3× floor; `--size-display` is the
+  token `theme.css`'s own comment already promises "3.2x body at 360px and 5.9x at full
+  width" for. Read `--size-title` as reserved for a *sub*-heading a later spec introduces
+  inside a section (an act title, say) — nothing on this one screen needs it yet.
+- The one accent hue is spent on exactly three things, matching acceptance criterion 13 by
+  construction: `::selection`, the `:focus-visible` outline, and the track-row hover
+  border-left. Verified by grepping `src/styles/` for `var(--accent`, not by eye.
+- Track rows are static `<li>` — no `<a>`, no `<button>`, no `onClick`. Spec 03 owns
+  selection; giving these affordances now would mean re-deciding their markup twice.
+- Track-list and Section-heading CSS both live in `shell.css` rather than a separate
+  `App.css`, because the spec's file list only names `theme.css`, `index.css`, `base.css`
+  and `shell.css` — no fifth stylesheet. `shell.css` is the one components layer this spec
+  owns.
+
+**Verified:** `npm run build` 0, `npx tsc --noEmit` 0. `npm ls --depth=0` shows exactly the
+spec 01 dependencies plus `tailwindcss` and `@tailwindcss/vite`. Grepped `src/`, `index.html`
+for hex/`rgb(`/`hsl(`/`oklch(` (none outside `theme.css`), gradients/`backdrop-filter`/colored
+`box-shadow`/`text-shadow` (none), the literal word `Inter` (none — only "Interactive"
+substrings), and `gstatic` in `dist/` (none). Grepped `dist/assets/*.css` for
+`--color-slate`/`--color-indigo`/`--color-violet` and `.blur-`/`.backdrop-blur-`/`.shadow-`/
+`.rounded-`/`.animate-` utilities: none present, confirming the namespace resets actually
+strip the generated CSS, not just the source. Loaded the app in a real Chrome instance via
+`chrome-devtools`: no console errors, tab-focus lands on the skip link with a solid
+2px accent outline (not a blur), and at a 360×740 emulated viewport `scrollWidth` equals
+`innerWidth` (no horizontal overflow) with the masthead meta wrapped under the wordmark.
+Measured the title-to-body font-size ratio in the live DOM: 48.4px / 15px = 3.23× at 360px,
+clearing criterion 11. At a 2560px viewport, `.shell`'s computed width holds at 1248px,
+matching `--frame-max: 78rem` — the measure stops growing rather than filling the canvas.
+
+**Next session should know:**
+
+- `--size-title` is now unused on this screen but is not dead: it is the token spec 04 or
+  09 should reach for when a section needs a heading smaller than the page-level one Section
+  renders. Do not repurpose `--size-display` for anything else without re-checking the 3×
+  criterion on both the smallest and largest viewport.
+- `Shell` imports `registry` and `registryWarnings` directly to build the colophon line, so
+  it is not a "dumb" layout component — any spec composing a second `<Shell>` instance (there
+  should only ever be one mounted) inherits that import.
+- `.track-row` and `.track-list` live in `shell.css`, styled for the static index this spec
+  ships. Spec 03 will very likely replace these classes' markup (rows become interactive) —
+  reuse the classnames only if the visual result should stay identical; do not assume the
+  static styling survives interactivity untouched (hover/focus states will need to merge).
+- The dev server was run once against a real Chrome tab for verification and killed
+  afterward (`taskkill` on the listening PID). No process was left running.
 
 ---
 
@@ -301,3 +359,5 @@ Newest first. One line per state change. Whoever changes a state writes the line
 - 2026-08-18 — Spec 01 `DONE`. Types, 32-rule validator, loader, and the minimal toolchain.
   Registry validates 0 errors / 0 warnings; `npm run build` now gated on it.
 - 2026-08-18 — Spec 02 `SPEC PENDING` → `READY FOR DEVELOPMENT`, its only dependency landed.
+- 2026-08-18 — Spec 02 `DONE`. Shell, theme, Section pattern, and the track-index screen.
+  Specs 03 and 04 promoted `SPEC PENDING` → `READY FOR DEVELOPMENT` (deps 01, 02 both `DONE`).

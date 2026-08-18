@@ -23,12 +23,12 @@ bottom rather than done inline.
 
 ## Spec 02 — Visual shell: theme, type scale, app frame
 
-- [ ] T011 — Write `specs/spec-02-shell.md`
-- [ ] T012 — Add Tailwind, layout only, no palette tokens
-- [ ] T013 — `src/theme.css` — every colour and type value as a custom property
-- [ ] T014 — Serif display face plus mono, self-hosted, no CDN
-- [ ] T015 — App frame: hairline rules, hard edges, generous space
-- [ ] T016 — Replace the `src/main.tsx` smoke test with the real shell
+- [x] T011 — Write `specs/spec-02-shell.md`
+- [x] T012 — Add Tailwind, layout only, no palette tokens
+- [x] T013 — `src/theme.css` — every colour and type value as a custom property
+- [x] T014 — Serif display face plus mono, self-hosted, no CDN
+- [x] T015 — App frame: hairline rules, hard edges, generous space
+- [x] T016 — Replace the `src/main.tsx` smoke test with the real shell
 
 ## Noticed, not done
 
@@ -40,3 +40,8 @@ Appended by sessions that spotted work outside their one task. Do not do these i
       does, "no hex outside `theme.css`" is checked by hand.
 - [ ] T020 — `registry.tracks` and `registry.geometry` are readonly by type only, not frozen.
       Revisit if a spec ever mutates them by accident.
+- [ ] T021 — `--size-title` is now defined in `theme.css` but unused anywhere in `src/`.
+      Reserved for a sub-heading a later spec introduces inside a `Section`; not a bug.
+- [ ] T022 — `.track-row`/`.track-list` in `src/styles/shell.css` style a static index.
+      Spec 03 will likely need interactive (focusable/clickable) rows — check whether the
+      hover/focus states need merging rather than assuming the current styling survives.

@@ -1,0 +1,64 @@
+/**
+ * base.css — element-level defaults. @layer base, tokens only.
+ *
+ * No component classes here. This is what every element looks like before any
+ * component-specific rule in shell.css touches it.
+ */
+
+@layer base {
+  *,
+  *::before,
+  *::after {
+    box-sizing: border-box;
+  }
+
+  html {
+    color-scheme: dark;
+  }
+
+  body {
+    margin: 0;
+    background: var(--surface-base);
+    color: var(--text-primary);
+    font-family: var(--font-mono);
+    font-size: var(--size-body);
+    line-height: var(--leading-body);
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+
+  h1,
+  h2,
+  h3,
+  p,
+  dl,
+  dt,
+  dd,
+  ul {
+    margin: 0;
+    padding: 0;
+  }
+
+  a {
+    color: inherit;
+  }
+
+  ::selection {
+    background: var(--accent);
+    color: var(--surface-base);
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 3px;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      transition-duration: 0.01ms !important;
+      animation-duration: 0.01ms !important;
+    }
+  }
+}

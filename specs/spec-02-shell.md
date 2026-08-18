@@ -1,6 +1,6 @@
 # Spec 02 — Visual shell: theme, type scale, app frame
 
-**State:** `IN PROGRESS`
+**State:** `DONE`
 **Depends on:** 01
 **Owns:** `src/theme.css`, the Tailwind setup, the typefaces, and the app frame
 
