@@ -104,3 +104,17 @@ export interface TracksFile {
   foundations: string[]
   tracks: Record<TrackId, Track>
 }
+
+/** Which way the character is drawn. Left is a `scaleX(-1)` of right, never separate art. */
+export type Facing = 'left' | 'right'
+
+/**
+ * Sprite layer ids, in the compositing order `prompts/00-antigravity-assets.md`
+ * fixes (body → outfit → hair). The code-drawn placeholder carries them without
+ * drawing them differently; the sheets that arrive later key off these values.
+ */
+export interface CharacterVariant {
+  body: string
+  hair: string
+  outfit: string
+}

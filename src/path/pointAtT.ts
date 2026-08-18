@@ -4,6 +4,8 @@
  * war, the character, completed glow) recomputes a position a second way.
  */
 
+import type { Facing } from '../types.ts'
+
 export interface PathPoint {
   x: number
   y: number
@@ -30,4 +32,14 @@ export function pointAtT(path: SVGPathElement, totalLength: number, t: number): 
     y: point.y,
     angle: Math.atan2(dy, dx) * (180 / Math.PI),
   }
+}
+
+/**
+ * Direction of travel at a point, as a facing. Degrees come from `pointAtT`'s
+ * `atan2` — turning them into left/right here keeps the character from doing
+ * its own trigonometry. Straight up or straight down (±90) resolves to
+ * `'right'`; there is no third facing to fall through to.
+ */
+export function facingFromAngle(angle: number): Facing {
+  return Math.abs(angle) <= 90 ? 'right' : 'left'
 }

@@ -3,6 +3,7 @@ import { useState, type CSSProperties, type ReactNode } from 'react'
 import { LEVEL_RANK } from '../constants.ts'
 import { registry } from '../data/registry.ts'
 import { usePathPoint } from '../hooks/usePathPoint.ts'
+import { pointToPercent } from '../path/viewBox.ts'
 import type { Level, PlacedNode } from '../types.ts'
 import { NodePanel } from './NodePanel.tsx'
 
@@ -44,8 +45,10 @@ export function NodeCard({
   const belowLearnerLevel = LEVEL_RANK[node.level] < LEVEL_RANK[learnerLevel]
   const collapsed = belowLearnerLevel && !expanded
 
-  const leftPct = (point.x / viewBoxWidth) * 100
-  const topPct = (point.y / viewBoxHeight) * 100
+  const { leftPct, topPct } = pointToPercent(point, {
+    width: viewBoxWidth,
+    height: viewBoxHeight,
+  })
   const position: CSSProperties =
     placed.side === 'left'
       ? { right: `${100 - leftPct}%`, top: `${topPct}%` }

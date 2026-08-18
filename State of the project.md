@@ -40,7 +40,7 @@ spec at a time, inside the session that builds it.
 | Phase | What | State |
 | --- | --- | --- |
 | A | Research the node registry → `data/nodes.json`, `data/tracks.json` | `DONE` — 2026-08-18 |
-| B | Write the specs → `specs/*.md` | `IN PROGRESS` — folded into each spec's own session; 4 of 12 written |
+| B | Write the specs → `specs/*.md` | `IN PROGRESS` — folded into each spec's own session; 7 of 12 written |
 | C | Build the backlog → `BACKLOG.md` | `IN PROGRESS` — `BACKLOG.md` created 2026-08-18, appended per session |
 
 ---
@@ -55,9 +55,9 @@ spec at a time, inside the session that builds it.
 | 04 | `specs/spec-04-path.md` | `DONE` | 01, 02 |
 | 05 | `specs/spec-05-cards.md` | `DONE` | 01, 04 |
 | 06 | `specs/spec-06-panel.md` | `DONE` | 01, 05 |
-| 07 | `specs/spec-07-character.md` | `IN PROGRESS` | 04 |
-| 08 | `specs/spec-08-progress.md` | `SPEC PENDING` | 04, 05, 07 |
-| 09 | `specs/spec-09-frontier.md` | `SPEC PENDING` | 04, 05 |
+| 07 | `specs/spec-07-character.md` | `DONE` | 04 |
+| 08 | `specs/spec-08-progress.md` | `READY FOR DEVELOPMENT` | 04, 05, 07 |
+| 09 | `specs/spec-09-frontier.md` | `READY FOR DEVELOPMENT` | 04, 05 |
 | 10 | `specs/spec-10-navigation.md` | `SPEC PENDING` | 04, 08, 09 |
 | 11 | `specs/spec-11-portability.md` | `SPEC PENDING` | 08 |
 | 12 | `specs/spec-12-ship.md` | `SPEC PENDING` | 01–11 |
@@ -526,7 +526,7 @@ is now used for the first time (`.node-panel__title`), closing `BACKLOG.md` T021
 
 ## 07 — The character
 
-**State:** `IN PROGRESS` — 2026-08-18  **Depends on:** 04
+**State:** `DONE` — 2026-08-18  **Depends on:** 04
 
 `<Character t={0.42} facing="right" variant={{ body, hair, outfit }} />`. Code-drawn
 geometric placeholder with a two-state bob. Position comes from the path engine, never from
@@ -536,11 +536,102 @@ its own maths.
 arrive later and must slot in behind this exact interface. Getting the signature right now
 turns a future refactor into a one-file swap. Do not block on assets.
 
+### Session notes — 2026-08-18
+
+**Built:** `src/components/Character.tsx` (the frozen `t` / `facing` / `variant` props, a
+code-drawn placeholder of six flat rectangles across three layers in the sprite prompt's
+compositing order — body → outfit → hair — positioned by `usePathPoint(t)` alone),
+`src/hooks/useWalking.ts` (walk state derived from `t` changing, settling `WALK_SETTLE_MS`
+= 400ms after the last change), `src/styles/character.css`, plus `facingFromAngle` in
+`pointAtT.ts`, `pointToPercent` in `viewBox.ts`, `Facing`/`CharacterVariant` in `types.ts`,
+a `characterT` prop and an `.act-stage__path` wrapper in `ActPath`, and a `character`
+placement prop in `TrackMap`. `NodeCard` now calls `pointToPercent` instead of inlining
+the same two divisions.
+
+**Decided:**
+
+- **The character is HTML, not SVG.** `prompts/00-antigravity-assets.md` describes the
+  real thing as layered divs with `background-image`, `background-size: 400% 100%` and a
+  shared `steps(4)` animation. Drawing the placeholder as SVG shapes would have made the
+  sprite swap a rewrite of the positioning rather than of the drawing. It sits in an
+  overlay that shares the `<svg>`'s box, so it is still positioned by the one path
+  implementation — percentage of the same `viewBox`, exactly as `NodeCard` does.
+- **`facing` is optional, defaulting to the direction of travel.** `CONTEXT.md` section 9
+  says facing comes from the `atan2` of the path sample, but the frozen prop list includes
+  `facing`. Both hold: `facing ?? facingFromAngle(point.angle)`, so the prompt's literal
+  `facing="right"` still wins when passed. `facingFromAngle` puts ±90 on `'right'` rather
+  than leaving a third case to fall through.
+- **The bob runs only while `t` changes.** A walk cycle on a standing figure is ambient
+  motion, which section 8 bans outright; gated on movement it is motion showing a state
+  change, which section 8 allows. It is also what the sprite prompt asks for ("pause the
+  animation when `t` is not changing"), so the gate survives the swap. Nothing in this
+  spec moves `t` — spec 08 is the first caller that does, and is where the bob first
+  appears in the running app.
+- **`variant` is carried but not drawn.** Five skin tones would mean five colours that are
+  not in `theme.css`. The values ride along in `data-variant` attributes so the sheets have
+  something to key on; the placeholder geometry is variant-independent. Logged as T061.
+- **The character got its own wrapper around the `<svg>` (`.act-stage__path`).** Found by
+  measuring at 360px: below 640px `.act-stage__cards` drops to static flow, which makes
+  `.act-stage` several times taller than the path, and an overlay inset to the stage put
+  the walker's feet at 104.6% of the path's height — below its own act. Percentages now
+  resolve against the `<svg>`'s box at every width.
+- **Placement lives in `TrackMap`, not `Character`.** `TrackMap` decides which act hosts
+  the walker (`character?: { actId, t }`, defaulting to the first act at `t = 0`) so spec
+  08 can pass the progress frontier without touching the component.
+
+**Verified:** `npm run build` and `npx tsc --noEmit` both exit 0. Grepped every new/edited
+file for hex/`rgb(`/`hsl(`/gradient/`backdrop-filter`/`box-shadow`/`text-shadow`/
+`rounded-2xl`/default-palette tokens — the only hit is the comment in `character.css`
+saying `--accent` is deliberately not used. In a real Chrome tab: exactly one `.character`
+in the DOM across a 7-act `game` track and an 8-act `media` track, hosted by act 1 both
+times; its feet land on 9.17% / 19.73% of the act's `<svg>`, matching
+`getPointAtLength(0)` (110, 150) over the 1200×760 `viewBox` to two decimals, at both
+1440px and 360px; `document.elementFromPoint` through the character returns the `<svg>`
+underneath, so the overlay intercepts nothing. Imported the modules straight off the dev
+server to exercise the pure functions: `facingFromAngle` returned a facing for all 14 test
+angles including ±90 and ±180, and `pointToPercent` returned 0 (not `Infinity`) for a
+zero-sized viewBox. Mounted `Character` in a throwaway React root over a synthetic
+right-then-left path: `walking` was `false` on mount, `true` on the commit after a `t`
+change, still `true` 320ms after a change that arrived mid-settle (the timer restarts
+rather than stacking), `false` ~580ms later, and `facing` flipped to `left` on the
+leftward leg. Mounted `ActPath` with a zero-node act: bare path, no dots, no cards, the
+character still standing at t = 0.5 (50% / 51.67% of a straight test path); with
+`characterT` omitted, no character at all. `TrackMap` with an empty `acts` array rendered
+nothing and did not throw. The bob itself was verified through the CSSOM plus forced
+sampling — the test browser reports `prefers-reduced-motion: reduce`, which proved the
+reduced-motion rule live (computed `animation-name: none` with `data-walking="true"`), and
+with that rule overridden all three layers stepped between `translateY(0)` and
+`translateY(-2px)` in lockstep under one `character-step` animation. Zero console errors
+throughout.
+
+**Next session should know:**
+
+- **Spec 08's tween is the first thing that will ever move `t`.** Pass a changing `t` and
+  the bob starts itself — there is no flag to set. Feed the tween through `TrackMap`'s
+  `character` prop (`{ actId, t }`), not by editing `Character`; the component has no idea
+  what progress is and should stay that way.
+- `WALK_SETTLE_MS` (400ms) is how long the figure keeps walking after `t` stops changing.
+  A tween that updates less often than that will stutter between walk and idle; one that
+  updates per frame is fine.
+- The character's containing block is `.act-stage__path`, a wrapper holding only the
+  `<svg>`. Anything else that must sit on the path (spec 09's branch spurs, spec 08's
+  frontier marker) belongs in that wrapper too, not in `.act-stage__cards`, which is
+  `position: static` below 640px.
+- `pointToPercent` in `src/path/viewBox.ts` is now the one SVG-point → CSS-percentage
+  conversion; `NodeCard` and `Character` both call it. Do not inline a third copy.
+- The placeholder is deliberately variant-blind, and its legs are one block rather than
+  two (T061, T062). Both close themselves when the sheets land; neither is worth code now.
+- Left-side node cards overflow the frame horizontally at mid widths (~730px client
+  width) — pre-existing from spec 05, measured identical with the character overlay
+  hidden, logged as T060. Whoever next touches `cards.css` should take it.
+- The dev server for verification ran on port 5184 (5183 and 5199 were left untouched) and
+  was killed afterwards.
+
 ---
 
 ## 08 — Progress and fog of war
 
-**State:** `SPEC PENDING`  **Depends on:** 04, 05, 07
+**State:** `READY FOR DEVELOPMENT`  **Depends on:** 04, 05, 07
 
 Mark a node complete or incomplete; persist to localStorage. Fog of war is
 `stroke-dasharray` and `stroke-dashoffset` on the same path from spec 04. Completed glow is
@@ -554,7 +645,7 @@ Section 8 bans glow shadows and neon halos outright.
 
 ## 09 — The frontier branch
 
-**State:** `SPEC PENDING`  **Depends on:** 04, 05
+**State:** `READY FOR DEVELOPMENT`  **Depends on:** 04, 05
 
 Frontier nodes render as spurs off their `anchor` node, using the branch path geometry in
 `tracks.json`. Visually distinct from the main path and explicitly marked unproven. 23 of
@@ -634,3 +725,8 @@ Newest first. One line per state change. Whoever changes a state writes the line
   grouped by `kind`, star/commit/status/note metadata, no prose. No spec's dependencies
   changed — nothing else depends on 06 alone; spec 07 was already `READY FOR DEVELOPMENT`
   and spec 08 still waits on it.
+- 2026-08-18 — Spec 07 `DONE`. The character: frozen `t`/`facing`/`variant` props, a
+  code-drawn three-layer placeholder positioned by `usePathPoint`, and a two-state bob
+  gated on `t` actually changing. Spec 08 promoted `SPEC PENDING` → `READY FOR
+  DEVELOPMENT` (deps 04, 05, 07 all now `DONE`). Spec 09 promoted too — its deps (04, 05)
+  had been `DONE` since spec 05 landed and that cascade was missed at the time.

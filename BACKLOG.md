@@ -70,6 +70,20 @@ bottom rather than done inline.
 - [x] T049 — Verify: build, typecheck, browser (open/close, Escape+focus return, backdrop
       click, one dialog open at a time, 360px)
 
+## Spec 07 — The character
+
+- [x] T050 — Write `specs/spec-07-character.md`
+- [x] T051 — `src/types.ts` — `Facing`, `CharacterVariant`
+- [x] T052 — `src/path/pointAtT.ts` — `facingFromAngle`
+- [x] T053 — `src/path/viewBox.ts` — `pointToPercent`, and `NodeCard` uses it
+- [x] T054 — `src/hooks/useWalking.ts` — walk state from `t` changes, settles after 400ms
+- [x] T055 — `src/components/Character.tsx` — frozen props, three layers, feet on the path
+- [x] T056 — `src/components/ActPath.tsx` — `.act-stage__path` wrapper, `characterT` prop
+- [x] T057 — `src/components/TrackMap.tsx` — `character` placement, defaults to act 1 at t=0
+- [x] T058 — `src/styles/character.css` — placeholder geometry, `character-step` keyframes
+- [x] T059 — Verify: build, typecheck, browser (position vs path point, facing both ways,
+      walk start/restart/settle, reduced motion, 360px, zero-node act, zero-act track)
+
 ## Noticed, not done
 
 Appended by sessions that spotted work outside their one task. Do not do these inline.
@@ -85,3 +99,14 @@ Appended by sessions that spotted work outside their one task. Do not do these i
 - [x] T022 — `.track-row`/`.track-list` in `src/styles/shell.css` style a static index.
       Resolved in spec 03: `button.track-row` reset + `.track-row--selected` modifier
       added to `shell.css`, hover/focus states merged rather than duplicated.
+- [ ] T060 — Left-side node cards overflow the frame at mid widths. At ~730px client width
+      a `.node-card--left` sits at `left: -95px` and `scrollWidth` (867) exceeds
+      `clientWidth` (730). Pre-existing from spec 05, unrelated to the character (measured
+      identical with the character overlay hidden). Spec 05's own checks were at 360px and
+      full width, which both pass.
+- [ ] T061 — Nothing in the UI picks a `CharacterVariant`; `Character` falls back to
+      `DEFAULT_VARIANT` and the placeholder draws every variant identically. Whether the
+      learner ever chooses one is a product question for after the sprite sheets land.
+- [ ] T062 — The placeholder's legs are one block, not two. A gap would need either a
+      third pseudo-element per layer or a cut painted in `--surface-base` over the path
+      line; neither was worth it before real sprites.

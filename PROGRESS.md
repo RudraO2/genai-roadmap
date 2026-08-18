@@ -206,3 +206,50 @@ future spec needing a node's detail view outside `NodeCard` should reuse `NodeCa
 than rebuild panel wiring; `requires` (prerequisites) still isn't shown anywhere in the UI,
 out of this spec's scope by the spec board description; `--size-title` is now used for the
 first time, closing `BACKLOG.md` T021.
+
+---
+
+## Spec 07 — The character — 2026-08-18
+
+**Did:** Put a walker on the path. `Character` takes the three props
+`prompts/00-antigravity-assets.md` freezes — `t`, `facing`, `variant` — reads its position
+from `usePathPoint(t)` and nothing else, and draws a code-drawn placeholder as three
+stacked layers in the sprite compositing order (body → outfit → hair). `useWalking` derives
+a walk state from `t` changing, so the two-state bob runs only while the figure is actually
+moving. Supporting pieces: `facingFromAngle` in `pointAtT.ts`, `pointToPercent` in
+`viewBox.ts` (now shared with `NodeCard`), `Facing`/`CharacterVariant` in `types.ts`, a
+`characterT` prop plus an `.act-stage__path` wrapper in `ActPath`, and a `character`
+placement prop in `TrackMap` that defaults to the first act at `t = 0`.
+
+**Decided:** HTML layers, not SVG shapes — the sprite version is layered `background-image`
+divs, so an SVG placeholder would have turned the swap into a positioning rewrite. `facing`
+stays in the signature but is optional, defaulting to `facingFromAngle(point.angle)`, which
+satisfies both the frozen prop list and `CONTEXT.md` section 9's "atan2 the delta for facing
+direction". The bob is gated on `t` changing because a walk cycle on a standing figure is
+ambient motion, which section 8 bans; gated, it is motion showing a state change, which
+section 8 allows — and it is what the sprite prompt asks for anyway. `variant` is carried in
+`data-*` attributes but not drawn: five skin tones would be five colours that are not in
+`theme.css`. Full reasoning in the spec 07 session notes in `State of the project.md`.
+
+**Verified:** `npm run build` and `npx tsc --noEmit` both exit 0. No hardcoded colour, no
+`--accent` use, no banned effect in any new or edited file. In a real Chrome tab: exactly
+one character in the DOM per track, hosted by act 1, feet landing on the act's
+`getPointAtLength(0)` to two decimal places at both 1440px and 360px, and clicks passing
+straight through the overlay to the `<svg>` underneath. Modules imported off the dev server
+to exercise the pure functions (`facingFromAngle` total over 14 angles including ±90;
+`pointToPercent` returning 0 rather than `Infinity` on a zero-sized viewBox), plus throwaway
+React roots to drive what the app itself cannot yet: a changing `t` (walk starts on the next
+commit, restarts rather than stacks mid-settle, stops ~400ms after the last change, flips
+facing on the leftward leg), a zero-node act (bare path, character still standing), and an
+empty-`acts` track (renders nothing, no throw). The one real bug found in review: at 360px
+the card overlay goes static and makes `.act-stage` far taller than the `<svg>`, which put
+the character's feet at 104.6% of the path's height — fixed by giving the `<svg>` its own
+wrapper for the character to inset against.
+
+**Next iteration should know:** everything under "Next session should know" in the spec 07
+notes in `State of the project.md`. Short version: spec 08's tween is the first thing that
+will ever move `t`, and moving it is all that is needed to start the bob; drive it through
+`TrackMap`'s `character` prop rather than editing `Character`; anything else that must stand
+on the path belongs in `.act-stage__path`, not the card overlay; `pointToPercent` is the one
+SVG-point → percentage conversion and should not be inlined a third time; and T060 records a
+pre-existing spec 05 overflow of left-side cards at mid viewport widths.

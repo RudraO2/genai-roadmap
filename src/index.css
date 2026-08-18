@@ -27,6 +27,7 @@
 @import './styles/path.css';
 @import './styles/cards.css';
 @import './styles/panel.css';
+@import './styles/character.css';
 
 @theme {
   /* Colour: the entire default palette, deleted. theme.css is the only source. */

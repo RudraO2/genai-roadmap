@@ -1,0 +1,154 @@
+/**
+ * character.css — spec 07's walker. @layer components, tokens only.
+ *
+ * A code-drawn placeholder: six flat rectangles across three layers — hard
+ * edges, no rounding, no glow. It reads as a figure at a glance and as a printer's dingbat up
+ * close, which is the register CONTEXT.md section 8 asks for. `--accent` is not
+ * used — the character is not a state, and the accent stays reserved for spec
+ * 08's completed-progress stroke.
+ *
+ * Every rule below is geometry the layered sprite sheets replace wholesale
+ * (`prompts/00-antigravity-assets.md`): three layers, one shared
+ * `animation-name`, positioning owned by the wrapper so a sheet swap never
+ * touches the path-following maths.
+ */
+
+@layer components {
+  /* The character's frame is the `<svg>` alone, never `.act-stage` — below
+   * 640px the stage also contains the stacked cards and is much taller than
+   * the path, which would drop the walker off the bottom of its own act. */
+  .act-stage__path {
+    position: relative;
+  }
+
+  .act-stage__character {
+    position: absolute;
+    inset: 0;
+    /* Decorative. It must never eat a click aimed at a card underneath. */
+    pointer-events: none;
+  }
+
+  .character {
+    position: absolute;
+    width: calc(var(--space-unit) * 8);
+    height: calc(var(--space-unit) * 12);
+    /* Feet on the path point: bottom-centre anchor, not centred on it. */
+    transform: translate(-50%, -100%);
+  }
+
+  /* No left-facing artwork, ever — the right-facing figure mirrored. */
+  .character[data-facing='left'] {
+    transform: translate(-50%, -100%) scaleX(-1);
+  }
+
+  .character__layer {
+    position: absolute;
+    inset: 0;
+    animation: none;
+  }
+
+  /* ---- body: head and legs ---------------------------------------------
+   * Proportions do the work a placeholder can't get from artwork: a small
+   * square head over a wider torso over narrower legs reads as a figure at
+   * map scale, where four equal bars read as a domino.
+   */
+
+  .character__layer--body::before,
+  .character__layer--body::after {
+    content: '';
+    position: absolute;
+    background: var(--text-primary);
+  }
+
+  .character__layer--body::before {
+    top: 0;
+    left: calc(var(--space-unit) * 3);
+    width: calc(var(--space-unit) * 2.5);
+    height: calc(var(--space-unit) * 2.5);
+  }
+
+  .character__layer--body::after {
+    bottom: 0;
+    left: calc(var(--space-unit) * 2.75);
+    width: calc(var(--space-unit) * 2.5);
+    height: calc(var(--space-unit) * 5.5);
+  }
+
+  /* ---- outfit: torso, and one arm forward ------------------------------
+   * The arm is the only asymmetric part. It is what makes the scaleX(-1)
+   * mirror legible as a turn rather than as no change at all.
+   */
+
+  .character__layer--outfit::before,
+  .character__layer--outfit::after {
+    content: '';
+    position: absolute;
+    background: var(--text-secondary);
+  }
+
+  .character__layer--outfit::before {
+    top: calc(var(--space-unit) * 2.5);
+    left: calc(var(--space-unit) * 2.25);
+    width: calc(var(--space-unit) * 3.5);
+    height: calc(var(--space-unit) * 4);
+  }
+
+  .character__layer--outfit::after {
+    top: calc(var(--space-unit) * 3.25);
+    left: calc(var(--space-unit) * 5.25);
+    width: var(--space-unit);
+    height: calc(var(--space-unit) * 2.5);
+  }
+
+  /* ---- hair: crown bar and a tail behind -------------------------------- */
+
+  .character__layer--hair::before,
+  .character__layer--hair::after {
+    content: '';
+    position: absolute;
+    background: var(--text-muted);
+  }
+
+  .character__layer--hair::before {
+    top: 0;
+    left: calc(var(--space-unit) * 2.75);
+    width: calc(var(--space-unit) * 2.75);
+    height: var(--space-unit);
+  }
+
+  .character__layer--hair::after {
+    top: var(--space-unit);
+    left: calc(var(--space-unit) * 2.75);
+    width: calc(var(--space-unit) * 0.75);
+    height: calc(var(--space-unit) * 1.75);
+  }
+
+  /* ---- the two-state bob -----------------------------------------------
+   * Runs only while `t` is changing (useWalking). A walk cycle on a standing
+   * figure would be ambient motion, which section 8 bans; this is motion
+   * showing a state change, which it allows. One animation-name across all
+   * three layers is what keeps future sprite sheets frame-locked.
+   */
+  @keyframes character-step {
+    0%,
+    49.999% {
+      transform: translateY(0);
+    }
+
+    50%,
+    100% {
+      transform: translateY(calc(var(--hairline) * -2));
+    }
+  }
+
+  .character[data-walking='true'] .character__layer {
+    /* Two discrete states, so the step function is the easing. */
+    animation: character-step calc(var(--dur-state) * 3) steps(1, end) infinite;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .character[data-walking='true'] .character__layer {
+      animation: none;
+    }
+  }
+}
