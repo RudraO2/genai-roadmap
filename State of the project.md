@@ -50,7 +50,7 @@ spec at a time, inside the session that builds it.
 | # | File | State | Depends on |
 | --- | --- | --- | --- |
 | 01 | `specs/spec-01-schema.md` | `DONE` | — |
-| 02 | `specs/spec-02-shell.md` | `READY FOR DEVELOPMENT` | 01 |
+| 02 | `specs/spec-02-shell.md` | `IN PROGRESS` | 01 |
 | 03 | `specs/spec-03-intake.md` | `SPEC PENDING` | 01, 02 |
 | 04 | `specs/spec-04-path.md` | `SPEC PENDING` | 01, 02 |
 | 05 | `specs/spec-05-cards.md` | `SPEC PENDING` | 01, 04 |
@@ -136,7 +136,7 @@ warnings; a 45-case corruption suite confirms every rule code fires.
 
 ## 02 — Visual shell: theme, type scale, app frame
 
-**State:** `READY FOR DEVELOPMENT`  **Depends on:** 01
+**State:** `IN PROGRESS`  **Depends on:** 01
 
 Vite + React + TypeScript scaffold. One `theme.css` holding every colour and type custom
 property so the whole aesthetic is swappable in one file. Serif display face plus mono for
