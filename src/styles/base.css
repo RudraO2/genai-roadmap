@@ -13,14 +13,14 @@
   }
 
   html {
-    color-scheme: dark;
+    color-scheme: light;
   }
 
   body {
     margin: 0;
     background: var(--surface-base);
     color: var(--text-primary);
-    font-family: var(--font-mono);
+    font-family: var(--font-body);
     font-size: var(--size-body);
     line-height: var(--leading-body);
     -webkit-font-smoothing: antialiased;
@@ -44,13 +44,16 @@
   }
 
   ::selection {
-    background: var(--accent);
-    color: var(--surface-base);
+    background: var(--paper-lime);
+    color: var(--text-primary);
   }
 
+  /* The focus ring is ink, not accent: the accent means done/here/go, and a ring
+   * that borrowed it would say "here" about whatever the keyboard happens to be
+   * on. Ink at 3px is louder than the accent was anyway, on paper. */
   :focus-visible {
-    outline: 2px solid var(--accent);
-    outline-offset: 3px;
+    outline: var(--rule-thick) solid var(--surface-road);
+    outline-offset: 2px;
   }
 
   @media (prefers-reduced-motion: reduce) {

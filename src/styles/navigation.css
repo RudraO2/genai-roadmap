@@ -2,13 +2,13 @@
  * navigation.css — spec 10's act nav, pager and overview. @layer components,
  * tokens only.
  *
- * Three bars of mono text and one column of rows. Nothing here is a card: the
- * only structure is the hairline, which is what `CONTEXT.md` section 8 asks for
- * ("hairline rules instead of card borders", "hard edges by default").
+ * Two bars of mono controls and one column of rows. Structure is 2px ink rules,
+ * which is what `CONTEXT.md` section 8 asks for after the spec 13 amendment —
+ * hairlines were the dark-terminal identity and read as dirt on paper.
  *
  * The accent appears once in this file, on the overview row for the act the
- * learner is standing in. Hover is `--text-muted` instead, deliberately: if the
- * pointer could produce the accent, the accent would stop meaning "here".
+ * learner is standing in. Hover is ink instead, deliberately: if the pointer
+ * could produce the accent, the accent would stop meaning "here".
  */
 
 @layer components {
@@ -30,13 +30,14 @@
     flex-wrap: wrap;
     align-items: baseline;
     gap: calc(var(--space-unit) * 2) calc(var(--space-unit) * 8);
-    padding-bottom: calc(var(--space-unit) * 4);
-    margin-bottom: calc(var(--space-unit) * 12);
-    border-bottom: var(--hairline) solid var(--rule);
+    padding-bottom: calc(var(--space-unit) * 3);
+    margin-bottom: calc(var(--space-unit) * 8);
+    border-bottom: var(--rule-strong) solid var(--rule);
   }
 
   .act-nav__position {
-    font-size: var(--size-micro);
+    font-family: var(--font-mono);
+    font-size: var(--size-nano);
     letter-spacing: var(--tracking-caps);
     text-transform: uppercase;
     color: var(--text-muted);
@@ -44,39 +45,39 @@
     white-space: nowrap;
   }
 
-  /* Underlined mono text, the same affordance as the masthead's change control.
-   * Not a button shape: a bar of three pill buttons is the launch-page look
-   * section 8 rules out. */
+  /* An ink-bordered paper chip, the same surface as every other control on the
+   * page. What section 8 rules out is a *centred hero* of pill buttons, not a
+   * control that looks like the paper it sits on. */
   .act-nav__link {
-    background: none;
-    border: none;
-    padding: 0;
-    font: inherit;
-    font-size: var(--size-micro);
+    background: var(--surface-raised);
+    border: var(--rule-strong) solid var(--surface-road);
+    border-radius: var(--radius-badge);
+    padding: calc(var(--space-unit) * 1) calc(var(--space-unit) * 3);
+    font-family: var(--font-mono);
+    font-size: var(--size-nano);
+    font-weight: var(--weight-bold);
     letter-spacing: var(--tracking-caps);
     text-transform: uppercase;
-    color: var(--text-secondary);
+    color: var(--text-primary);
     cursor: pointer;
-    text-decoration: underline;
-    text-underline-offset: 0.2em;
-    transition: color var(--dur-state) var(--ease-state);
+    transition: background-color var(--dur-state) var(--ease-state);
   }
 
   .act-nav__link:hover {
-    color: var(--text-primary);
+    background: var(--paper-lime);
   }
 
   /* Where the learner actually is, so it is allowed the accent — the same
    * meaning it carries on the dot, the stroke and the overview row. */
   .act-nav__link--standing {
-    color: var(--accent);
+    background: var(--accent);
   }
 
-  /* Holds the accent through hover, which the rule above it would otherwise
-   * take back to off-white — a control that dims when pointed at reads as
-   * disabled. */
+  /* Holds the accent through hover, which the rule above it would otherwise take
+   * to lime — a control that changes what it means when pointed at is worse than
+   * one that does not react at all. */
   .act-nav__link--standing:hover {
-    color: var(--accent);
+    background: var(--accent);
   }
 
   /* ---- Act pager (bottom) ----------------------------------------------- */
@@ -85,9 +86,9 @@
     display: flex;
     flex-wrap: wrap;
     gap: calc(var(--space-unit) * 6);
-    margin-top: calc(var(--space-unit) * 16);
-    padding-top: calc(var(--space-unit) * 6);
-    border-top: var(--hairline) solid var(--rule);
+    margin-top: calc(var(--space-unit) * 12);
+    padding-top: calc(var(--space-unit) * 5);
+    border-top: var(--rule-strong) solid var(--rule);
   }
 
   .act-pager__step {
@@ -116,7 +117,8 @@
   }
 
   .act-pager__direction {
-    font-size: var(--size-micro);
+    font-family: var(--font-mono);
+    font-size: var(--size-nano);
     letter-spacing: var(--tracking-caps);
     text-transform: uppercase;
     color: var(--text-muted);
@@ -124,7 +126,9 @@
 
   .act-pager__act {
     font-family: var(--font-display);
-    font-size: var(--size-lead);
+    font-size: var(--size-card-title);
+    font-weight: var(--weight-black);
+    letter-spacing: var(--tracking-tight);
     line-height: var(--leading-tight);
     color: var(--text-secondary);
     transition: color var(--dur-state) var(--ease-state);
@@ -144,11 +148,11 @@
 
   .overview {
     list-style: none;
-    border-top: var(--hairline) solid var(--rule);
+    border-top: var(--rule-strong) solid var(--rule);
   }
 
   .overview__item {
-    border-bottom: var(--hairline) solid var(--rule);
+    border-bottom: var(--rule-strong) solid var(--rule);
   }
 
   .overview__act {
@@ -160,17 +164,20 @@
     width: 100%;
     background: none;
     border: none;
-    border-left: calc(var(--hairline) * 3) solid transparent;
-    padding: calc(var(--space-unit) * 6) 0 calc(var(--space-unit) * 6)
+    border-left: var(--rule-thick) solid transparent;
+    padding: calc(var(--space-unit) * 5) 0 calc(var(--space-unit) * 5)
       calc(var(--space-unit) * 4);
     font: inherit;
     text-align: left;
     cursor: pointer;
-    transition: border-left-color var(--dur-state) var(--ease-state);
+    transition:
+      border-left-color var(--dur-state) var(--ease-state),
+      background-color var(--dur-state) var(--ease-state);
   }
 
   .overview__act:hover {
-    border-left-color: var(--text-muted);
+    border-left-color: var(--surface-road);
+    background: var(--surface-raised);
   }
 
   /* The one accent in this file. It means the same thing it means everywhere
@@ -189,9 +196,11 @@
 
   .overview__kicker {
     display: flex;
-    gap: calc(var(--space-unit) * 4);
+    gap: calc(var(--space-unit) * 3);
     align-items: baseline;
-    font-size: var(--size-micro);
+    font-family: var(--font-mono);
+    font-size: var(--size-nano);
+    font-weight: var(--weight-bold);
     letter-spacing: var(--tracking-caps);
     text-transform: uppercase;
   }
@@ -202,12 +211,13 @@
 
   /* Said in words as well as in colour, so the state does not depend on hue. */
   .overview__here {
-    color: var(--accent);
+    color: var(--accent-ink);
   }
 
   .overview__title {
     font-family: var(--font-display);
     font-size: var(--size-title);
+    font-weight: var(--weight-black);
     line-height: var(--leading-tight);
     letter-spacing: var(--tracking-tight);
     color: var(--text-primary);
@@ -222,7 +232,8 @@
 
   .overview__tally {
     margin-top: calc(var(--space-unit) * 1);
-    font-size: var(--size-micro);
+    font-family: var(--font-mono);
+    font-size: var(--size-nano);
     letter-spacing: var(--tracking-caps);
     text-transform: uppercase;
     color: var(--text-muted);
@@ -231,10 +242,13 @@
   /* Zoomed out, and fixed at that size: "zoomed-out" is a smaller drawing, not a
    * gesture surface. Shrinks with the viewport so the row can still put the text
    * and the map side by side down to the point where they wrap. */
+  /* Narrower than it was, because spec 13's curves are portrait: an 11rem-wide
+   * miniature of a 1400x1600 act stood 12.5rem tall and set the height of every
+   * row in the list. */
   .overview__mini {
     display: block;
     flex: 0 1 auto;
-    width: min(11rem, 34vw);
+    width: min(6.5rem, 22vw);
   }
 
   .overview-map {
@@ -259,11 +273,13 @@
      * path only ~480 long. Every miniature then drew an arbitrary slice of
      * itself in the accent and the progress clip said nothing. The dash is in
      * user units, so the width has to be too. */
-    stroke-width: calc(var(--hairline) * 10);
+    stroke-width: calc(var(--hairline) * 22);
+    stroke-linecap: round;
+    stroke-linejoin: round;
   }
 
   .overview-map__line {
-    stroke: var(--rule);
+    stroke: var(--surface-road);
   }
 
   .overview-map__reached,
@@ -275,6 +291,10 @@
    * (`path.css`): the road, the stretch reached, the stretch walked painted over
    * it. A miniature that read differently from the act it stands for would be
    * worse than no miniature. */
+  /* At this size the act's inset progress stroke is noise: 12 units of green
+   * inside 22 of ink is under a pixel of each, and the miniature reads as a
+   * hollow outline rather than a road. Here the progress strokes are the full
+   * gauge and paint the ink out completely. Same three meanings, one scale down. */
   .overview-map__reached {
     stroke: var(--accent);
   }

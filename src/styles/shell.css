@@ -2,21 +2,39 @@
  * shell.css — the shell's own classes. @layer components, tokens only.
  *
  * Owns the app frame (masthead / main / colophon), the Section heading pattern,
- * and the track-index rows App.tsx renders. No other spec should add classes
+ * and the track-index rows Intake renders. No other spec should add classes
  * here — a later spec that needs its own component styling gets its own file.
+ *
+ * Spec 13 repainted every rule in here for the paper-roadmap identity. Two things
+ * that were in this file are deliberately gone and must not come back:
+ *
+ *   - `.shell__wordmark::before { content: 'LANE' }`. A brand from a reference
+ *     site, injected through CSS. A wordmark is content; it lives in Shell.tsx.
+ *   - `.section__title` as a lilac-highlighted serif at `max-width: 13ch`. The
+ *     highlight was decoration, the serif is retired, and the 13ch clamp broke
+ *     every title longer than two words.
  */
 
 @layer components {
-  /* ---- Skip link ---------------------------------------------------- */
+  /* ---- Skip link ----------------------------------------------------------
+   * A paper tab that drops in from above the fold. Ink border, so it reads as a
+   * physical thing landing on the page rather than as a tooltip.
+   */
 
   .shell__skip-link {
     position: absolute;
     left: var(--gutter);
     top: calc(var(--space-unit) * -20);
-    background: var(--surface-raised);
+    background: var(--paper-lime);
     color: var(--text-primary);
+    border: var(--rule-strong) solid var(--surface-road);
+    border-radius: var(--radius-paper);
     padding: calc(var(--space-unit) * 3) calc(var(--space-unit) * 4);
-    font-size: var(--size-meta);
+    font-family: var(--font-mono);
+    font-size: var(--size-micro);
+    font-weight: var(--weight-bold);
+    letter-spacing: var(--tracking-caps);
+    text-transform: uppercase;
     z-index: 10;
     transition: top var(--dur-state) var(--ease-state);
   }
@@ -39,24 +57,48 @@
   .shell__masthead {
     display: flex;
     flex-wrap: wrap;
-    align-items: baseline;
+    align-items: center;
     justify-content: space-between;
-    gap: calc(var(--space-unit) * 3) calc(var(--space-unit) * 6);
-    padding-block: calc(var(--space-unit) * 6);
-    border-bottom: var(--hairline) solid var(--rule);
+    gap: calc(var(--space-unit) * 3) calc(var(--space-unit) * 5);
+    padding-block: calc(var(--space-unit) * 5);
+    border-bottom: var(--rule-strong) solid var(--rule);
   }
 
+  /* The wordmark: an ink chip holding the project's initials, then its name in
+   * the display face. Both are real elements in Shell.tsx. */
   .shell__wordmark {
+    display: inline-flex;
+    align-items: center;
+    gap: calc(var(--space-unit) * 3);
+    font-family: var(--font-display);
+    font-size: var(--size-lead);
+    font-weight: var(--weight-black);
+    letter-spacing: var(--tracking-tight);
+    color: var(--text-primary);
+    margin-right: auto;
+  }
+
+  .shell__mark {
+    background: var(--surface-road);
+    color: var(--text-inverse);
+    border-radius: var(--radius-paper);
+    padding: calc(var(--space-unit) * 1) calc(var(--space-unit) * 2);
     font-family: var(--font-mono);
-    font-size: var(--size-meta);
+    font-size: var(--size-micro);
     font-weight: var(--weight-bold);
     letter-spacing: var(--tracking-caps);
-    text-transform: uppercase;
-    color: var(--text-primary);
   }
 
+  /* A counter, so it is set as an instrument reading: mono, on its own paper
+   * chip, ink-bordered like everything else that sits on the page. */
   .shell__masthead-meta {
-    font-size: var(--size-micro);
+    background: var(--surface-raised);
+    border: var(--rule-strong) solid var(--surface-road);
+    border-radius: var(--radius-badge);
+    padding: calc(var(--space-unit) * 1) calc(var(--space-unit) * 3);
+    font-family: var(--font-mono);
+    font-size: var(--size-nano);
+    font-weight: var(--weight-bold);
     color: var(--text-secondary);
     letter-spacing: var(--tracking-caps);
     text-transform: uppercase;
@@ -65,20 +107,26 @@
 
   .shell__main {
     flex: 1;
-    padding-block: calc(var(--space-unit) * 12);
+    padding-block: clamp(2.5rem, 5vw, 4.5rem);
   }
 
   .shell__colophon {
-    border-top: var(--hairline) solid var(--rule);
-    padding-block: calc(var(--space-unit) * 6);
-    font-size: var(--size-micro);
+    border-top: var(--rule-strong) solid var(--rule);
+    padding-block: calc(var(--space-unit) * 5);
+    font-family: var(--font-mono);
+    font-size: var(--size-nano);
+    letter-spacing: var(--tracking-caps);
+    text-transform: uppercase;
     color: var(--text-muted);
   }
 
-  /* ---- Section heading pattern ---------------------------------------- */
+  /* ---- Section heading pattern ----------------------------------------
+   * Mono kicker on an ink chip, display title, body standfirst. Three faces,
+   * three jobs, in the smallest possible space.
+   */
 
   .section {
-    margin-bottom: calc(var(--space-unit) * 16);
+    margin-bottom: calc(var(--space-unit) * 14);
   }
 
   .section:last-child {
@@ -86,106 +134,159 @@
   }
 
   .section__kicker {
-    display: flex;
-    gap: calc(var(--space-unit) * 3);
+    display: inline-flex;
+    gap: calc(var(--space-unit) * 2);
     align-items: baseline;
-    font-size: var(--size-micro);
+    background: var(--surface-road);
+    color: var(--text-inverse);
+    border-radius: var(--radius-paper);
+    padding: calc(var(--space-unit) * 1) calc(var(--space-unit) * 2);
+    font-family: var(--font-mono);
+    font-size: var(--size-nano);
+    font-weight: var(--weight-bold);
     letter-spacing: var(--tracking-caps);
     text-transform: uppercase;
-    color: var(--text-muted);
     margin-bottom: calc(var(--space-unit) * 3);
   }
 
+  /* The index is the quieter half of the chip, so it steps back one value
+   * rather than getting its own colour. */
   .section__kicker-index {
-    color: var(--text-secondary);
+    color: var(--paper-lime);
   }
 
   .section__title {
     font-family: var(--font-display);
     font-size: var(--size-display);
-    font-weight: var(--weight-regular);
+    font-weight: var(--weight-black);
     letter-spacing: var(--tracking-tight);
     line-height: var(--leading-tight);
     color: var(--text-primary);
+    text-wrap: balance;
   }
 
   .section__standfirst {
     font-size: var(--size-lead);
+    line-height: var(--leading-snug);
     color: var(--text-secondary);
     margin-top: calc(var(--space-unit) * 3);
     max-width: var(--measure);
   }
 
   .section__body {
-    margin-top: calc(var(--space-unit) * 8);
+    margin-top: calc(var(--space-unit) * 7);
   }
 
   /* ---- Track index ------------------------------------------------------
-   * Static rows, not links or buttons (spec 03 owns selection). The left
-   * border is the one hover marker CONTEXT.md section 8 allows: accent means
-   * "here", spent only on the row the pointer is currently over.
+   * Four cards, one per track, in a responsive equal-column grid. Not a bento:
+   * every cell is the same size and the sequence still reads 01 → 04.
+   *
+   * Each track's paper is fixed to its id, not to its position in the list —
+   * section 8 bans colour by `nth-child`, and a track keeps its colour if the
+   * registry ever reorders. The number chip inside is ink so the paper stays
+   * legible behind it.
    */
 
   .track-list {
     list-style: none;
-    border-top: var(--hairline) solid var(--rule);
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr));
+    gap: calc(var(--space-unit) * 4);
+  }
+
+  .track-list > li {
+    display: flex;
   }
 
   .track-row {
+    position: relative;
     display: flex;
-    flex-wrap: wrap;
-    align-items: baseline;
-    gap: calc(var(--space-unit) * 2) calc(var(--space-unit) * 6);
-    padding: calc(var(--space-unit) * 6) 0 calc(var(--space-unit) * 6)
-      calc(var(--space-unit) * 4);
-    border-bottom: var(--hairline) solid var(--rule);
-    border-left: calc(var(--hairline) * 3) solid transparent;
-    transition: border-left-color var(--dur-state) var(--ease-state);
-  }
-
-  .track-row:hover {
-    border-left-color: var(--accent);
-  }
-
-  /* Spec 03: a <button class="track-row"> replaces the static <li> when the row
-   * is selectable. Reset the button chrome so it renders identically to the
-   * static row it replaces; keep every layout/colour rule above shared. */
-  button.track-row {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: calc(var(--space-unit) * 2);
     width: 100%;
-    background: none;
-    border-top: none;
-    border-right: none;
+    padding: calc(var(--space-unit) * 4);
+    background: var(--surface-raised);
+    border: var(--rule-strong) solid var(--surface-road);
+    border-radius: var(--radius-paper);
     font: inherit;
     text-align: left;
     cursor: pointer;
+    /* The lift. See the note at .node-card in cards.css for why this is a
+     * zero-blur drop-shadow and not box-shadow or a pseudo-element. */
+    filter: drop-shadow(var(--lift) var(--lift) 0 var(--surface-road));
+    transition:
+      transform var(--dur-state) var(--ease-state),
+      filter var(--dur-state) var(--ease-state);
+  }
+
+  .track-row[data-track='game'] {
+    background: var(--paper-lime);
+  }
+
+  .track-row[data-track='app'] {
+    background: var(--paper-blue);
+  }
+
+  .track-row[data-track='portfolio'] {
+    background: var(--paper-lilac);
+  }
+
+  .track-row[data-track='media'] {
+    background: var(--paper-orange);
+  }
+
+  .track-row:hover,
+  .track-row--selected {
+    transform: translate(calc(var(--lift) * -1), calc(var(--lift) * -1));
+    filter: drop-shadow(
+      calc(var(--lift) * 2) calc(var(--lift) * 2) 0 var(--surface-road)
+    );
   }
 
   .track-row--selected {
-    border-left-color: var(--accent);
+    border-width: var(--rule-thick);
   }
 
   .track-row__id {
-    font-size: var(--size-meta);
-    color: var(--text-muted);
-    min-width: 2ch;
+    font-family: var(--font-mono);
+    font-size: var(--size-nano);
+    font-weight: var(--weight-bold);
+    letter-spacing: var(--tracking-caps);
+    background: var(--surface-road);
+    color: var(--text-inverse);
+    border-radius: var(--radius-paper);
+    padding: calc(var(--space-unit) * 1) calc(var(--space-unit) * 2);
   }
 
   .track-row__title {
     font-family: var(--font-display);
-    font-size: var(--size-lead);
+    font-size: var(--size-card-title);
+    font-weight: var(--weight-black);
+    letter-spacing: var(--tracking-tight);
+    line-height: var(--leading-tight);
     color: var(--text-primary);
-    flex: 1 1 12rem;
   }
 
   .track-row__destination {
-    font-size: var(--size-body);
+    font-size: var(--size-meta);
+    line-height: var(--leading-snug);
     color: var(--text-secondary);
-    flex: 2 1 16rem;
   }
 
   .track-row__meta {
-    font-size: var(--size-meta);
-    color: var(--text-muted);
-    white-space: nowrap;
+    margin-top: auto;
+    padding-top: calc(var(--space-unit) * 2);
+    font-family: var(--font-mono);
+    font-size: var(--size-nano);
+    letter-spacing: var(--tracking-caps);
+    text-transform: uppercase;
+    color: var(--text-secondary);
+  }
+
+  /* Selection said in words as well as in shape, for anyone who cannot see the
+   * 1px border-width change or the 3px lift. */
+  .track-row--selected .track-row__id::after {
+    content: ' / picked';
   }
 }

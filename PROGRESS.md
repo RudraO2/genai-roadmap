@@ -538,3 +538,55 @@ workflow has never run, because this repo has no remote and Pages has to be swit
 "GitHub Actions" source by hand before a first push will publish.
 
 Every spec is now `DONE`. There is no `READY FOR DEVELOPMENT` work left on the board.
+
+---
+
+## Spec 13 — Visual overhaul: the paper roadmap — 2026-08-19
+
+**Did:** Took the tree as a previous non-Ralph session (Codex) had left it — an uncommitted
+half-finished repaint — and turned it into the identity the owner actually asked for. Amended
+`CONTEXT.md` section 8 under the owner's authorisation (dark terminal → paper roadmap), wrote
+`specs/spec-13-visual-overhaul.md`, vendored Gabarito and Space Grotesk, deleted Instrument
+Serif, rewrote `theme.css`, rewrote the act curves in `data/tracks.json` as portrait
+serpentines, added `src/path/pockets.ts`, and repainted all eleven stylesheets and six
+components.
+
+**Decided:**
+
+- Codex's defects were mostly structural, not cosmetic, and are listed in the spec's "Why
+  this spec exists". The one worth repeating: a card centred on its path point *cannot* avoid
+  the road it is centred on, so this was never a colour problem.
+- Card placement is a scored search, not a formula. The first version took the first
+  candidate as a fallback and laid cards flat across the road on crowded acts — measurably
+  worse than candidates it had already rejected. It now takes the lowest-scoring candidate:
+  road hits dominate, card overlap is area, clamping is the mildest fault.
+- The act curves had to change. Measured on the old landscape box: bands 230 units, cards
+  205–256. No solver could have won. Portrait curves with 420-unit spacing and 240-unit outer
+  margins are sized off the card, and the note in `tracks.json` says so.
+- Card paper is keyed to the first link's `kind`, not to level, because the acts ramp and
+  level-as-paper made every screen monochrome. The card prints the kind in words too.
+- The pocket breakpoint is derived, not chosen. Cards have a 224px floor, so they grow in
+  viewBox units as the stage narrows; two stop fitting in a band under an 1157px stage, which
+  is 78rem of viewport.
+- Kept the walk-cycle sprite Codex introduced. `CONTEXT.md` section 9 always said sprites
+  would arrive behind the frozen `<Character t facing variant />` interface, and this one
+  does. Resized it as a percentage of its stage, because a rem-sized figure stood four times
+  taller than the road on a phone.
+- The paper lift is a zero-blur `drop-shadow`. `box-shadow` is gate-banned; an offset
+  pseudo-element renders *over* the card, because `rotate` makes the card a stacking context.
+
+**Verified:** `npm run build` and `npx tsc --noEmit` both exit 0; the theme gate reports 0
+violations and 0 warnings; the output gate 0 problems. In a real Chrome tab, by sampling each
+act's path in the live DOM rather than comparing bounding boxes: all eight acts of `portfolio`
+— which is the only track that exercises all six curve/node-count combinations — have zero
+card-on-road intersections and zero card-on-card overlaps at 1440px and at 1280px, with zero
+horizontal document overflow. At 1024px, 760px and 390px the stacked list is in force with
+nothing clipped. Every card's `data-paper` matches the kind printed on it, frontier cards are
+dashed and main cards are not (13 cards checked on one act). `LANE` and `Instrument` appear
+nowhere in `dist/`, and no `nth-child` colour rule exists in `src/styles/`.
+
+**Next iteration should know:** everything under "Next session should know" in the spec 13
+notes in `State of the project.md`. The short version: the pocket solver is load-bearing and
+so is the curve geometry it was sized against; colour is keyed to link kind; SVG lengths are
+user units, not page lengths.
+

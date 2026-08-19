@@ -23,15 +23,14 @@ export interface CharacterProps {
 }
 
 /**
- * The walker. Code-drawn geometric placeholder standing at `t` on its act's
- * path, positioned through `usePathPoint` and nothing else.
+ * The walker. A sprite-backed character standing at `t` on its act's path,
+ * positioned through `usePathPoint` and nothing else.
  *
  * The props `t`, `facing` and `variant` are frozen by
- * `prompts/00-antigravity-assets.md`: layered sprite sheets arrive later and
- * must slot in behind this exact signature. That is why the figure is three
- * stacked HTML layers in the sheet order (body → outfit → hair) sharing one
- * `animation-name`, rather than SVG shapes — the swap then changes what a layer
- * is painted with, not how it is positioned or animated.
+ * `prompts/00-antigravity-assets.md`, so alternate sheets can arrive without
+ * changing the path-following interface. The first production asset is a
+ * single composited four-frame sheet; later layered variants can replace its
+ * inner element while retaining this wrapper and its coordinates.
  */
 export function Character({
   t,
@@ -54,9 +53,10 @@ export function Character({
 
   return (
     <div className="character" style={position} data-facing={resolvedFacing} data-walking={walking}>
-      <div className="character__layer character__layer--body" data-variant={variant.body} />
-      <div className="character__layer character__layer--outfit" data-variant={variant.outfit} />
-      <div className="character__layer character__layer--hair" data-variant={variant.hair} />
+      {/* Keep the public variant input while the first production sheet is a
+          unified character. Additional body/outfit/hair sheets can still slot
+          in here later without changing the path-following contract. */}
+      <div className="character__sprite" data-variant={`${variant.body}-${variant.outfit}-${variant.hair}`} />
     </div>
   )
 }

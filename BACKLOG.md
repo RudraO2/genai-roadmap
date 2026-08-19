@@ -282,3 +282,23 @@ Appended by sessions that spotted work outside their one task. Do not do these i
       plus the 67-node registry. Nothing here is slow, and no spec asked for a budget, but
       nothing asserts one either — if a size gate is ever wanted, `check:output` is where it
       goes.
+- [ ] T136 — Spec 13 gave the map a colour system (paper keyed to a node's first link kind)
+      and no legend. The card prints its kind in words, so nothing is colour-only, but a
+      reader still has to collect five cards before the scheme is obvious. The overview screen
+      is where a four-line key would go.
+- [ ] T137 — The pocket solver's card size comes from `ActPath.cardSize` and the band spacing
+      from `data/tracks.json`. Nothing asserts the two agree; the relationship is written down
+      in both files and checked by hand. A unit test over `placePockets` with the registry's
+      six curve/count combinations would catch a future edit to either one — it needs no DOM
+      if the sampled road is passed in as fixture data.
+- [ ] T138 — `--dot-r-spur` and the frontier stop styling in `path.css` are unreachable
+      today: no node in `nodes.json` sits on an act path with `zone: frontier`, and no node
+      has a `last_commit` old enough to derive dormancy. The rules are written against the
+      schema rather than against data, so the first dormant or road-frontier node will be
+      their first render. Worth an eyeball then.
+- [ ] T139 — A `<dialog>` `::backdrop` reads its custom properties by inheritance from the
+      originating element, which current Chrome does and older engines do not. Both panels
+      dim with `color-mix(in srgb, var(--surface-road) 40%, transparent)`; where that
+      inheritance is missing the scrim is simply absent, and the modal still works. Revisit
+      only if a browser matrix is ever written down.
+

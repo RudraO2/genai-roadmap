@@ -23,7 +23,13 @@ export function Shell({ children, masthead }: ShellProps): ReactNode {
         Skip to content
       </a>
       <header className="shell__masthead">
-        <span className="shell__wordmark">Interactive Roadmap</span>
+        {/* The mark is markup, not a CSS `content` string. A wordmark is content:
+            spec 13 found `content: 'LANE'` in shell.css, a brand from an unrelated
+            site, invisible to every search of the source for a name. */}
+        <span className="shell__wordmark">
+          <span className="shell__mark">RM</span>
+          Interactive Roadmap
+        </span>
         {masthead}
       </header>
       <main id="main" className="shell__main">

@@ -51,11 +51,15 @@ export function Intake({ initialTrack, initialLevel, onComplete }: IntakeProps):
             const nodeCount = registry.orderedNodeIds(id).length
             const actCount = registry.actsForTrack(id).length
             const selected = track === id
+            // `data-track` carries the track's own id so shell.css can print each
+            // one on its own paper. Colour by list position is banned by name in
+            // CONTEXT.md section 8; colour by identity is the point.
             return (
               <li key={id}>
                 <button
                   type="button"
                   className={`track-row${selected ? ' track-row--selected' : ''}`}
+                  data-track={id}
                   aria-pressed={selected}
                   onClick={() => setTrack(id)}
                 >
@@ -76,7 +80,7 @@ export function Intake({ initialTrack, initialLevel, onComplete }: IntakeProps):
         index="02"
         kicker="Starting point"
         title="Choose your level"
-        standfirst="Nodes below this collapse to a hairline stub — never deleted, always expandable."
+        standfirst="Nodes below this collapse to a single line — never deleted, always expandable."
       >
         <ul className="level-list">
           {LEVELS.map((id) => {
@@ -86,6 +90,7 @@ export function Intake({ initialTrack, initialLevel, onComplete }: IntakeProps):
                 <button
                   type="button"
                   className={`level-row${selected ? ' level-row--selected' : ''}`}
+                  data-level={id}
                   aria-pressed={selected}
                   onClick={() => setLevel(id)}
                 >

@@ -61,13 +61,19 @@ spec at a time, inside the session that builds it.
 | 10 | `specs/spec-10-navigation.md` | `DONE` | 04, 08, 09 |
 | 11 | `specs/spec-11-portability.md` | `DONE` | 08 |
 | 12 | `specs/spec-12-ship.md` | `DONE` | 01–11 |
-| 13 | `specs/spec-13-visual-overhaul.md` | `IN PROGRESS` | 01–12 |
+| 13 | `specs/spec-13-visual-overhaul.md` | `DONE` | 01–12 |
 
-Specs 01–12 are `DONE`. Spec 13 — the visual overhaul — is claimed and `IN PROGRESS`. It was
-opened by the project owner on 2026-08-19, together with an owner-authorised amendment to
-`CONTEXT.md` section 8: the visual identity moves from *editorial dark terminal* to
-*paper roadmap*. Read the amended section 8 before touching any UI — the old dark-terminal
-rules are no longer the constitution and re-applying them would undo spec 13.
+Every spec 01–13 is `DONE`. Nothing is `READY FOR DEVELOPMENT`, and there is no spec 14 — the
+board is finished, not stalled. A session that arrives here should say so and stop rather than
+invent work. `BACKLOG.md`'s "Noticed, not done" list is where the next unit of work would come
+from, and T130 (no README) is the strongest candidate.
+
+**Read the amended section 8 of `CONTEXT.md` before touching any UI.** On 2026-08-19 the
+project owner authorised the one edit that file has ever had: the visual identity moved from
+*editorial dark terminal* to *paper roadmap*. Warm paper ground, ink road, four semantic paper
+accents, one action accent, Gabarito + Space Grotesk + JetBrains Mono, and no serif. Spec 13
+carried it through every screen. Dark-terminal styling anywhere in the tree is pre-spec-13
+residue, not the constitution — restoring it would undo the spec.
 
 ---
 
@@ -1240,6 +1246,47 @@ a backend. v1 is the map only. If one of these appears in a task, the task is wr
 
 ---
 
+## 13 — Visual overhaul: the paper roadmap
+
+**State:** `DONE` — 2026-08-19  **Depends on:** 01–12
+
+The identity changed. `CONTEXT.md` section 8 was amended by the project owner — the only edit
+that file has ever taken — from *editorial dark terminal* to *paper roadmap*, and spec 13
+carried the new identity through every screen the first twelve specs built.
+
+It also cleaned up after a non-Ralph session (Codex) that had attempted the same change
+without amending section 8. Four of its five defects were structural rather than cosmetic:
+a `content: 'LANE'` brand injected through CSS, a paper palette under an unchanged serif type
+stack, card colour assigned by `nth-child`, and cards centred on their own path point so that
+every one of them sat on the road.
+
+**Next session should know:**
+
+- **The pocket layout is solved, not formulated.** `src/path/pockets.ts`
+  scores four candidate pockets × nine slide offsets per card against the sampled road and
+  against the cards already placed, and takes the lowest score. Do not replace it with an
+  offset rule; "no card covers the road" is a property of a whole act, because a serpentine
+  shares each band between two runs and loops back through the space it just left.
+- **The curves are portrait and sized off the card.** Runs sit 420 units apart with a
+  240-unit margin outside the first and last. That is not decoration: at the old landscape
+  `1200x760` the bands were 230 units and a card is 205–256, so *no* placement rule could
+  have worked. If a card's height ratio in `ActPath.cardSize` changes, the band arithmetic in
+  `data/tracks.json` has to be re-checked.
+- **The pocket breakpoint is 78rem and it is measured.** A card never shrinks below 224px, so
+  the narrower the stage the *larger* the card is in viewBox units. Two cards stop fitting in
+  a band below about an 1157px stage. Below 78rem the act is a road strip plus a numbered
+  stop list; the stop numbers come off the road there because they would render under 4px.
+- **Colour is keyed to the first link's `kind`, not to level.** Level was tried first and
+  measured wrong: the acts ramp, so an act's nodes almost all share a level and every screen
+  came out one flat colour. Every card also prints its kind in words, so colour is never the
+  only channel.
+- **The lift is `drop-shadow(x y 0 ink)`.** `box-shadow` is rejected by `check:theme`, and an
+  offset pseudo-element does not work either — `rotate` makes a card a stacking context, and
+  a negative-z child of one paints over its parent's own background. Every card came out
+  solid black the first time.
+- **Lengths inside an `<svg>` are viewBox user units.** `--road-gauge` and friends are
+  unitless numbers for that reason. A `rem` there is not a page length.
+
 ## Change log
 
 Newest first. One line per state change. Whoever changes a state writes the line.
@@ -1298,3 +1345,10 @@ Newest first. One line per state change. Whoever changes a state writes the line
   gated on `t` actually changing. Spec 08 promoted `SPEC PENDING` → `READY FOR
   DEVELOPMENT` (deps 04, 05, 07 all now `DONE`). Spec 09 promoted too — its deps (04, 05)
   had been `DONE` since spec 05 landed and that cascade was missed at the time.
+- 2026-08-19 — Spec 13 `DONE`. The paper-roadmap overhaul: `CONTEXT.md` section 8 amended by
+  the owner, Gabarito + Space Grotesk vendored and Instrument Serif retired, the act curves
+  rewritten portrait, a scoring pocket solver so no card sits on the road at any width, card
+  paper keyed to link kind, stop numbers on road and card, and the `LANE` brand a previous
+  session injected through CSS removed. Verified across all four tracks, all six curve/count
+  combinations and five viewport widths. No spec's dependencies changed — 13 is the last on
+  the board.

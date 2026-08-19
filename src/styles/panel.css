@@ -2,9 +2,11 @@
  * panel.css — spec 06's own surface: the node detail `<dialog>` and its
  * `::backdrop`. @layer components, tokens only.
  *
- * The backdrop dims with `color-mix()` against `--surface-base` rather than a
- * hardcoded rgba — still one token, no second colour source — and never
- * blurs (CONTEXT.md section 8 bans `backdrop-blur` outright).
+ * The backdrop dims with `color-mix()` against the ink rather than a hardcoded
+ * rgba — still one token, no second colour source — and never blurs
+ * (CONTEXT.md section 8 bans `backdrop-blur` outright). It dims towards ink and
+ * not towards paper: on a paper ground, a paper-coloured scrim washes the page
+ * out instead of pushing it back.
  */
 
 @layer components {
@@ -15,13 +17,14 @@
     max-height: min(32rem, 80vh);
     width: min(30rem, calc(100vw - var(--gutter) * 2));
     padding: 0;
-    border: var(--hairline) solid var(--rule);
+    border: var(--rule-thick) solid var(--rule);
+    border-radius: var(--radius-paper);
     background: var(--surface-raised);
     color: var(--text-primary);
   }
 
   .node-panel::backdrop {
-    background: color-mix(in srgb, var(--surface-base) 80%, transparent);
+    background: color-mix(in srgb, var(--surface-road) 40%, transparent);
   }
 
   .node-panel__content {
@@ -32,11 +35,12 @@
 
   .node-panel__close {
     float: right;
-    background: none;
-    border: none;
-    padding: 0;
+    background: var(--surface-base);
+    border: var(--rule-strong) solid var(--surface-road);
+    border-radius: var(--radius-badge);
+    padding: 0 calc(var(--space-unit) * 2);
     font: inherit;
-    font-size: var(--size-micro);
+    font-size: var(--size-nano);
     letter-spacing: var(--tracking-caps);
     text-transform: uppercase;
     color: var(--text-secondary);
@@ -45,12 +49,12 @@
   }
 
   .node-panel__close:hover {
-    color: var(--accent);
+    color: var(--text-primary);
   }
 
   .node-panel__kicker {
     font-family: var(--font-mono);
-    font-size: var(--size-micro);
+    font-size: var(--size-nano);
     letter-spacing: var(--tracking-caps);
     text-transform: uppercase;
     color: var(--text-muted);
@@ -60,6 +64,8 @@
     margin-top: calc(var(--space-unit) * 2);
     font-family: var(--font-display);
     font-size: var(--size-title);
+    font-weight: var(--weight-black);
+    letter-spacing: var(--tracking-tight);
     color: var(--text-primary);
     line-height: var(--leading-tight);
     overflow-wrap: break-word;
@@ -70,12 +76,12 @@
     margin-top: calc(var(--space-unit) * 6);
     display: flex;
     gap: calc(var(--space-unit) * 8);
-    border-top: var(--hairline) solid var(--rule);
+    border-top: var(--rule-strong) solid var(--rule);
     padding-top: calc(var(--space-unit) * 4);
   }
 
   .node-panel__fact dt {
-    font-size: var(--size-micro);
+    font-size: var(--size-nano);
     letter-spacing: var(--tracking-caps);
     text-transform: uppercase;
     color: var(--text-muted);
@@ -117,13 +123,13 @@
 
   .node-panel__group {
     margin-top: calc(var(--space-unit) * 6);
-    border-top: var(--hairline) solid var(--rule);
+    border-top: var(--rule-strong) solid var(--rule);
     padding-top: calc(var(--space-unit) * 4);
   }
 
   .node-panel__group-title {
     font-family: var(--font-mono);
-    font-size: var(--size-micro);
+    font-size: var(--size-nano);
     letter-spacing: var(--tracking-caps);
     text-transform: uppercase;
     color: var(--text-muted);

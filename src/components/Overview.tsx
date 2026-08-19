@@ -30,7 +30,7 @@ export interface OverviewProps {
  * dots, and the row's tally beside it says what the dots would have.
  *
  * The stroke is widened in `navigation.css`, in the path's own user units — the
- * act's own 2-unit hairline drawn this small is a third of a pixel and the road
+ * act's own 34-unit road drawn this small is under a pixel and the road
  * vanishes. It has to be user units and not a device-space width, because the
  * dash clip above is in user units and the two must share a space.
  */
@@ -64,7 +64,7 @@ function ActMini({ act, progress }: { act: Act; progress: ActProgress }): ReactN
  * road is legible at once (`CONTEXT.md` section 9).
  *
  * **A stack of rows, not a grid of tiles.** Section 8 bans bento grids outright,
- * and the acts are a sequence — a single hairline-ruled column in index order is
+ * and the acts are a sequence — a single ink-ruled column in index order is
  * both the editorial form and the truthful one.
  *
  * **No connector drawn between the miniatures.** The curves start and end at

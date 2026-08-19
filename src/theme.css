@@ -9,34 +9,64 @@
  * The only selectors permitted in this file are :root and the @font-face blocks.
  * No component styling lives here — that is src/styles/.
  *
- * The palette is CONTEXT.md section 8 read literally: near-black base, warm off-white
- * text, exactly one accent hue. The accent is spent on state, never on decoration.
+ * The palette is CONTEXT.md section 8 as amended 2026-08-19 (spec 13): warm paper
+ * ground, near-black ink for the road and every rule, four *semantic* paper accents,
+ * and exactly one action accent. The four papers are assigned from a node's data —
+ * level, zone, status — never cycled for decoration. The action accent means done,
+ * here, or go, and nothing else.
+ *
+ * The pre-spec-13 identity was editorial dark terminal: near-black ground, warm
+ * off-white text, Instrument Serif. It is gone, including its font files. Do not
+ * restore it — see the amendment note at the head of section 8.
  */
 
-/* Instrument Serif — display only. Vendored; see ./fonts/README.md. */
+/* Gabarito — display. Heavy, rounded, geometric. Vendored; see ./fonts/README.md. */
 @font-face {
-  font-family: 'Instrument Serif';
+  font-family: 'Gabarito';
   font-style: normal;
-  font-weight: 400;
+  font-weight: 400 900;
   font-display: swap;
-  src: url('./fonts/instrument-serif-400-latin.woff2') format('woff2');
+  src: url('./fonts/gabarito-400-900-latin.woff2') format('woff2');
   unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC,
     U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215,
     U+FEFF, U+FFFD;
 }
 
 @font-face {
-  font-family: 'Instrument Serif';
+  font-family: 'Gabarito';
   font-style: normal;
-  font-weight: 400;
+  font-weight: 400 900;
   font-display: swap;
-  src: url('./fonts/instrument-serif-400-latin-ext.woff2') format('woff2');
+  src: url('./fonts/gabarito-400-900-latin-ext.woff2') format('woff2');
   unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304,
     U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0,
     U+2113, U+2C60-2C7F, U+A720-A7FF;
 }
 
-/* JetBrains Mono — the voice of the interface. Variable, 400 to 700. */
+/* Space Grotesk — body and UI. Variable, 300 to 700. */
+@font-face {
+  font-family: 'Space Grotesk';
+  font-style: normal;
+  font-weight: 300 700;
+  font-display: swap;
+  src: url('./fonts/space-grotesk-300-700-latin.woff2') format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC,
+    U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215,
+    U+FEFF, U+FFFD;
+}
+
+@font-face {
+  font-family: 'Space Grotesk';
+  font-style: normal;
+  font-weight: 300 700;
+  font-display: swap;
+  src: url('./fonts/space-grotesk-300-700-latin-ext.woff2') format('woff2');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304,
+    U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0,
+    U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+
+/* JetBrains Mono — the instrument panel. Labels, counters, tags. Variable, 400 to 700. */
 @font-face {
   font-family: 'JetBrains Mono';
   font-style: normal;
@@ -60,64 +90,137 @@
 }
 
 :root {
-  /* ---- Colour -------------------------------------------------------------
-   * Nine values. If a tenth is needed, it is probably a component reaching for
-   * decoration. Contrast against --surface-base, WCAG 2.1:
-   *   primary 15.4 : 1   secondary 7.7 : 1   muted 5.0 : 1   accent 5.3 : 1
+  /* ---- Ground and ink -----------------------------------------------------
+   * Two surfaces and one ink. `--surface-road` is the ink: it draws the road, every
+   * border, every rule and every sign. Contrast against --surface-base, WCAG 2.1:
+   *   text-primary 16.1 : 1   text-secondary 10.1 : 1   text-muted 4.7 : 1
+   *   accent-ink 6.3 : 1
+   * `--accent` is a graphic fill at 2.6 : 1 and is never used for text. Where the
+   * action accent has to be *read*, that is `--accent-ink`.
    */
-  --surface-base: #0b0c0e;
-  --surface-raised: #111316;
+  --surface-base: #fffceb;
+  --surface-raised: #ffffff;
+  --surface-road: #17191b;
 
-  --rule: #22252a;
-  --rule-faint: #191c20;
+  --rule: #17191b;
+  --rule-faint: #e0dcc8;
 
-  --text-primary: #e8e4dc;
-  --text-secondary: #a8a29a;
-  --text-muted: #8a857b;
+  --text-primary: #17191b;
+  --text-secondary: #3a4046;
+  --text-muted: #6e7378;
+  --text-inverse: #fffceb;
 
-  /* The one accent hue. Focus ring, hover marker, text selection. Nothing else. */
-  --accent: #e4552e;
-  --accent-quiet: #7a2a16;
+  /* ---- The one action accent ----------------------------------------------
+   * Done, here, go. Never a decorative surface. `--accent` fills and strokes,
+   * `--accent-ink` is the same signal at text contrast, `--accent-quiet` is the
+   * stretch already walked — behind the learner, receding.
+   */
+  --accent: #00b37a;
+  --accent-ink: #006b49;
+  --accent-quiet: #007a54;
+
+  /* ---- The four papers ----------------------------------------------------
+   * Semantic, assigned from node data and never from position in a list:
+   *   lime    level: beginner
+   *   blue    level: intermediate
+   *   lilac   level: advanced
+   *   orange  zone: frontier — unproven, off the road
+   *   grey    dormant — no commits in twelve months, still on the map
+   * Ink text sits on all five. Contrast against ink: lime 15.0 : 1, blue 12.6 : 1,
+   * lilac 10.6 : 1, orange 12.1 : 1, grey 13.9 : 1.
+   */
+  --paper-lime: #dcff72;
+  --paper-blue: #8fe0f2;
+  --paper-lilac: #cdb0ff;
+  --paper-orange: #ffbc42;
+  --paper-grey: #e7e4d6;
 
   /* ---- Type ---------------------------------------------------------------
-   * One serif display face, one mono for everything structural. The mono is the
-   * interface's voice; the serif speaks only in headings.
+   * Three faces, three jobs (section 8). Display headlines, body reads, mono is
+   * the instrument panel — labels, counters, tags, stop numbers. Nothing else.
    */
-  --font-display: 'Instrument Serif', 'Iowan Old Style', Georgia, 'Times New Roman', serif;
+  --font-display: 'Gabarito', 'Trebuchet MS', 'Segoe UI', system-ui, sans-serif;
+  --font-body: 'Space Grotesk', 'Segoe UI', system-ui, -apple-system, sans-serif;
   --font-mono: 'JetBrains Mono', ui-monospace, 'SFMono-Regular', 'Cascadia Mono', Menlo,
     Consolas, monospace;
 
-  /* Six sizes, real jumps. Display is 3.2x body at 360px and 5.9x at full width. */
-  --size-display: clamp(3rem, 1.9rem + 5vw, 5.5rem);
-  --size-title: clamp(1.5rem, 1.1rem + 1.8vw, 2.25rem);
-  --size-lead: 1.125rem;
+  /* Eight sizes. Display is 3.0x body at 360px and 5.3x at full width. Every
+   * font-size, letter-spacing and line-height in src/styles/ must be one of these
+   * tokens verbatim — check-theme rejects a literal or a calc() on those
+   * properties, which is what keeps the scale a scale. */
+  --size-display: clamp(2.75rem, 1.55rem + 4.6vw, 5rem);
+  --size-title: clamp(1.75rem, 1.2rem + 2.2vw, 2.75rem);
+  --size-lead: clamp(1.0625rem, 1rem + 0.45vw, 1.3125rem);
+  --size-card-title: clamp(1.0625rem, 1rem + 0.35vw, 1.25rem);
   --size-body: 0.9375rem;
   --size-meta: 0.8125rem;
   --size-micro: 0.6875rem;
+  --size-nano: 0.625rem;
 
   --weight-regular: 400;
   --weight-medium: 500;
   --weight-bold: 700;
+  --weight-black: 800;
 
-  --tracking-caps: 0.16em;
-  --tracking-tight: -0.02em;
-  --leading-tight: 1.04;
-  --leading-body: 1.6;
+  --tracking-caps: 0.12em;
+  --tracking-tight: -0.03em;
+  --leading-tight: 1.05;
+  --leading-snug: 1.25;
+  --leading-body: 1.55;
 
   /* ---- Structure ----------------------------------------------------------
    * --space-unit feeds Tailwind's spacing scale (see index.css), so layout
    * utilities and hand-written CSS share one rhythm.
+   *
+   * Paper surfaces get a 2px ink border, a small radius, and a hard ink block
+   * offset behind them by --lift. That offset is a `drop-shadow` with a zero
+   * blur radius — a hard-edged copy of the element's own silhouette, which is
+   * print registration rather than a shadow. check-theme bans `box-shadow`
+   * outright; the reason a pseudo-element does not work either is written at
+   * `.node-card` in styles/cards.css.
    */
   --space-unit: 0.25rem;
-  --frame-max: 78rem;
-  --measure: 62ch;
+  --frame-max: 88rem;
+  --measure: 60ch;
   --hairline: 1px;
+  --rule-strong: 2px;
+  --rule-thick: 3px;
+  --radius-paper: 4px;
+  --radius-badge: 999px;
+  --lift: 3px;
   --gutter: clamp(1.25rem, 0.5rem + 3vw, 4rem);
+
+  /* ---- The road, in viewBox user units -----------------------------------
+   * Unitless on purpose. A length inside an `<svg>` resolves against the local
+   * coordinate system, not the page, so `2.4rem` would be 38 *user units* — a road
+   * that is 38/1400ths of the drawing at every size, which is not what a rem
+   * reads as anywhere else in this file. Declaring the gauge as a plain number
+   * says what is true: the road is 34 units of a 1400-unit-wide map, and it
+   * scales with the map.
+   *
+   * --card-w / --card-h are the pocket card's size, in CSS pixels, and are the
+   * one exception to "theme.css holds the value": ActPath overrides both inline
+   * per act, because the placement solver and the stylesheet have to agree about
+   * a card's size to the pixel and only one of them can measure the stage. The
+   * values here are the desktop maximum and the fallback if measurement fails.
+   */
+  --road-gauge: 34;
+  --road-centre: 3;
+  --road-gauge-spur: 16;
+  --dot-r: 13;
+  --dot-r-spur: 8;
+  --size-stop: 15px;
+
+  --card-w: 17rem;
+  --card-h: 12.25rem;
+  --char-h: 9%;
 
   /* ---- Motion -------------------------------------------------------------
    * Section 8: motion only to show state change. There is no ambient animation
-   * token here on purpose, and there should never be one.
+   * token here on purpose, and there should never be one. --dur-walk is the
+   * sprite's frame interval, which runs only while `t` is actually changing.
    */
   --dur-state: 120ms;
+  --dur-walk: 520ms;
   --ease-state: cubic-bezier(0.2, 0, 0, 1);
 }

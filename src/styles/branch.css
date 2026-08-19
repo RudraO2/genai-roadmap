@@ -21,9 +21,9 @@
 @layer components {
   /* Set off from the act above it, and from the branch before it. */
   .branch {
-    margin-top: calc(var(--space-unit) * 16);
-    padding-left: calc(var(--space-unit) * 6);
-    border-left: var(--hairline) solid var(--rule);
+    margin-top: calc(var(--space-unit) * 12);
+    padding-left: calc(var(--space-unit) * 5);
+    border-left: var(--rule-strong) dashed var(--surface-road);
   }
 
   .branch__kicker {
@@ -39,13 +39,18 @@
   /* The one word that has to land. Not a badge, not a pill — the same mono
    * kicker, one step brighter than the label beside it. */
   .branch__unproven {
-    color: var(--text-secondary);
+    background: var(--paper-orange);
+    border-radius: var(--radius-paper);
+    padding: 0 calc(var(--space-unit) * 1);
+    color: var(--text-primary);
   }
 
   .branch__title {
     margin-top: calc(var(--space-unit) * 2);
     font-family: var(--font-display);
-    font-size: var(--size-lead);
+    font-size: var(--size-title);
+    font-weight: var(--weight-black);
+    letter-spacing: var(--tracking-tight);
     line-height: var(--leading-tight);
     color: var(--text-primary);
   }
@@ -75,7 +80,7 @@
    *
    * So the spur is drawn as a diagram — order, dots, completion, unproven
    * dashes — and the cards read below it in placed order. This is the layout
-   * `cards.css` already falls back to under 640px, so there is one behaviour
+   * `cards.css` already falls back to under 78rem, so there is one behaviour
    * at every width rather than two.
    */
   .act-stage--branch .act-stage__cards {
@@ -90,9 +95,14 @@
 
   .act-stage--branch .node-card {
     position: static;
-    transform: none;
-    width: 100%;
-    max-width: none;
+    width: auto;
+    height: auto;
+    rotate: none;
+  }
+
+  .act-stage--branch .node-card__blurb {
+    display: block;
+    overflow: visible;
   }
 
   .act-stage--branch .node-card--stub .node-card__stub-expand {
@@ -102,14 +112,27 @@
     overflow-wrap: break-word;
   }
 
+  /* The spur is the road at a narrower gauge, dashed: the same drawing language
+   * saying "provisional". A hairline said "diagram" instead, which put the
+   * frontier in a different world from the road it leaves. */
   .branch-map__line {
     fill: none;
-    stroke: var(--rule);
-    stroke-width: calc(var(--hairline) * 2);
-    stroke-dasharray: 6 7;
+    stroke: var(--surface-road);
+    stroke-width: var(--road-gauge-spur);
+    stroke-linecap: round;
+    stroke-dasharray: 22 16;
   }
 
-  @media (max-width: 640px) {
+  /* A spur's dots carry no number. Its drawing is too small at 34rem to hold two
+   * legible digits, so numbering the cards as well would leave them pointing at
+   * marks that cannot be read. The spur is the diagram, the cards are the list,
+   * and the order is the order. */
+  .act-stage--branch .path-node__stop,
+  .act-stage--branch .node-card__stop {
+    display: none;
+  }
+
+  @media (max-width: 77.999rem) {
     .branch {
       padding-left: calc(var(--space-unit) * 4);
     }

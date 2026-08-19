@@ -19,7 +19,7 @@ export interface ActPagerProps {
  * A missing neighbour renders nothing at all rather than a disabled button: on
  * the first and last act there is no such act, and a greyed control that can
  * never do anything is noise. When both are missing — a one-act track — the
- * pager does not render, which `TrackMap` decides so the hairline above it goes
+ * pager does not render, which `TrackMap` decides so the rule above it goes
  * too.
  */
 export function ActPager({ prev, next, onSelectAct }: ActPagerProps): ReactNode {

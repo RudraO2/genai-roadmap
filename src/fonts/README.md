@@ -4,14 +4,16 @@ Self-hosted so the app makes no third-party request at runtime. `CONTEXT.md` sec
 the whole project on a static host with no backend; a CDN font link would quietly
 reintroduce a network dependency the deploy cannot control.
 
-Both families are SIL Open Font License 1.1. Downloaded 2026-08-18 with a desktop Chrome
+All three families are SIL Open Font License 1.1. Downloaded with a desktop Chrome
 user agent, which is what makes the Google Fonts CSS endpoint hand back `woff2` rather than
 `ttf`.
 
 | File | Family | Weights | Subset | Source |
 | --- | --- | --- | --- | --- |
-| `instrument-serif-400-latin.woff2` | Instrument Serif | 400 | latin | `https://fonts.gstatic.com/s/instrumentserif/v5/jizBRFtNs2ka5fXjeivQ4LroWlx-6zUTjg.woff2` |
-| `instrument-serif-400-latin-ext.woff2` | Instrument Serif | 400 | latin-ext | `https://fonts.gstatic.com/s/instrumentserif/v5/jizBRFtNs2ka5fXjeivQ4LroWlx-6zsTjmbI.woff2` |
+| `gabarito-400-900-latin.woff2` | Gabarito | 400–900 variable | latin | `https://fonts.gstatic.com/s/gabarito/v9/QGYtz_0dZAGKJJ4t3HtoW4U.woff2` |
+| `gabarito-400-900-latin-ext.woff2` | Gabarito | 400–900 variable | latin-ext | `https://fonts.gstatic.com/s/gabarito/v9/QGYtz_0dZAGKJJ4t3HtmW4XUng.woff2` |
+| `space-grotesk-300-700-latin.woff2` | Space Grotesk | 300–700 variable | latin | `https://fonts.gstatic.com/s/spacegrotesk/v22/V8mDoQDjQSkFtoMM3T6r8E7mPbF4Cw.woff2` |
+| `space-grotesk-300-700-latin-ext.woff2` | Space Grotesk | 300–700 variable | latin-ext | `https://fonts.gstatic.com/s/spacegrotesk/v22/V8mDoQDjQSkFtoMM3T6r8E7mPb94C-s0.woff2` |
 | `jetbrains-mono-400-700-latin.woff2` | JetBrains Mono | 400–700 variable | latin | `https://fonts.gstatic.com/s/jetbrainsmono/v24/tDbv2o-flEEny0FZhsfKu5WU4zr3E_BX0PnT8RD8yKwBNntkaToggR7BYRbKPxDcwg.woff2` |
 | `jetbrains-mono-400-700-latin-ext.woff2` | JetBrains Mono | 400–700 variable | latin-ext | `https://fonts.gstatic.com/s/jetbrainsmono/v24/tDbv2o-flEEny0FZhsfKu5WU4zr3E_BX0PnT8RD8yKwBNntkaToggR7BYRbKPx7cwhsk.woff2` |
 
@@ -22,3 +24,7 @@ falls back to whatever the system serves. Structural marks use ASCII in the mono
 Only latin and latin-ext are vendored. Cyrillic, Greek and Vietnamese are not — no string in
 the registry needs them. If one ever does, fetch the matching subset from the same endpoint
 rather than dropping the `unicode-range` guards.
+
+Instrument Serif was vendored here from spec 02 to spec 13 and is gone. `CONTEXT.md`
+section 8 was amended on 2026-08-19: the identity is paper roadmap, the display face is
+Gabarito, and there is no serif in the stack. Do not re-add one without amending it again.

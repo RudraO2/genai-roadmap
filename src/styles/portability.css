@@ -20,19 +20,21 @@
     background: none;
     border: none;
     padding: 0;
-    font: inherit;
-    font-size: var(--size-micro);
+    font-family: var(--font-mono);
+    font-size: var(--size-nano);
+    font-weight: var(--weight-bold);
     letter-spacing: var(--tracking-caps);
     text-transform: uppercase;
     color: var(--text-secondary);
     cursor: pointer;
     text-decoration: underline;
-    text-underline-offset: 0.2em;
+    text-decoration-thickness: var(--rule-strong);
+    text-underline-offset: 0.25em;
     transition: color var(--dur-state) var(--ease-state);
   }
 
   .progress-open:hover {
-    color: var(--accent);
+    color: var(--text-primary);
   }
 
   .progress-panel {
@@ -47,13 +49,14 @@
      * the row width, and the action buttons wrapping for no visible reason.
      * One scroller only, and it is the content's. */
     overflow: hidden;
-    border: var(--hairline) solid var(--rule);
+    border: var(--rule-thick) solid var(--rule);
+    border-radius: var(--radius-paper);
     background: var(--surface-raised);
     color: var(--text-primary);
   }
 
   .progress-panel::backdrop {
-    background: color-mix(in srgb, var(--surface-base) 80%, transparent);
+    background: color-mix(in srgb, var(--surface-road) 40%, transparent);
   }
 
   .progress-panel__content {
@@ -64,11 +67,12 @@
 
   .progress-panel__close {
     float: right;
-    background: none;
-    border: none;
-    padding: 0;
+    background: var(--surface-base);
+    border: var(--rule-strong) solid var(--surface-road);
+    border-radius: var(--radius-badge);
+    padding: 0 calc(var(--space-unit) * 2);
     font: inherit;
-    font-size: var(--size-micro);
+    font-size: var(--size-nano);
     letter-spacing: var(--tracking-caps);
     text-transform: uppercase;
     color: var(--text-secondary);
@@ -77,12 +81,12 @@
   }
 
   .progress-panel__close:hover {
-    color: var(--accent);
+    color: var(--text-primary);
   }
 
   .progress-panel__kicker {
     font-family: var(--font-mono);
-    font-size: var(--size-micro);
+    font-size: var(--size-nano);
     letter-spacing: var(--tracking-caps);
     text-transform: uppercase;
     color: var(--text-muted);
@@ -116,7 +120,7 @@
     justify-content: space-between;
     gap: calc(var(--space-unit) * 2) calc(var(--space-unit) * 6);
     margin-top: calc(var(--space-unit) * 6);
-    border-top: var(--hairline) solid var(--rule);
+    border-top: var(--rule-strong) solid var(--rule);
     padding-top: calc(var(--space-unit) * 4);
   }
 
@@ -126,7 +130,7 @@
 
   .progress-panel__row-title {
     font-family: var(--font-mono);
-    font-size: var(--size-micro);
+    font-size: var(--size-nano);
     font-weight: var(--weight-bold);
     letter-spacing: var(--tracking-caps);
     text-transform: uppercase;
@@ -142,10 +146,10 @@
 
   .progress-panel__action {
     background: none;
-    border: var(--hairline) solid var(--rule);
+    border: var(--rule-strong) solid var(--rule);
     padding: calc(var(--space-unit) * 2) calc(var(--space-unit) * 4);
     font: inherit;
-    font-size: var(--size-micro);
+    font-size: var(--size-nano);
     letter-spacing: var(--tracking-caps);
     text-transform: uppercase;
     color: var(--text-secondary);
@@ -157,7 +161,7 @@
   }
 
   .progress-panel__action:hover {
-    color: var(--accent);
+    color: var(--text-primary);
     border-color: var(--accent);
   }
 

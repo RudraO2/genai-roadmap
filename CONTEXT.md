@@ -110,38 +110,77 @@ returned 200. A hallucinated repo is worse than a missing node.
 
 ## 8. Visual identity — anti-slop directive
 
-The aesthetic is **editorial dark terminal**: a technical publication, not a SaaS
-landing page.
+**Amended 2026-08-19 by the project owner, under spec 13.** The identity was
+*editorial dark terminal* from the bootstrap through spec 12. It is now **paper
+roadmap**. The banned list barely moved; the palette and the type stack did. If a
+session finds dark-terminal styling in the tree, that is pre-spec-13 residue to be
+replaced, not the constitution to be restored.
+
+The aesthetic is a **printed road atlas** — a risograph field guide, an activity
+poster you could pin to a wall. Warm paper, ink-black road, a small set of flat
+spot colours that each *mean* something. Playful, but not a toy: every colour is
+load-bearing.
 
 ### Banned outright
 
-- Purple→blue gradients. Any gradient used decoratively.
+- Gradients. Any gradient used decoratively. (Flat spot colour only.)
 - Glassmorphism, `backdrop-blur`, frosted panels
 - Emoji as UI icons
 - Default Tailwind palette tokens (`slate-900`, `indigo-500`, `violet-*`)
-- Glow shadows, neon halos, `box-shadow` with color
+- Glow shadows, neon halos, `box-shadow` with colour. A hard *offset* ink block
+  behind a paper surface is not a glow and is allowed — spelled
+  `drop-shadow(x y 0 ink)`, with a zero blur radius, because the build gate
+  rejects `box-shadow` outright.
 - Bento grids
-- Inter as the primary typeface
+- Inter as a typeface, anywhere
 - Uniform `rounded-2xl` on every surface
 - Centered hero + gradient headline + two pill buttons
+- **Colour as decoration.** A card's colour must be derived from its data —
+  level, zone, status. Cycling `nth-child` through a palette is banned by name.
+- **A card covering the road.** The path is the subject of the screen. Cards sit
+  in the negative space beside it and never on top of it.
 
 ### Required
 
-- **Type:** one serif display face (e.g. Instrument Serif) + one mono for all
-  structural/UI text (e.g. JetBrains Mono or IBM Plex Mono). The mono is the voice
-  of the interface. Real hierarchy: 3 sizes minimum, meaningful weight jumps.
-- **Color:** near-black base (`#0B0C0E`–`#111316`), warm off-white text
-  (`#E8E4DC`), and **exactly one** accent hue used sparingly. Accent means "here,"
-  not "decoration."
-- **Structure:** hairline rules (1px, low opacity) instead of card borders. Hard
-  edges by default; rounding only where something is genuinely tactile.
-- **Space:** generous. Emptiness is the luxury signal. Do not fill the canvas.
+- **Type: three faces, three jobs.**
+  - *Display* — **Gabarito**, 700–900. Headings, act titles, card titles, the
+    numbers on the road. Heavy, rounded, geometric, tight tracking.
+  - *Body / UI* — **Space Grotesk**, 400–700. Blurbs, standfirsts, prose,
+    button labels.
+  - *Structural* — **JetBrains Mono**, 500–700. Only labels, counters, tags,
+    stop numbers, metadata — the parts that read as instrument panel.
+
+  Real hierarchy: 3 sizes minimum, meaningful weight jumps. Instrument Serif is
+  retired; do not reintroduce a serif.
+- **Colour: paper, ink, four papers, one action.**
+  - Base is warm paper (`#FFFCEB`). Ink is near-black (`#17191B`) and draws the
+    road, every rule and every border.
+  - **Four paper accents** — lime, blue, lilac, amber — assigned semantically.
+    A card's paper is keyed to the kind of its first link (repo / docs /
+    playground / everything else), with dormancy overriding to grey. Frontier is
+    said with a dashed ink border rather than a fifth colour, so one paper never
+    means two things. Same node, same colour, on every track — and the card
+    prints the word as well as the colour, so colour is never the only channel.
+  - **Exactly one action accent** (green). It means *done*, *here*, or *go*, and
+    nothing else. It is never a background for a decorative surface.
+- **Structure:** 2px ink rules and ink borders, not hairlines. Hard edges by
+  default. A small radius and a degree or two of rotation are allowed *only* on
+  things meant to read as paper stuck to the page — cards, badges, road signs.
+- **Space:** dense inside the map, generous around it. The map earns the density;
+  nothing else does.
 - **Motion:** only to show state change. No ambient float, no parallax.
+- **Every breakpoint is a designed screen.** Cards float in the road's pockets
+  only where there is room for them — a width derived by measurement, not taste —
+  and below it the act becomes a road strip plus a numbered stop list, with the
+  numbers on the road matching the numbers on the cards. A card clipped
+  off-screen, stacked on another card, or laid across the road is a bug, not a
+  degradation.
 
 ### The test
 
-Would this look at home in a print technical journal? If it looks like a Product Hunt
-launch, it's wrong.
+Would this look at home as a printed road atlas or a wall poster for a course?
+If it looks like a Product Hunt launch, it's wrong. If it looks like a dark
+developer terminal, it's the old identity and also wrong.
 
 ## 9. The map rendering
 

@@ -1,27 +1,34 @@
 /**
  * path.css — the act path screen. @layer components, tokens only.
  *
- * Three strokes share one geometry string (spec 08). Bottom to top:
+ * Four strokes share one geometry string. Bottom to top:
  *
- *   .path-map__line      --rule          full length   the road, unwalked
- *   .path-map__reached   --accent        clipped       as far as the learner got
- *   .path-map__walked    --accent-quiet  clipped       the stretch behind them
+ *   .path-map__line      ink            full length   the road's casing
+ *   .path-map__reached   accent         clipped       as far as the learner got
+ *   .path-map__walked    accent-quiet   clipped       the stretch behind them
+ *   .path-map__centre    paper, dashed  full length   the centre line
  *
  * The clip is `stroke-dasharray` + `stroke-dashoffset`, set inline from the
  * measured path length — CONTEXT.md section 9's fog of war, and its "completed
- * glow" too. Glow there means a second *stroke*; section 8 bans coloured
- * shadows and neon halos outright, and none appear here.
+ * glow" too. Glow there means a second *stroke*; section 8 bans coloured shadows
+ * and neon halos outright, and none appear here.
  *
- * Reading the strokes in that order is what keeps the accent sparing. The
- * walked stroke paints over the reached one, so the only bright accent left on
- * the whole track is the short segment between what is finished and where the
- * learner is standing — accent as "here", which is section 8's own wording,
- * rather than accent as "everything I have done". A finished act draws in the
- * quiet ember and recedes; the first build lit a completed act end to end in
- * full accent and the screen turned orange.
+ * Reading the strokes in that order is what keeps the accent sparing. The walked
+ * stroke paints over the reached one, so the only bright accent left on the whole
+ * track is the short segment between what is finished and where the learner is
+ * standing — accent as "here", which is section 8's own wording. A finished act
+ * draws in the quiet green and recedes.
  *
- * All three strokes carry the same width, so the top one covers the one beneath
- * rather than fringing it: every colour change lands on a hard edge.
+ * The centre line goes on top of all three, because that is where a road's
+ * markings are: on the surface, whatever colour the surface is.
+ *
+ * ---- Why the gauge is a unitless number ----
+ *
+ * Everything drawn inside the `<svg>` is sized in viewBox user units, not CSS
+ * pixels: a `rem` here would resolve against the root font size and then be
+ * scaled by the viewBox transform, so the road's apparent width would change with
+ * the act's aspect ratio rather than with the page. `--road-gauge: 34` says the
+ * true thing — the road is 34 units of a 1400-unit-wide map, at every size.
  */
 
 @layer components {
@@ -29,20 +36,25 @@
     display: block;
     width: 100%;
     height: auto;
-    /* Dots near t=0/t=1 can sit close to the viewBox edge. The gutter around
-     * .shell__main leaves room; keep overflow visible rather than clipping. */
+    /* The pocket solver keeps every card inside the viewBox, but the walker's
+     * sprite is anchored by its feet and stands taller than the road. Keep
+     * overflow visible rather than clipping its head off. */
     overflow: visible;
   }
 
   .path-map__line,
   .path-map__reached,
-  .path-map__walked {
+  .path-map__walked,
+  .path-map__centre {
     fill: none;
-    stroke-width: calc(var(--hairline) * 2);
   }
 
+  /* The casing. Round caps and joins: a road bends, it does not mitre. */
   .path-map__line {
-    stroke: var(--rule);
+    stroke: var(--surface-road);
+    stroke-width: var(--road-gauge);
+    stroke-linecap: round;
+    stroke-linejoin: round;
   }
 
   /* ---- Fog of war -------------------------------------------------------
@@ -51,10 +63,16 @@
    * do it, so the line and the figure arrive together. `base.css` already
    * collapses every duration under `prefers-reduced-motion: reduce`; there is
    * no second rule for it here.
+   *
+   * Both progress strokes are inset inside the casing rather than covering it,
+   * so the road keeps its ink edge the whole way along and the accent reads as
+   * surfacing *on* the road instead of replacing it.
    */
 
   .path-map__reached,
   .path-map__walked {
+    stroke-width: calc(var(--road-gauge) - 10);
+    stroke-linecap: butt;
     transition: stroke-dashoffset calc(var(--dur-state) * 4) var(--ease-state);
   }
 
@@ -66,71 +84,102 @@
     stroke: var(--accent-quiet);
   }
 
-  /* ---- Dots -------------------------------------------------------------
-   * One node, one state, and the same reading as the strokes: done recedes into
-   * the quiet ember, the road ahead stays plainly legible, and the one bright
-   * dot on the whole track is where the learner is standing — the point the
-   * character stands on too.
+  /* The centre line. Paper-coloured dashes, in user units so the rhythm holds at
+   * every width. */
+  .path-map__centre {
+    stroke: var(--surface-base);
+    stroke-width: var(--road-centre);
+    stroke-dasharray: 26 22;
+    stroke-linecap: butt;
+  }
+
+  /* ---- Stops ------------------------------------------------------------
+   * One node, one numbered stop, and the same reading as the strokes: done goes
+   * green, the road ahead stays paper-white so the number is legible on it, and
+   * the one lime stop on the whole act is where the learner is standing.
+   *
+   * The dot is deliberately wider than the road. A marker that fitted inside the
+   * casing could not hold two digits at map scale, and the stop numbers are what
+   * pair a card with its place on the road.
    */
 
   .path-node__dot {
-    fill: var(--text-secondary);
+    fill: var(--surface-raised);
+    stroke: var(--surface-road);
+    stroke-width: var(--rule-strong);
+    r: var(--dot-r);
     transition: fill var(--dur-state) var(--ease-state);
   }
 
+  .path-node__stop {
+    font-family: var(--font-mono);
+    font-size: var(--size-stop);
+    font-weight: var(--weight-bold);
+    letter-spacing: var(--tracking-tight);
+    fill: var(--text-primary);
+  }
+
   .path-node[data-state='current'] .path-node__dot {
-    fill: var(--accent);
+    fill: var(--paper-lime);
   }
 
   .path-node[data-state='complete'] .path-node__dot {
-    fill: var(--accent-quiet);
+    fill: var(--accent);
   }
 
   /* ---- Frontier and demotion (spec 09) ----------------------------------
-   * A frontier dot is hollow: the same circle, drawn as an outline rather than
-   * filled, which reads as provisional beside a solid one without a second
-   * colour. A dormant node greys back to `--text-muted` — visible, still
-   * clickable, plainly no longer moving (CONTEXT.md section 6 never deletes).
+   * A frontier stop is smaller and carries no number: it is not a stop on the
+   * road, it is where a spur leaves, and the spur's own dots are numbered.
+   * A dormant node greys back — visible, still clickable, plainly no longer
+   * moving (CONTEXT.md section 6 never deletes).
    */
 
   .path-node[data-zone='frontier'] .path-node__dot {
-    fill: none;
-    stroke: var(--text-secondary);
-    stroke-width: calc(var(--hairline) * 2);
-    r: 4;
-    transition: stroke var(--dur-state) var(--ease-state);
+    fill: var(--paper-orange);
+    r: var(--dot-r-spur);
+  }
+
+  .path-node[data-zone='frontier'] .path-node__stop {
+    display: none;
   }
 
   .path-node[data-zone='frontier'][data-state='complete'] .path-node__dot {
     fill: var(--accent-quiet);
-    stroke: var(--accent-quiet);
   }
 
   .path-node[data-dormant='true'] .path-node__dot {
-    fill: var(--text-muted);
-  }
-
-  .path-node[data-dormant='true'][data-zone='frontier'] .path-node__dot {
-    fill: none;
-    stroke: var(--text-muted);
+    fill: var(--paper-grey);
   }
 
   /* Precedence, deliberately: dormancy outranks completion on the dot — a
    * finished dead tool is still dead, and the card and the count both already
-   * say it was finished. `current` outranks dormancy, because exactly one dot
-   * on a track says "here" and the map must not lose it just because the tool
+   * say it was finished. `current` outranks dormancy, because exactly one stop
+   * on an act says "here" and the map must not lose it just because the tool
    * the learner is standing on stopped moving. */
   .path-node[data-dormant='true'][data-state='current'] .path-node__dot {
-    fill: var(--accent);
+    fill: var(--paper-lime);
   }
 
-  /* The ring says a spur leaves from this node. A hairline outline in the
-   * muted text step — structure, not a halo. `--rule` was the first choice and
-   * disappeared: it is sized for a line hundreds of pixels long, not for a
-   * 20px circle, and the mark has to be legible to mean anything. */
+  /* ---- Under 78rem: the road keeps its stops, drops their numbers ---------
+   * The whole 1400-unit map is drawn into 340px on a phone, which puts a two-digit
+   * number at under four pixels. Hiding it is not a loss of information: the cards
+   * below the strip carry the numbers and read in road order, so the sequence is
+   * still stated. Drawing a number no one can resolve would only claim it was.
+   */
+  @media (max-width: 77.999rem) {
+    .path-node__stop {
+      display: none;
+    }
+  }
+
+  /* The ring says a spur leaves from this stop: a dashed ink outline around the
+   * dot, the same dashes the spur itself is drawn with, so the two read as one
+   * statement. */
   .path-node__anchor {
     fill: none;
-    stroke: var(--text-muted);
-    stroke-width: var(--hairline);
+    stroke: var(--surface-road);
+    stroke-width: var(--rule-strong);
+    stroke-dasharray: 7 6;
+    r: calc(var(--dot-r) + 7);
   }
 }
