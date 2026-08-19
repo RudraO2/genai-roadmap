@@ -61,11 +61,13 @@ spec at a time, inside the session that builds it.
 | 10 | `specs/spec-10-navigation.md` | `DONE` | 04, 08, 09 |
 | 11 | `specs/spec-11-portability.md` | `DONE` | 08 |
 | 12 | `specs/spec-12-ship.md` | `DONE` | 01–11 |
+| 13 | `specs/spec-13-visual-overhaul.md` | `IN PROGRESS` | 01–12 |
 
-Every spec is `DONE`. Nothing is `READY FOR DEVELOPMENT`, and there is no spec 13 — the board
-is finished, not stalled. A session that arrives here should say so and stop rather than
-invent work. `BACKLOG.md`'s "Noticed, not done" list is where the next unit of work would come
-from, and T130 (no README) is the strongest candidate.
+Specs 01–12 are `DONE`. Spec 13 — the visual overhaul — is claimed and `IN PROGRESS`. It was
+opened by the project owner on 2026-08-19, together with an owner-authorised amendment to
+`CONTEXT.md` section 8: the visual identity moves from *editorial dark terminal* to
+*paper roadmap*. Read the amended section 8 before touching any UI — the old dark-terminal
+rules are no longer the constitution and re-applying them would undo spec 13.
 
 ---
 
