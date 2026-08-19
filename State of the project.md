@@ -60,7 +60,7 @@ spec at a time, inside the session that builds it.
 | 09 | `specs/spec-09-frontier.md` | `DONE` | 04, 05 |
 | 10 | `specs/spec-10-navigation.md` | `DONE` | 04, 08, 09 |
 | 11 | `specs/spec-11-portability.md` | `DONE` | 08 |
-| 12 | `specs/spec-12-ship.md` | `READY FOR DEVELOPMENT` | 01–11 |
+| 12 | `specs/spec-12-ship.md` | `IN PROGRESS` | 01–11 |
 
 ---
 
@@ -1118,7 +1118,7 @@ errors.
 
 ## 12 — Ship: build gates and GitHub Pages
 
-**State:** `READY FOR DEVELOPMENT`  **Depends on:** 01–11
+**State:** `IN PROGRESS`  **Depends on:** 01–11
 
 `npm run build` and `npx tsc --noEmit` wired as gates. A script that fails the build on any
 hardcoded colour outside `theme.css`. GitHub Pages base path and 404 handling for a static
