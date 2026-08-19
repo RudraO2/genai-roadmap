@@ -475,3 +475,66 @@ because it sits at the same position in both branches' children.
 
 Spec 12 — build gates and GitHub Pages — is now `READY FOR DEVELOPMENT`, and it is the last
 one.
+
+---
+
+## Spec 12 — Ship: build gates and GitHub Pages — 2026-08-19
+
+**Did:** Turned the rules the previous eleven specs were written under into two commands the
+build refuses to pass without, and made `dist/` deployable as-is. `scripts/check-theme.ts`
+reads every `.css`, `.ts` and `.tsx` under `src/` except `theme.css` itself, plus `index.html`
+and `public/`, and fails on four rules: `colour-literal` (a hex, an `rgb()`/`oklch()` call, or
+one of the 148 CSS named colours in a declaration's value), `type-literal` (a `font-*`,
+`letter-spacing` or `line-height` value that is not a `var(--token)`), `banned-construct` (a
+gradient, a `backdrop-filter`, a `filter: blur()`, a `box-shadow` that is not `none`) and
+`unknown-token` (a `var(--x)` nothing declares). `scripts/check-output.ts` runs after
+`vite build` over `dist/` and checks what only exists once Tailwind has run: the deploy files
+are present, no sourcemap shipped, no absolute asset path, no section 8 utility class, no
+gradient. Both are in the `build` chain. The deploy is `public/404.html`, `public/.nojekyll`
+and `.github/workflows/pages.yml`, which runs `npm run build` verbatim and uploads `dist`.
+
+**Decided:** Sourcemaps off (T018) — 1.13 MB of map against 287 kB of JS, for a reader who
+could clone the repo instead; `check:output` now fails if one reappears. No hash router
+(T105) — a deep link is spec 10's territory, and the 404 sends a stray path to the deploy root
+in a way that stays correct if a route is added later. No favicon (T017) — `href="data:,"`
+already suppresses the request, and a hand-drawn icon would be the first colour outside
+`theme.css` on the day the gate forbidding it landed. `404.html` carries no stylesheet, font
+or colour at all, so it cannot violate the gate it ships beside and never goes stale when the
+theme is swapped. The `unknown-token` rule accepts a property declared anywhere in the scanned
+source rather than only in `theme.css`, because a local geometry property is legitimate and a
+colour inside one is caught by `colour-literal` regardless. `scripts/` is deliberately not
+scanned: `check-theme.ts` holds every CSS colour name as data and would fail on itself.
+
+**Verified:** `npm run build` and `npx tsc --noEmit` both exit 0; the registry still validates
+0 errors / 0 warnings; the theme gate reports 51 files, 31 tokens, 0 violations, 1 warning
+(`--weight-medium`, declared and unread, which is T021's sibling and not an error). A probe
+stylesheet with ten deliberate violations produced exactly ten findings on the right lines and
+its `.probe-ok` twin — `color-mix()`, `transparent`, `currentColor`, `font: inherit`,
+`box-shadow: none` — produced none, and a comment naming orange, off-white and a gradient was
+ignored. A second probe proved a locally declared property is not an `unknown-token` while a
+hex inside one still fails, and that a violation on the line after a semicolon is reported on
+its own line. `npm run build` exits 1 with a probe in the tree. The output gate exits 1 with
+`dist/` absent, with a planted `.map`, with a planted `/assets/...` href and with planted
+`.shadow-lg`, `.backdrop-blur-md`, `.rounded-2xl`, `.animate-pulse`, `.bg-slate-900` and
+`linear-gradient()` — six findings, and 0 against the real build, where `.backdrop-filter` and
+`.filter` are present and correctly not reported. `vite preview` served `index.html`, the
+hashed JS asset and `404.html` at 200 each, with `src="./assets/…"` relative.
+
+**Found in review, then fixed:** five. Two mattered. The declaration matcher anchored on the
+`;` that ends the *previous* declaration, so every reported line number was one too low except
+where the property happened to appear in the matched text — found by reading the probe output
+line by line rather than trusting the count. And the `unknown-token` rule only knew tokens
+from `theme.css`, which would have made the first local `--card-x` a build failure. The other
+three were pluralised summary lines, a missing note that `scripts/` must stay unscanned, and a
+`file://` guard on the 404 redirect so opening it from disk does not jump to the filesystem
+root.
+
+**Next iteration should know:** everything under "Next session should know" in the spec 12
+notes in `State of the project.md`. Short version: `npm run build` is now five steps and the
+last one needs `dist/` to exist, so run the whole script rather than its parts; the gates are
+plain Node under `--experimental-strip-types`, so they cannot import anything from `src/` that
+touches the DOM; adding `scripts/` to the theme gate's scan makes it fail on itself; and the
+workflow has never run, because this repo has no remote and Pages has to be switched to the
+"GitHub Actions" source by hand before a first push will publish.
+
+Every spec is now `DONE`. There is no `READY FOR DEVELOPMENT` work left on the board.

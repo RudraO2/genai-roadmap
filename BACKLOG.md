@@ -146,14 +146,35 @@ bottom rather than done inline.
 - [x] T115 — `src/styles/portability.css` (+ `index.css` import)
 - [x] T116 — Verify: build, typecheck, 81-assertion parser suite, browser pass at 1200 and 360
 
+## Spec 12 — Ship: build gates and GitHub Pages
+
+- [x] T121 — Write `specs/spec-12-ship.md`
+- [x] T122 — `scripts/check-theme.ts` — the source gate: colour, type, banned construct, token
+- [x] T123 — `scripts/check-output.ts` — the built-output gate: deploy files, sourcemap,
+      absolute asset path, section 8 utility classes, gradients
+- [x] T124 — `scripts/node-shims.d.ts` — `readdirSync` and `existsSync`, still not `@types/node`
+- [x] T125 — `package.json` — `check:theme` and `check:output`, both in the `build` chain
+- [x] T126 — `vite.config.ts` — `sourcemap: false`, `base` settled
+- [x] T127 — `public/404.html` and `public/.nojekyll`
+- [x] T128 — `.github/workflows/pages.yml` — build with the gates on `main`, deploy `dist`
+- [x] T129 — Verify: build, typecheck, ten-rule violation probe, local-token probe, both gate
+      failure modes, `vite preview` served over HTTP
+
 ## Noticed, not done
 
 Appended by sessions that spotted work outside their one task. Do not do these inline.
 
 - [ ] T017 — No favicon; the dev server logs a 404 for `/favicon.ico`. Spec 02 asset decision.
-- [ ] T018 — `npm run build` emits a ~1 MB sourcemap. Decide in spec 12 whether to ship it.
-- [ ] T019 — The hardcoded-colour build gate named in spec 12 does not exist yet. Until it
-      does, "no hex outside `theme.css`" is checked by hand.
+      Still open after spec 12, and now with a constraint: `href="data:,"` in `index.html`
+      already suppresses the request, and `check:theme` fails on a colour outside
+      `theme.css`, so a hand-written icon file would be a violation the day it lands. If an
+      icon is ever wanted, it has to be derived from `theme.css` rather than drawn beside it.
+- [x] T018 — `npm run build` emits a ~1 MB sourcemap. Decide in spec 12 whether to ship it.
+      Resolved: `sourcemap: false`. 1.13 MB of map against 287 kB of JS, for the benefit of
+      someone who could clone the repo instead. `check:output` fails on any `.map` in `dist/`.
+- [x] T019 — The hardcoded-colour build gate named in spec 12 does not exist yet. Until it
+      does, "no hex outside `theme.css`" is checked by hand. Resolved in spec 12:
+      `scripts/check-theme.ts`, in the `build` chain, four rules over 51 files.
 - [ ] T020 — `registry.tracks` and `registry.geometry` are readonly by type only, not frozen.
       Revisit if a spec ever mutates them by accident.
 - [x] T021 — `--size-title` was defined in `theme.css` but unused anywhere in `src/`.
@@ -179,10 +200,15 @@ Appended by sessions that spotted work outside their one task. Do not do these i
       it again for the map. Same pure function, same inputs, so they cannot disagree — but
       if the derivation ever gets expensive, the fix is to lift the map branch into its own
       component (App's early return blocks a hook there today).
-- [ ] T077 — The built CSS still defines a bare `.backdrop-filter` utility (5 hits in
+- [x] T077 — The built CSS still defines a bare `.backdrop-filter` utility (5 hits in
       `dist/assets/*.css`). Nothing uses it and `--blur-*: initial` means `backdrop-blur-*`
       does not exist, so nothing renders frosted — but spec 12's hardcoded-colour gate is
       the right place to also assert the banned utilities are absent from the output.
+      Resolved in spec 12: `check:output` asserts no `.blur-*`, `.backdrop-blur-*`,
+      `.shadow-*`, `.drop-shadow-*`, `.inset-shadow-*`, `.text-shadow-*`, `.rounded-*`,
+      `.animate-*`, no default-palette utility and no gradient survives into `dist/`. The
+      bare `.backdrop-filter` and `.filter` enablers are allowed by name: Tailwind emits
+      both unconditionally and each expands to a list of empty custom properties.
 - [ ] T091 — A branch's cards no longer sit against their dots: `branch.css` stacks them
       below the spur at every width because seven nodes cannot be pocketed on a `640x320`
       viewBox. If spec 10's overview map ever gives branches more room, revisit — the
@@ -202,6 +228,10 @@ Appended by sessions that spotted work outside their one task. Do not do these i
       so the browser's back button leaves the app and a link cannot point at one act. Spec
       12 owns the GitHub Pages base path and 404 handling; decide there whether a hash
       route is worth it, and remember `CONTEXT.md` section 10 forbids anything server-side.
+      Spec 12's answer: not here. A deep link is a navigation feature and spec 10 owns
+      navigation. `public/404.html` sends any stray path to the deploy root, which stays
+      correct if a hash route is added later — a hash never reaches the server, so no Pages
+      configuration changes when it is.
 - [ ] T106 — The viewed act is not persisted. Reopening the map lands on the progress
       frontier, which is usually right, but a learner reading ahead loses their place on a
       reload. Spec 11 owns storage; if it adds a key for this, it must also survive an
@@ -227,3 +257,28 @@ Appended by sessions that spotted work outside their one task. Do not do these i
 - [ ] T120 — T106 (persist the viewed act) stays open after spec 11. Storage now has a
       second key shape to think about: any act key must survive importing a file for another
       track, so it belongs beside the intake, not beside the completed set.
+- [ ] T130 — No `README.md`. The repo has a constitution, a state board, a backlog and twelve
+      specs, and nothing that tells a visitor what the site is or how to run it. Out of scope
+      for spec 12 (one task per session) but the obvious next non-feature task, and the one
+      thing a public deploy makes conspicuous.
+- [ ] T131 — `.github/workflows/pages.yml` has never run: this repo has no git remote, so
+      nothing has exercised `npm ci` or the Pages actions. The first push also needs Pages
+      switched to the "GitHub Actions" source in repository settings — the workflow cannot
+      set that itself.
+- [ ] T132 — `check:theme` reads `src/`, `index.html` and `public/`, and deliberately not
+      `scripts/`, because `check-theme.ts` holds all 148 CSS named colours as data and would
+      fail on itself. If a script ever renders anything, that exemption has to be revisited
+      rather than widened.
+- [ ] T133 — The theme gate's `unknown-token` rule now accepts a custom property declared
+      anywhere in the scanned source, not only in `theme.css`, so a local geometry property
+      is legal. That is the right trade — a colour in a local property is still caught by
+      `colour-literal` — but it does mean the gate no longer proves every `var()` in the app
+      resolves to a *theme* token.
+- [ ] T135 — `--weight-medium` is declared in `theme.css` and read nowhere — the same shape as
+      T021, now reported by `check:theme` on every build instead of found by hand. Either a
+      weight the type scale wants and no component has asked for yet, or a leftover. Decide
+      when something next touches the type scale; a warning never fails the build.
+- [ ] T134 — `dist/assets/index-*.js` is 287 kB (81 kB gzipped) in one chunk, all of it React
+      plus the 67-node registry. Nothing here is slow, and no spec asked for a budget, but
+      nothing asserts one either — if a size gate is ever wanted, `check:output` is where it
+      goes.

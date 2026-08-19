@@ -40,7 +40,7 @@ spec at a time, inside the session that builds it.
 | Phase | What | State |
 | --- | --- | --- |
 | A | Research the node registry → `data/nodes.json`, `data/tracks.json` | `DONE` — 2026-08-18 |
-| B | Write the specs → `specs/*.md` | `IN PROGRESS` — folded into each spec's own session; 11 of 12 written |
+| B | Write the specs → `specs/*.md` | `DONE` — 2026-08-19; folded into each spec's own session, 12 of 12 written |
 | C | Build the backlog → `BACKLOG.md` | `IN PROGRESS` — `BACKLOG.md` created 2026-08-18, appended per session |
 
 ---
@@ -60,7 +60,12 @@ spec at a time, inside the session that builds it.
 | 09 | `specs/spec-09-frontier.md` | `DONE` | 04, 05 |
 | 10 | `specs/spec-10-navigation.md` | `DONE` | 04, 08, 09 |
 | 11 | `specs/spec-11-portability.md` | `DONE` | 08 |
-| 12 | `specs/spec-12-ship.md` | `IN PROGRESS` | 01–11 |
+| 12 | `specs/spec-12-ship.md` | `DONE` | 01–11 |
+
+Every spec is `DONE`. Nothing is `READY FOR DEVELOPMENT`, and there is no spec 13 — the board
+is finished, not stalled. A session that arrives here should say so and stop rather than
+invent work. `BACKLOG.md`'s "Noticed, not done" list is where the next unit of work would come
+from, and T130 (no README) is the strongest candidate.
 
 ---
 
@@ -1118,11 +1123,111 @@ errors.
 
 ## 12 — Ship: build gates and GitHub Pages
 
-**State:** `IN PROGRESS`  **Depends on:** 01–11
+**State:** `DONE` — 2026-08-19  **Depends on:** 01–11
 
 `npm run build` and `npx tsc --noEmit` wired as gates. A script that fails the build on any
 hardcoded colour outside `theme.css`. GitHub Pages base path and 404 handling for a static
 deploy.
+
+### Session notes — 2026-08-19
+
+**Built:** `scripts/check-theme.ts` (the source gate: `colour-literal`, `type-literal`,
+`banned-construct`, `unknown-token`, over every `.css`/`.ts`/`.tsx` under `src/` except
+`theme.css`, plus `index.html` and `public/`), `scripts/check-output.ts` (the built-output
+gate: the deploy files present, no sourcemap, no absolute asset path, no section 8 utility
+class, no gradient), both wired into `npm run build` and both runnable alone; two more
+functions in `scripts/node-shims.d.ts`; `sourcemap: false` in `vite.config.ts` with the
+`base` decision written down rather than deferred; `public/404.html` and `public/.nojekyll`;
+and `.github/workflows/pages.yml`.
+
+**Decided:**
+
+- **Sourcemaps are not shipped (T018).** 1.13 MB of map against 287 kB of JS, downloaded for
+  the benefit of a developer who could clone the repo and run `npm run dev`. `check:output`
+  fails on any `.map` in `dist/` or any `sourceMappingURL` in an asset, so the decision has a
+  guard rather than a comment.
+- **No router and no hash route (T105).** A deep link is a navigation feature and spec 10 owns
+  navigation. `404.html` sends any stray path to the deploy root, which is the right answer
+  for a one-page site and stays right if a hash route is ever added — a hash never reaches
+  the server, so nothing about the deploy would change.
+- **No favicon (T017).** `href="data:,"` already suppresses the request, so there is no bug,
+  and a hand-drawn icon file would have been the first colour outside `theme.css` on the very
+  day the gate forbidding one landed. If an icon is ever wanted it has to be *derived* from
+  `theme.css`, not drawn beside it. That constraint is now in T017.
+- **`404.html` has no stylesheet, no font and no colour.** It is a redirect, not a page. That
+  is what keeps it from violating the gate it ships beside and from going stale the day the
+  theme is swapped. It redirects only over `http(s)` and only when the current path is not
+  already the computed root, so neither an undeployed site nor a file opened from disk can
+  loop.
+- **`unknown-token` accepts a property declared anywhere in the scanned source**, not only in
+  `theme.css`. A local geometry property is a legitimate thing to write, and a colour smuggled
+  into one is still caught by `colour-literal`. The rule's remaining job is the typo:
+  `var(--text-secondry)` renders as nothing today and nothing says a word.
+- **`scripts/` is not scanned and must not be added.** `check-theme.ts` holds all 148 CSS
+  named colours as data and would fail on itself. Nothing under `scripts/` renders anything.
+- **CSS comments are stripped before matching; TS and TSX are read raw.** Several stylesheets
+  explain a colour decision in prose, and a gate that fails on its own documentation only
+  teaches people to delete the documentation. No `.ts`/`.tsx` file has a colour literal in
+  either code or comment today, so scanning them raw costs nothing and closes the "parked for
+  reference" hiding place.
+- **CI runs `npm run build` verbatim, unsplit.** If the workflow ran the pieces separately it
+  would eventually run a different set of pieces than a session does, which is the exact
+  failure this workflow exists to prevent.
+
+**Verified:** `npm run build` and `npx tsc --noEmit` both exit 0; the registry still validates
+0 errors / 0 warnings; the theme gate reports 51 files scanned, 31 tokens declared, 0
+violations and 1 warning — `--weight-medium`, declared and read nowhere, which is a warning by
+design and never a failure. A probe stylesheet carrying ten deliberate violations produced
+exactly ten findings, each on the right line, and its `.probe-ok` twin — `color-mix()`,
+`transparent`, `currentColor`, `font: inherit`, `font-size: var(--size-micro)`,
+`box-shadow: none` — produced none; a comment naming orange, off-white and a gradient was
+ignored. A second probe proved a locally declared `--probe-x` is not an `unknown-token`, that
+`--probe-bg: #123456` still fails as a `colour-literal`, and that a declaration on the line
+after a semicolon is reported on its own line. `npm run build` exits 1 with a probe present.
+The output gate exits 1 with `dist/` absent, with a planted `.map`, with `href` rewritten to
+`/assets/…`, and with planted `.shadow-lg`, `.backdrop-blur-md`, `.rounded-2xl`,
+`.animate-pulse`, `.bg-slate-900` and `linear-gradient()`; it exits 0 against the real build,
+where `.backdrop-filter` and `.filter` are both present in the CSS and correctly not reported.
+`vite preview` returned 200 for `index.html`, for the hashed JS asset and for `404.html`, with
+the asset referenced as `./assets/…`. `dist/` contains `.nojekyll`, `404.html` and no `.map`.
+Nothing under `src/` was modified by this spec.
+
+**Found in review, then fixed:** five.
+
+1. **Every reported line number could be one too low.** The declaration matcher anchors on the
+   `;` that ends the *previous* declaration, and that semicolon is usually on the previous
+   line. It only looked right in testing because the property name happened to appear inside
+   the matched text. Now the offset is found case-insensitively inside the match and the
+   report points at the property.
+2. **`unknown-token` only knew `theme.css`.** The first component to declare a local
+   `--card-x` would have been a build failure for doing something legal. Tokens are now
+   collected from every scanned file as well, including quoted keys in a TSX inline style.
+3. **`1 warnings` and `1 problems`** in both summary lines. One `plural()` each.
+4. **The 404 redirected under `file://` too**, which would have thrown a reader opening the
+   built page from disk at their filesystem root. Guarded on `http(s)`.
+5. **Nothing recorded why `scripts/` is unscanned**, which is the kind of omission a later
+   session fixes by "improving" the gate until it fails on itself. Now in the file header and
+   in T132.
+
+**Next session should know:**
+
+- **`npm run build` is five steps now** — `validate:data`, `check:theme`, `tsc --noEmit`,
+  `vite build`, `check:output` — and the last one needs `dist/` to exist. Run the whole
+  script, not its parts; `check:output` alone against a stale `dist/` proves nothing.
+- **Both gates are plain Node under `--experimental-strip-types`.** They may not import
+  anything from `src/` that touches the DOM, and they may not use a Node API that is not
+  declared in `scripts/node-shims.d.ts`. `BLOCKED.md` explains why `@types/node` is still not
+  a dependency.
+- **Do not add `scripts/` to the theme gate's scan.** It will fail on itself; see T132.
+- **The theme gate does not read `data/`, `prompts/`, `specs/` or any `.md`.** A colour in a
+  spec file is documentation, not a style.
+- **The workflow has never run.** This repo has no git remote, so `npm ci` and the Pages
+  actions are untested here, and GitHub Pages has to be switched to the "GitHub Actions"
+  source in repository settings by hand before a first push publishes anything (T131).
+- **`base: './'` is load-bearing for the deploy** and `check:output` is what keeps it honest.
+  Anything that introduces an absolute asset path fails the build rather than the site.
+- **There is no README (T130).** It is the obvious next non-feature task and the one a public
+  deploy makes conspicuous.
 
 ---
 
@@ -1137,6 +1242,13 @@ a backend. v1 is the map only. If one of these appears in a task, the task is wr
 
 Newest first. One line per state change. Whoever changes a state writes the line.
 
+- 2026-08-19 — Spec 12 `DONE`. Ship: a source gate (`check:theme`) failing the build on a
+  colour literal, a type literal, a banned construct or an undeclared token outside
+  `theme.css`, an output gate (`check:output`) failing it on a missing deploy file, a shipped
+  sourcemap, an absolute asset path, a section 8 utility class or a gradient in `dist/`, both
+  in the `build` chain, plus `public/404.html`, `public/.nojekyll` and a Pages workflow that
+  runs `npm run build` verbatim. Phase B `DONE` — 12 of 12 specs written. Nothing promoted:
+  spec 12 was the last one. **The board is complete; nothing is `READY FOR DEVELOPMENT`.**
 - 2026-08-18 — Spec 11 `DONE`. Progress portability: a `Progress file` dialog on both
   screens exporting the completed ids and the intake to dated JSON, importing one back
   through a total parser with five stated refusals and a size cap, and a two-step reset.

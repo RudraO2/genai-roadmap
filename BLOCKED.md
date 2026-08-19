@@ -29,3 +29,7 @@ Not blockers — these were resolved — but they cost time and would cost it ag
   Resolved with `scripts/node-shims.d.ts`, which declares only `readFileSync`,
   `fileURLToPath`, `dirname`, `join` and `process.exit`. If a later spec needs materially
   more of the Node API, that is a real dependency question — log it here first.
+  **Spec 12 added two:** `readdirSync` (the recursive form only) and `existsSync`, for the two
+  build gates. Seven declarations across three scripts, every one a file-system read. Still
+  well under the line where `@types/node` would be the honest answer — but the line is real,
+  and a spec that needs a process, a socket or a stream has crossed it.

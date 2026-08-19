@@ -8,10 +8,12 @@
   },
   "scripts": {
     "dev": "vite",
-    "build": "npm run validate:data && tsc --noEmit && vite build",
+    "build": "npm run validate:data && npm run check:theme && tsc --noEmit && vite build && npm run check:output",
     "preview": "vite preview",
     "typecheck": "tsc --noEmit",
-    "validate:data": "node --experimental-strip-types --no-warnings scripts/validate-data.ts"
+    "validate:data": "node --experimental-strip-types --no-warnings scripts/validate-data.ts",
+    "check:theme": "node --experimental-strip-types --no-warnings scripts/check-theme.ts",
+    "check:output": "node --experimental-strip-types --no-warnings scripts/check-output.ts"
   },
   "dependencies": {
     "react": "^19.2.8",

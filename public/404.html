@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="robots" content="noindex" />
+    <title>Not found — Interactive Roadmap</title>
+    <script>
+      // GitHub Pages serves this file for any path that is not in the artifact. The
+      // site is one page, so the right destination is always the deploy root — but
+      // where that root sits depends on how the site is published:
+      //
+      //   user.github.io/repo/anything  ->  /repo/   a project page
+      //   user.github.io/anything       ->  /        a user or organisation page
+      //   example.com/anything          ->  /        a custom domain
+      //
+      // Redirect only when the page is being served over http(s) and we are not
+      // already standing on that root — so a site whose first deploy has not landed
+      // yet cannot put the browser in a loop, and opening this file from disk does
+      // not throw the reader at their filesystem root.
+      //
+      // No stylesheet, no font, no colour: this file ships beside a build gate that
+      // forbids all three outside theme.css, and it must never need updating when the
+      // theme changes.
+      var segments = location.pathname.split('/').filter(Boolean)
+      var project = location.hostname.endsWith('.github.io') && segments.length > 1
+      var root = project ? '/' + segments[0] + '/' : '/'
+      var served = location.protocol === 'http:' || location.protocol === 'https:'
+      if (served && location.pathname !== root) location.replace(root)
+    </script>
+  </head>
+  <body>
+    <noscript><a href="/">Interactive Roadmap</a></noscript>
+  </body>
+</html>

@@ -1,0 +1,59 @@
+# Build and publish the static site to GitHub Pages.
+#
+# The build step is `npm run build` and nothing else, on purpose. That one script
+# chains every gate a session runs locally — the registry validator, the theme gate,
+# `tsc --noEmit`, the Vite build and the output gate. Splitting it here would let CI
+# and a session drift into checking different things, which is the failure mode this
+# workflow exists to prevent.
+#
+# No backend, no secrets, no environment configuration: the artifact is `dist/`.
+
+name: Pages
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# One deploy at a time, and never cancel one that is already publishing.
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          # package.json requires >=22.6 — `--experimental-strip-types` is what runs
+          # the three gate scripts without a build step of their own.
+          node-version: '22.x'
+          cache: npm
+
+      - run: npm ci
+
+      - run: npm run build
+
+      - uses: actions/configure-pages@v5
+
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: dist
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4

@@ -9,6 +9,12 @@
 
 declare module 'node:fs' {
   export function readFileSync(path: string, encoding: 'utf8'): string
+  export function existsSync(path: string): boolean
+  /** Recursive form only — the two gate scripts walk whole trees or nothing. */
+  export function readdirSync(
+    path: string,
+    options: { recursive: true; encoding: 'utf8' },
+  ): string[]
 }
 
 declare module 'node:url' {
