@@ -127,7 +127,8 @@ Colour is never the only channel. Every state that has a colour also has a word:
 | `src/index.css` | Import order, and the `@theme` block that deletes the Tailwind namespaces a banned utility would need to exist at all. |
 | `src/styles/*.css` | Component styling, tokens only, one file per surface. |
 | `scripts/check-theme.ts` | The gate. Rejects a literal colour or type value outside `theme.css`, a banned property, and an unknown token. |
-| `public/icon.svg` | The one file outside `theme.css` that holds a colour, stated as an exception rather than discovered as one. An app icon is an asset, like the font files, and cannot read a stylesheet. It carries the ground and the ink, and it changes when they do. |
+| `public/icon.svg` | The one file outside `theme.css` that holds a colour, stated as an exception rather than discovered as one. An app icon is an asset, like the font files, and cannot read a stylesheet. It carries the ground and the ink, and it changes when they do. `public/apple-touch-icon.png` is a 180px raster of it. |
+| `og-card.html` | The source of the share card, `public/og.png`. A real page rather than a hand-drawn image, so the card is set in the project's own faces at the project's own sizes out of the project's own tokens — it holds no literal of its own. Vite builds `index.html` only, so it never reaches `dist/`. Regenerate after a theme change: `npm run dev`, open `/og-card.html`, screenshot the 1200x630 `.card` element over `public/og.png`. |
 
 Tailwind is for layout only — spacing, flex, grid, breakpoints, position. Colour and
 type reach components through `var(--…)`, never through a class.
