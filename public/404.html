@@ -25,8 +25,15 @@
       var segments = location.pathname.split('/').filter(Boolean)
       var project = location.hostname.endsWith('.github.io') && segments.length > 1
       var root = project ? '/' + segments[0] + '/' : '/'
+      //
+      // The query and the hash ride along. The app's whole address space is the
+      // hash (`#/engineer/rag-pipeline`), so dropping it here would turn a stale
+      // deep link into a silent trip to the front page rather than to the quest
+      // it named.
       var served = location.protocol === 'http:' || location.protocol === 'https:'
-      if (served && location.pathname !== root) location.replace(root)
+      if (served && location.pathname !== root) {
+        location.replace(root + location.search + location.hash)
+      }
     </script>
   </head>
   <body>

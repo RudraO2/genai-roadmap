@@ -88,6 +88,13 @@ viewport a phone actually has.
 levels above it are marked stretch. One level up is not flagged, because one level up is
 what a roadmap is for. Nothing is ever hidden or disabled by the answer.
 
+Live at **https://rudrao2.github.io/genai-roadmap/** — a static artifact built from
+`main` by `.github/workflows/pages.yml`. `base: './'` keeps every asset path relative,
+so the same `dist/` serves from a project path, a user page or a custom domain. The
+only absolute URLs in the project are the canonical link and the Open Graph image in
+`index.html`, which the format requires; if the site moves, that block is the one
+place to change.
+
 ## Running it
 
 ```
