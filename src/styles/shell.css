@@ -106,9 +106,9 @@
     transition: background-color var(--dur-state) var(--ease-state);
   }
 
-  /* Every main-zone node on the track is done (spec 14, `App.tsx`'s `shipped`).
-   * The same accent this chip's own numbers already imply, just said in its
-   * background too — still "done", not a fourth meaning for the colour. */
+  /* Every quest on the chosen path is done (`App.tsx`'s `shipped`). The same
+   * accent this chip's own numbers already imply, just said in its background
+   * too — still "done", not a fourth meaning for the colour. */
   .shell__masthead-meta[data-shipped='true'] {
     background: var(--accent);
     color: var(--text-primary);

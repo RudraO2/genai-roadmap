@@ -7,7 +7,7 @@
  *    then our own layered styles. theme.css sits in this same directory so the
  *    relative @font-face URLs resolve identically however the file is inlined.
  *
- * 2. Enforcement. CONTEXT.md section 8 bans gradients, glassmorphism, glow shadows,
+ * 2. Enforcement. DESIGN.md bans gradients, glassmorphism, glow shadows,
  *    default palette tokens, decorative rounding and ambient motion. Tailwind ships
  *    utilities for every one of those. Clearing a theme namespace with `initial`
  *    deletes both its variables and the utilities that read them, so `bg-slate-900`,

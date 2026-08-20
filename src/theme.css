@@ -2,22 +2,20 @@
  * theme.css — the one swappable file.
  *
  * Every colour and every type value in this project is declared here as a custom
- * property, and nowhere else. CONTEXT.md section 10: "all colour/type via CSS custom
- * properties in one theme.css, so the theme is swappable in one file." Rewrite the
+ * property, and nowhere else, so the theme is swappable in one file. Rewrite the
  * values below and the whole aesthetic changes; touch nothing else.
  *
  * The only selectors permitted in this file are :root and the @font-face blocks.
  * No component styling lives here — that is src/styles/.
  *
- * The palette is CONTEXT.md section 8 as amended 2026-08-19 (spec 13): warm paper
- * ground, near-black ink for the road and every rule, four *semantic* paper accents,
- * and exactly one action accent. The four papers are assigned from a node's data —
- * level, zone, status — never cycled for decoration. The action accent means done,
- * here, or go, and nothing else.
+ * The palette is DESIGN.md: warm paper ground, near-black ink for every rule, four
+ * *semantic* paper accents, four path colours, and exactly one action accent. Every
+ * one of them is assigned from data — a node's type, a path's id — never cycled for
+ * decoration. The action accent means done, here, or go, and nothing else.
  *
- * The pre-spec-13 identity was editorial dark terminal: near-black ground, warm
- * off-white text, Instrument Serif. It is gone, including its font files. Do not
- * restore it — see the amendment note at the head of section 8.
+ * The identity before 2026-08-19 was editorial dark terminal: near-black ground,
+ * warm off-white text, Instrument Serif. It is gone, including its font files.
+ * Do not restore it.
  */
 
 /* Gabarito — display. Heavy, rounded, geometric. Vendored; see ./fonts/README.md. */
@@ -263,7 +261,7 @@
    * Section 8: motion only to show state change. There is no ambient animation
    * token here on purpose, and there should never be one.
    *
-   * --dur-reward / --ease-reward (spec 14) are for the small set of one-shot
+   * --dur-reward / --ease-reward are for the small set of one-shot
    * moments that mark the learner actually finishing something — completing a
    * node, clearing an act, shipping a track. Kept apart from --dur-state /
    * --ease-state on purpose: routine hover and focus feedback should stay

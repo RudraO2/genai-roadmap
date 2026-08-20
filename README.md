@@ -108,8 +108,8 @@ being a search rather than a promise that a specific page exists.
 
 ## Design
 
-`CONTEXT.md` section 8 still governs the visual language and is worth reading before
-touching any UI. The rest of `CONTEXT.md` describes an earlier iteration and is history: paper ground, near-black ink, hard registration offsets rather than
+`DESIGN.md` is the whole of the design constitution and is worth reading before
+touching any UI: paper ground, near-black ink, hard registration offsets rather than
 shadows, three typefaces with three jobs, colour assigned from data and never from
 position in a list, motion only to show a state change. No gradients, no glow, no
 glassmorphism, no emoji icons. Tailwind is for layout only — `src/index.css` deletes the
@@ -132,8 +132,9 @@ means that on all four paths.
 | `src/data/state.ts` | Everything derived from the completed set, in one place. |
 | `src/components/` | Picker, path bar, stage rail, map, quest dialog, list view, controls. |
 | `src/theme.css` | Every colour and type value in the project. |
-| `CONTEXT.md` | The original design constitution. Section 8 still applies. |
+| `DESIGN.md` | The design constitution. All of it. |
 
-The other markdown at the root (`State of the project.md`, `BACKLOG.md`, `PROGRESS.md`,
-`seeds.md`, `specs/`) documents the earlier single-path iteration of this project and is
-kept as history. It does not describe the current data model.
+There is no other documentation, on purpose. An earlier set of process documents
+(`CONTEXT.md`, `BACKLOG.md`, `PROGRESS.md`, `specs/` and the rest) described a version
+of this project that no longer exists, and was deleted rather than kept — git history
+has it.

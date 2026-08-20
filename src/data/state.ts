@@ -174,9 +174,8 @@ export function stageStateFor(progress: PathProgress, stageId: StageId): StageSt
  * out loud; sixteen advanced quests on that same path do carry the mark, and
  * they are exactly the ones that deserve it.
  *
- * Advice, never a filter. `CONTEXT.md` is unambiguous that nothing is removed
- * from the map because of the intake answer, and this is the whole of what that
- * answer is allowed to do.
+ * Advice, never a filter. Nothing is removed from the map because of the intake
+ * answer, and this is the whole of what that answer is allowed to do.
  */
 export type LevelFit = 'review' | 'match' | 'stretch'
 

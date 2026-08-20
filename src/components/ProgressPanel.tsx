@@ -26,8 +26,8 @@ const questCount = (n: number): string => `${n} quest${n === 1 ? '' : 's'}`
 
 /**
  * Export, import, reset. The whole sync story, and the only place it lives —
- * `CONTEXT.md` section 10 permits localStorage plus a JSON file and forbids a
- * backend, an account and a database, so there is no upload control here and
+ * The project's standing constraint is localStorage plus a JSON file — no
+ * backend, no account, no database — so there is no upload control here and
  * there must never be one.
  *
  * A controlled native `<dialog>`, the same pattern as `NodePanel`: the `open`
