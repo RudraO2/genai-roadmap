@@ -307,4 +307,32 @@
     font-size: var(--size-body);
     color: var(--text-muted);
   }
+
+  /* ---- Shipped (spec 14) --------------------------------------------------
+   * Exists in the DOM only once `TrackMap` reads the whole track as done, so
+   * its entrance is the plain `animation` on mount `shell.css` defines
+   * (`reward-stamp-in`) — no transient state, nothing to reset on a later
+   * incomplete state, because there is no way back to one short of clearing
+   * progress. Sits above the act list, between the standfirst and the road,
+   * so it reads as the headline of the zoomed-out screen it is the payoff for.
+   */
+  .overview__shipped {
+    display: inline-block;
+    margin-top: calc(var(--space-unit) * 6);
+    margin-bottom: calc(var(--space-unit) * 2);
+    background: var(--accent);
+    color: var(--text-primary);
+    border: var(--rule-strong) solid var(--surface-road);
+    border-radius: var(--radius-paper);
+    padding: calc(var(--space-unit) * 3) calc(var(--space-unit) * 4);
+    font-family: var(--font-display);
+    font-size: var(--size-card-title);
+    font-weight: var(--weight-black);
+    letter-spacing: var(--tracking-tight);
+    line-height: var(--leading-tight);
+    /* Matches `reward-stamp-in`'s own 100% frame exactly, so nothing jumps once
+     * the animation ends and the element settles into its resting style. */
+    transform: rotate(-2deg);
+    animation: reward-stamp-in var(--dur-reward) var(--ease-reward);
+  }
 }

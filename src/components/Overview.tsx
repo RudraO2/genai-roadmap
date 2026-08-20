@@ -18,6 +18,13 @@ export interface OverviewProps {
    */
   standingActId: string | null
   onSelectAct: (actId: string) => void
+  /**
+   * Every main-zone node on the track is done (spec 14). `TrackMap` derives
+   * this from the same `progress` passed here, so it can never disagree with
+   * the tallies this screen already prints. Frontier plays no part, matching
+   * `TrackProgress.done` / `.total`'s own exclusion of it.
+   */
+  shipped: boolean
 }
 
 /**
@@ -82,6 +89,7 @@ export function Overview({
   progress,
   standingActId,
   onSelectAct,
+  shipped,
 }: OverviewProps): ReactNode {
   return (
     <Section
@@ -92,6 +100,14 @@ export function Overview({
       title="The whole road"
       standfirst={`Every act on the way to ${track.destination.toLowerCase()}.`}
     >
+      {/* Exists in the DOM only once the track is actually finished, so its
+          entrance animation is a plain CSS `animation` on mount — see the note
+          at `.node-card[data-revealed]` in cards.css for the same trick. */}
+      {shipped ? (
+        <p className="overview__shipped">
+          Shipped — every stop on the way to {track.destination.toLowerCase()} is done.
+        </p>
+      ) : null}
       {track.acts.length === 0 ? (
         <p className="overview__empty">This track has no acts yet.</p>
       ) : (

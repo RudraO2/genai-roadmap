@@ -4,6 +4,7 @@ import { LEVEL_RANK } from '../constants.ts'
 import { dormancyOf } from '../data/dormancy.ts'
 import { useProgressContext } from '../data/ProgressContext.ts'
 import { registry } from '../data/registry.ts'
+import { useJustCompleted } from '../hooks/useJustCompleted.ts'
 import type { PocketPlacement } from '../path/pockets.ts'
 import type { Level, Node, PlacedNode } from '../types.ts'
 import { NodePanel } from './NodePanel.tsx'
@@ -80,6 +81,18 @@ function paperFor(node: Node, dormant: boolean): string {
  * unclickable: CONTEXT.md section 6 keeps dead tools visible because knowing a
  * tool is dead is useful information.
  *
+ * Two reward moments (spec 14), both one-shot and both gated on an actual state
+ * change rather than on render:
+ *
+ *   - `useJustCompleted` watches `complete` and is true for one animation only on
+ *     the click that *finishes* a node — not on mount with it already complete,
+ *     not on un-marking it. `data-just-completed` drives the stamp keyframe on
+ *     the button in `cards.css`.
+ *   - `data-revealed` is set only when `belowLearnerLevel && expanded` — a state
+ *     reachable *only* through the stub's own expand click, never on first paint
+ *     — so the reveal animation plays exactly once, on the click that plays it,
+ *     and a card at or above the learner's level never carries it at all.
+ *
  * The stop number is the wayfinding spec 13 added. It is the same number `PathNode`
  * draws inside the dot, which is what lets a card sit some distance from its dot
  * (the solver slides cards to keep them off the road) without the reader losing
@@ -92,6 +105,7 @@ export function NodeCard({ placed, stop, placement, learnerLevel }: NodeCardProp
   const [detailOpen, setDetailOpen] = useState(false)
 
   const complete = completed.has(placed.id)
+  const justCompleted = useJustCompleted(complete)
 
   const node = registry.getNode(placed.id)
   const belowLearnerLevel = LEVEL_RANK[node.level] < LEVEL_RANK[learnerLevel]
@@ -115,6 +129,7 @@ export function NodeCard({ placed, stop, placement, learnerLevel }: NodeCardProp
     'data-zone': node.zone,
     'data-dormant': dormant ? 'true' : undefined,
     'data-complete': complete ? 'true' : undefined,
+    'data-just-completed': justCompleted ? 'true' : undefined,
   }
 
   const stopLabel = String(stop).padStart(2, '0')
@@ -131,7 +146,7 @@ export function NodeCard({ placed, stop, placement, learnerLevel }: NodeCardProp
   }
 
   return (
-    <article className="node-card" {...shared}>
+    <article className="node-card" {...shared} data-revealed={belowLearnerLevel ? 'true' : undefined}>
       <p className="node-card__head">
         <span className="node-card__stop">{stopLabel}</span>
         {/* The card's paper in words, so the colour system is never the only

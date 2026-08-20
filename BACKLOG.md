@@ -160,6 +160,27 @@ bottom rather than done inline.
 - [x] T129 — Verify: build, typecheck, ten-rule violation probe, local-token probe, both gate
       failure modes, `vite preview` served over HTTP
 
+## Spec 14 — Completion payoff: the game-psychology pass
+
+Opened directly by the project owner in conversation rather than claimed off this board —
+same as spec 13. No pre-written task list; logged here after the fact, same as spec 13 was.
+
+- [x] T140 — Write `specs/spec-14-completion-payoff.md` and claim the spec
+- [x] T141 — `theme.css` — `--dur-reward` / `--ease-reward` tokens; corrected the stale
+      level-keyed paper comment left over from before spec 13's kind-keyed rule
+- [x] T142 — `src/hooks/useJustCompleted.ts` — one-shot flag on a `false → true` flip only
+- [x] T143 — `NodeCard.tsx` / `cards.css` — the `Mark done` stamp, gated on `useJustCompleted`
+- [x] T144 — `Section.tsx` / `shell.css` — optional `badge` slot; `TrackMap.tsx` wires an
+      "Act cleared" chip when an act's own tally reads `done === total`
+- [x] T145 — `Overview.tsx` / `navigation.css` and `App.tsx` / `shell.css` — the track-shipped
+      banner and the accent-filled masthead chip, both off `progress.done === progress.total`
+- [x] T146 — `NodeCard.tsx` / `cards.css` — reveal animation on expanding a below-level stub,
+      gated on `belowLearnerLevel` at the point only an explicit expand click can reach it
+- [x] T147 — Verify: build, typecheck, theme gate; browser checks of all four animations
+      firing exactly once on the real state change (`animation-name` read via
+      `getComputedStyle` immediately after the triggering click, not just a screenshot) and
+      never on load, on un-marking, or on an already-cleared act/track
+
 ## Noticed, not done
 
 Appended by sessions that spotted work outside their one task. Do not do these inline.

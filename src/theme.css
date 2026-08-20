@@ -120,12 +120,18 @@
   --accent-quiet: #007a54;
 
   /* ---- The four papers ----------------------------------------------------
-   * Semantic, assigned from node data and never from position in a list:
-   *   lime    level: beginner
-   *   blue    level: intermediate
-   *   lilac   level: advanced
-   *   orange  zone: frontier — unproven, off the road
+   * Semantic, assigned from node data and never from position in a list. The
+   * axis is the kind of a node's *first link* (`NodeCard.paperFor`), not its
+   * level — level was tried in spec 13 and measured wrong, because an act's
+   * nodes almost all share a level and every screen came out one flat colour:
+   *   lime    first link kind: repo
+   *   blue    first link kind: docs
+   *   lilac   first link kind: playground
+   *   orange  first link kind: article / thread / video / anything else
    *   grey    dormant — no commits in twelve months, still on the map
+   * Dormancy overrides every other rule; frontier does not repaint the paper at
+   * all and is said with a dashed border instead, so a card's colour never has
+   * to mean two different things depending on which axis is looking at it.
    * Ink text sits on all five. Contrast against ink: lime 15.0 : 1, blue 12.6 : 1,
    * lilac 10.6 : 1, orange 12.1 : 1, grey 13.9 : 1.
    */
@@ -219,8 +225,21 @@
    * Section 8: motion only to show state change. There is no ambient animation
    * token here on purpose, and there should never be one. --dur-walk is the
    * sprite's frame interval, which runs only while `t` is actually changing.
+   *
+   * --dur-reward / --ease-reward (spec 14) are for the small set of one-shot
+   * moments that mark the learner actually finishing something — completing a
+   * node, clearing an act, shipping a track. Kept apart from --dur-state /
+   * --ease-state on purpose: routine hover and focus feedback should stay
+   * instant and flat, and a reward moment is allowed to take longer and settle
+   * with a slight overshoot, which the flat state curve does not do and must
+   * not start doing everywhere. Every use is gated on an actual state
+   * transition (a hook watching a boolean, or a DOM node that does not exist
+   * until the condition is first true) — never a loop, never present on the
+   * walker's per-frame re-renders.
    */
   --dur-state: 120ms;
   --dur-walk: 520ms;
+  --dur-reward: 420ms;
   --ease-state: cubic-bezier(0.2, 0, 0, 1);
+  --ease-reward: cubic-bezier(0.34, 1.56, 0.64, 1);
 }

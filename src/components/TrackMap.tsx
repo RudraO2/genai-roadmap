@@ -64,6 +64,12 @@ export interface TrackMapProps {
  * act on screen advances the learner's frontier to the next act; the screen
  * stays where the learner put it and `ActNav` starts offering the jump. A screen
  * that navigates itself out from under a pointer is worse than a stale one.
+ *
+ * `actCleared` and `shipped` (spec 14) are read off the same `progress` this
+ * component already derives — no second count, so the badge and the tally it
+ * summarises can never disagree. Both exclude frontier by construction, because
+ * `progress.done` / `progress.total` already do (spec 09): a side trip left
+ * unexplored can never block, or fake, either one.
  */
 export function TrackMap({ track, level, character }: TrackMapProps): ReactNode {
   const { completed } = useProgressContext()
@@ -105,6 +111,12 @@ export function TrackMap({ track, level, character }: TrackMapProps): ReactNode 
   // than rendering an empty screen.
   const act = resolveAct(track, view)
 
+  // Whole-track "shipped": every main-zone node done, at least one placed.
+  // Frontier is excluded by construction — `progress.done` / `progress.total`
+  // already never fold it in (spec 09) — so a side trip left unexplored can
+  // never block or fake this.
+  const shipped = progress.total > 0 && progress.done === progress.total
+
   if (!act) {
     return (
       <div className="map-screen" ref={screenRef} tabIndex={-1}>
@@ -113,6 +125,7 @@ export function TrackMap({ track, level, character }: TrackMapProps): ReactNode 
           progress={progress}
           standingActId={target?.actId ?? null}
           onSelectAct={selectAct}
+          shipped={shipped}
         />
       </div>
     )
@@ -126,6 +139,13 @@ export function TrackMap({ track, level, character }: TrackMapProps): ReactNode 
   // the figure can never name different acts.
   const standingId = target?.actId ?? null
   const standing = standingId && standingId !== act.id ? actRefOf(track, standingId) : null
+
+  const actProgress = progress.acts.get(act.id) ?? EMPTY_ACT_PROGRESS
+  // Same reasoning as `shipped`, one level down: an act with no nodes at all
+  // (a placeholder, or one whose only content is a branch) never reads as
+  // cleared, and the badge does not exist in the DOM until this is first true —
+  // see the note at `Section.badge`.
+  const actCleared = actProgress.total > 0 && actProgress.done === actProgress.total
 
   return (
     <div className="map-screen" ref={screenRef} tabIndex={-1}>
@@ -141,11 +161,12 @@ export function TrackMap({ track, level, character }: TrackMapProps): ReactNode 
         kicker={track.title}
         title={act.title}
         standfirst={act.subtitle}
+        badge={actCleared ? <span className="section__badge">Act cleared</span> : null}
       >
         <ActPath
           act={act}
           level={level}
-          progress={progress.acts.get(act.id) ?? EMPTY_ACT_PROGRESS}
+          progress={actProgress}
           characterT={target && target.actId === act.id ? walkerT : null}
         />
         {track.branches

@@ -103,6 +103,15 @@
     letter-spacing: var(--tracking-caps);
     text-transform: uppercase;
     white-space: nowrap;
+    transition: background-color var(--dur-state) var(--ease-state);
+  }
+
+  /* Every main-zone node on the track is done (spec 14, `App.tsx`'s `shipped`).
+   * The same accent this chip's own numbers already imply, just said in its
+   * background too — still "done", not a fourth meaning for the colour. */
+  .shell__masthead-meta[data-shipped='true'] {
+    background: var(--accent);
+    color: var(--text-primary);
   }
 
   .shell__main {
@@ -133,6 +142,17 @@
     margin-bottom: 0;
   }
 
+  /* Holds the kicker pill and the optional reward badge (spec 14) side by side,
+   * as two separate chips rather than nesting one pill's padding inside the
+   * other's. */
+  .section__head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: calc(var(--space-unit) * 3);
+    margin-bottom: calc(var(--space-unit) * 3);
+  }
+
   .section__kicker {
     display: inline-flex;
     gap: calc(var(--space-unit) * 2);
@@ -146,13 +166,54 @@
     font-weight: var(--weight-bold);
     letter-spacing: var(--tracking-caps);
     text-transform: uppercase;
-    margin-bottom: calc(var(--space-unit) * 3);
   }
 
   /* The index is the quieter half of the chip, so it steps back one value
    * rather than getting its own colour. */
   .section__kicker-index {
     color: var(--paper-lime);
+  }
+
+  /* ---- Reward moments (spec 14) -------------------------------------------
+   * One keyframe, two uses: a chip popping onto the page like a stamp landing.
+   * Both `.section__badge` and `.overview__shipped` set their own resting
+   * `transform` and end the keyframe on that same value, so nothing jumps once
+   * the animation finishes.
+   */
+  @keyframes reward-stamp-in {
+    0% {
+      opacity: 0;
+      transform: scale(0.5) rotate(-10deg);
+    }
+    60% {
+      opacity: 1;
+      transform: scale(1.1) rotate(2deg);
+    }
+    100% {
+      opacity: 1;
+      transform: scale(1) rotate(-2deg);
+    }
+  }
+
+  /* "Act cleared" (`TrackMap`). Exists in the DOM only once the act's own
+   * tally reads done === total, so this animation is the element's whole
+   * entrance — no transient class, no timer. The one other place `--accent`
+   * is spent beyond the three section 8 already names (done / here / go),
+   * because clearing an act *is* one of those three: it is "done", said at
+   * act scale instead of node scale. */
+  .section__badge {
+    background: var(--accent);
+    color: var(--text-primary);
+    border: var(--rule-strong) solid var(--surface-road);
+    border-radius: var(--radius-badge);
+    padding: calc(var(--space-unit) * 1) calc(var(--space-unit) * 3);
+    font-family: var(--font-mono);
+    font-size: var(--size-nano);
+    font-weight: var(--weight-bold);
+    letter-spacing: var(--tracking-caps);
+    text-transform: uppercase;
+    transform: rotate(-2deg);
+    animation: reward-stamp-in var(--dur-reward) var(--ease-reward);
   }
 
   .section__title {

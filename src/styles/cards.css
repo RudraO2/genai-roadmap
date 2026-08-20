@@ -275,6 +275,55 @@
     color: var(--text-primary);
   }
 
+  /* ---- The stamp (spec 14) -----------------------------------------------
+   * A one-shot thump on the click that actually finishes a node. Gated by
+   * `data-just-completed`, which `useJustCompleted` clears after one
+   * `--dur-reward` cycle — so this never plays on mount with a node already
+   * complete, on un-marking one, or on any of `TrackMap`'s per-frame
+   * re-renders while the walker is tweening. Scale and rotation only, on the
+   * button that was actually pressed: no new colour, no glow.
+   */
+  .node-card[data-just-completed='true'] .node-card__complete {
+    animation: node-card-stamp var(--dur-reward) var(--ease-reward);
+  }
+
+  @keyframes node-card-stamp {
+    0% {
+      transform: scale(1) rotate(0deg);
+    }
+    35% {
+      transform: scale(1.22) rotate(-4deg);
+    }
+    65% {
+      transform: scale(0.94) rotate(3deg);
+    }
+    100% {
+      transform: scale(1) rotate(0deg);
+    }
+  }
+
+  /* ---- The reveal (spec 14) -----------------------------------------------
+   * `data-revealed` is set only on a card that was a collapsed stub and has
+   * just been expanded by its own click — never on a card that was always
+   * visible, at any point in its life (see the note at NodeCard). React mounts
+   * this element fresh the moment `expanded` flips true, so a plain `animation`
+   * on mount is the whole mechanism: nothing to track, nothing to reset.
+   */
+  .node-card[data-revealed='true'] {
+    animation: node-card-reveal var(--dur-reward) var(--ease-reward);
+  }
+
+  @keyframes node-card-reveal {
+    0% {
+      opacity: 0;
+      transform: translateY(calc(var(--space-unit) * 3)) scale(0.97);
+    }
+    100% {
+      opacity: 1;
+      transform: none;
+    }
+  }
+
   /* ---- Dormant (spec 09) ------------------------------------------------
    * No commits in twelve months. Grey paper, muted ink — still readable, still
    * completable, still there. CONTEXT.md section 6: dead tools are useful
