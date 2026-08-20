@@ -34,6 +34,10 @@
     max-height: min(48rem, 88vh);
     overflow-y: auto;
     padding: calc(var(--space-unit) * 8);
+    /* The path's colour, as a spine down the left edge. The dialog covers the
+       map completely, so without this it is the one surface in the app that
+       could belong to any of the four. */
+    border-left: calc(var(--space-unit) * 2) solid var(--path-colour);
   }
 
   .quest__close {
@@ -55,12 +59,46 @@
     color: var(--text-primary);
   }
 
+  /* The breadcrumb. Its first crumb is the path, so the dialog states which of
+     the four maps you came from — which matters most in the case it was written
+     for: opening a quest from a search hit, where you did not arrive by
+     scrolling and have no other clue. */
   .quest__kicker {
+    display: flex;
+    flex-wrap: wrap;
+    gap: calc(var(--space-unit) * 2);
     font-family: var(--font-mono);
     font-size: var(--size-nano);
     font-weight: var(--weight-bold);
     letter-spacing: var(--tracking-caps);
     text-transform: uppercase;
+    color: var(--text-muted);
+  }
+
+  .quest__crumb:first-child {
+    color: var(--text-primary);
+  }
+
+  .quest__crumb-sep {
+    color: var(--rule-faint);
+  }
+
+  /* Advice, printed where the facts are, in the language the picker used. */
+  .quest__fit-note {
+    margin-top: calc(var(--space-unit) * 3);
+    max-width: var(--measure);
+    font-family: var(--font-body);
+    font-size: var(--size-meta);
+    line-height: var(--leading-body);
+    color: var(--text-secondary);
+  }
+
+  .quest__hint {
+    margin-top: calc(var(--space-unit) * 1);
+    max-width: var(--measure);
+    font-family: var(--font-body);
+    font-size: var(--size-meta);
+    line-height: var(--leading-body);
     color: var(--text-muted);
   }
 

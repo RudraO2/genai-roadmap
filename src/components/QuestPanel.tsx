@@ -2,11 +2,19 @@ import { useEffect, useRef, type ReactNode } from 'react'
 
 import { SEARCH_LABEL, SEARCH_URL, TYPE_LABEL } from '../constants.ts'
 import { registry } from '../data/roadmap.ts'
-import { blockedBy, stateOf } from '../data/state.ts'
-import type { RoadmapNode } from '../types.ts'
+import { blockedBy, levelFit, stateOf } from '../data/state.ts'
+import type { LearningPath, Level, RoadmapNode } from '../types.ts'
+
+const FIT_NOTE: Readonly<Record<'review' | 'stretch', string>> = {
+  review: 'Below the level you gave, so treat it as revision — skim it, tick it, move on.',
+  stretch: 'Two levels above where you said you were. Nothing stops you opening it; expect it to take longer than the estimate, and expect to need the quests pointing at it.',
+}
 
 export interface QuestPanelProps {
   node: RoadmapNode | null
+  /** The path this quest is being read on. Only its identity is used. */
+  path: LearningPath
+  level: Level
   completed: ReadonlySet<string>
   onClose: () => void
   onToggle: (id: string) => void
@@ -39,6 +47,8 @@ function starLabel(stars: number): string {
  */
 export function QuestPanel({
   node,
+  path,
+  level,
   completed,
   onClose,
   onToggle,
@@ -60,6 +70,7 @@ export function QuestPanel({
   }
 
   const state = stateOf(node, completed)
+  const fit = levelFit(node, level)
   const blockers = blockedBy(node, completed)
   const unlocks = registry
     .unlockedBy(node.id)
@@ -73,6 +84,7 @@ export function QuestPanel({
     <dialog
       ref={dialogRef}
       className="quest"
+      data-path={path.id}
       aria-labelledby={titleId}
       onClose={onClose}
       onClick={(event) => {
@@ -84,8 +96,16 @@ export function QuestPanel({
           Close
         </button>
 
+        {/* A breadcrumb rather than a label. Opening a quest from a search hit
+            used to drop you into a panel with no statement of where it sat —
+            which path, which stage — and closing it put you back on a map you
+            had lost your place in. */}
         <p className="quest__kicker">
-          {stage.title} / {TYPE_LABEL[node.type]} / {node.level}
+          <span className="quest__crumb">{path.title}</span>
+          <span className="quest__crumb-sep" aria-hidden="true">/</span>
+          <span className="quest__crumb">{stage.title}</span>
+          <span className="quest__crumb-sep" aria-hidden="true">/</span>
+          <span className="quest__crumb">{TYPE_LABEL[node.type]}</span>
         </p>
         <h2 id={titleId} className="quest__title">
           {node.title}
@@ -105,7 +125,13 @@ export function QuestPanel({
             <dt>Status</dt>
             <dd data-state={state}>{done ? 'Done' : state === 'ready' ? 'Ready now' : 'Locked'}</dd>
           </div>
+          <div className="quest__fact">
+            <dt>Level</dt>
+            <dd data-fit={fit}>{node.level}</dd>
+          </div>
         </dl>
+
+        {fit === 'match' ? null : <p className="quest__fit-note">{FIT_NOTE[fit]}</p>}
 
         {blockers.length > 0 ? (
           <div className="quest__block">
@@ -148,6 +174,10 @@ export function QuestPanel({
 
         <section className="quest__section">
           <h3 className="quest__heading">Go here</h3>
+          <p className="quest__hint">
+            Checked when this registry was written. This roadmap points at the good material; it
+            does not reprint it.
+          </p>
           <ul className="quest__links">
             {node.links.map((link) => (
               <li key={link.url}>
@@ -167,6 +197,10 @@ export function QuestPanel({
 
         <section className="quest__section">
           <h3 className="quest__heading">Or search it yourself</h3>
+          <p className="quest__hint">
+            A live query, built when you click it. It cannot rot, and it is the honest answer for
+            anything whose canonical page moves.
+          </p>
           {/* Built from the query at render time rather than stored, so these can
               never rot the way a saved URL can — and they are the honest answer for
               anything whose canonical page moves. */}

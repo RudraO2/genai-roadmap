@@ -8,8 +8,8 @@
  * which is not "what exists" but "what do I do now".
  */
 
-import { RANKS } from '../constants.ts'
-import type { LearningPath, NodeState, RoadmapNode, StageId } from '../types.ts'
+import { LEVEL_RANK, RANKS } from '../constants.ts'
+import type { LearningPath, Level, NodeState, RoadmapNode, StageId } from '../types.ts'
 import { registry } from './roadmap.ts'
 
 export interface Tally {
@@ -37,7 +37,22 @@ export interface PathProgress {
   readyCount: number
   /** The single node the banner tells the learner to do next, or null when done. */
   next: RoadmapNode | null
+  /**
+   * The stage the learner is standing in: the one holding `next`, or the last
+   * stage on the path once everything is done. This is the answer to "where am
+   * I", and every surface that claims to answer that question reads it here.
+   */
+  currentStage: StageId | null
 }
+
+/**
+ * A stage's state, for the stepper and the band headers.
+ *   cleared  every quest in it is done
+ *   current  it holds the recommended quest — you are here
+ *   open     something in it is unlocked and unfinished
+ *   ahead    still waiting on work in an earlier stage
+ */
+export type StageState = 'cleared' | 'current' | 'open' | 'ahead'
 
 const EMPTY_TALLY: Tally = { done: 0, total: 0, xp: 0, xpTotal: 0 }
 
@@ -118,9 +133,56 @@ export function computePathProgress(
     rank: rankFor(percent),
     readyCount,
     next,
+    currentStage: next?.stage ?? path.stages[path.stages.length - 1] ?? null,
   }
 }
 
 export function tallyFor(progress: PathProgress, stage: StageId): Tally {
   return progress.stages.get(stage) ?? EMPTY_TALLY
+}
+
+/**
+ * Where one stage stands. `current` wins over `cleared` only if the
+ * recommendation is genuinely inside it, which it cannot be — `next` is always
+ * unfinished — so the two can never both apply and the order below is safe.
+ */
+export function stageStateFor(progress: PathProgress, stageId: StageId): StageState {
+  const tally = tallyFor(progress, stageId)
+  if (tally.total > 0 && tally.done === tally.total) return 'cleared'
+  if (progress.currentStage === stageId) return 'current'
+  for (const node of registry.nodesInStage(stageId)) {
+    if (progress.states.get(node.id) === 'ready') return 'open'
+  }
+  return 'ahead'
+}
+
+/**
+ * How a quest sits relative to the level the learner told us about.
+ *   review   below them — worth a skim rather than a study
+ *   match    where they said they were, or one honest step up from it
+ *   stretch  two levels above them — flagged, and still completely open
+ *
+ * The rule is asymmetric on purpose, and the asymmetry is the whole design.
+ *
+ * Downward, any gap is worth marking: an intermediate learner scanning a path
+ * wants to know which quests are the basics, so they can skim and tick them.
+ *
+ * Upward, one level is not news. Taking someone one level up is what a roadmap
+ * *is* — flag that and a beginner opening the AI Engineer path finds forty-one
+ * of its fifty-nine quests stamped "stretch", which tells them nothing except
+ * that they should probably leave. Two levels up is a real jump and gets said
+ * out loud; sixteen advanced quests on that same path do carry the mark, and
+ * they are exactly the ones that deserve it.
+ *
+ * Advice, never a filter. `CONTEXT.md` is unambiguous that nothing is removed
+ * from the map because of the intake answer, and this is the whole of what that
+ * answer is allowed to do.
+ */
+export type LevelFit = 'review' | 'match' | 'stretch'
+
+export function levelFit(node: RoadmapNode, level: Level): LevelFit {
+  const difference = LEVEL_RANK[node.level] - LEVEL_RANK[level]
+  if (difference < 0) return 'review'
+  if (difference > 1) return 'stretch'
+  return 'match'
 }

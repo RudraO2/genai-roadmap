@@ -1,21 +1,28 @@
 import { useMemo, type CSSProperties, type ReactNode } from 'react'
 
 import { computeLayout } from '../data/layout.ts'
-import { tallyFor, type PathProgress } from '../data/state.ts'
-import type { LearningPath, RoadmapNode } from '../types.ts'
+import { levelFit, stageStateFor, tallyFor, type PathProgress } from '../data/state.ts'
+import type { LearningPath, Level, RoadmapNode, StageId } from '../types.ts'
 import { GraphNode } from './GraphNode.tsx'
 
 export interface GraphCanvasProps {
   path: LearningPath
+  level: Level
   progress: PathProgress
   completed: ReadonlySet<string>
   /** Node ids left out of the layout entirely — rows close up behind them. */
   hidden: ReadonlySet<string>
+  /** Stages drawn in full. Everything else is a header row you can open. */
+  expanded: ReadonlySet<StageId>
   /** Ids matching the current search, or null when no search is running. */
   matches: ReadonlySet<string> | null
+  visited: ReadonlySet<string>
+  /** The quest opened most recently, kept after its dialog closes. */
+  focusedId: string | null
   zoom: number
   onOpen: (id: string) => void
   onToggle: (id: string) => void
+  onToggleStage: (stage: StageId) => void
 }
 
 /**
@@ -31,20 +38,36 @@ export interface GraphCanvasProps {
  * Zoom is a transform on the inner canvas with the outer box sized to match, so
  * the scrollbars stay honest at every scale and nothing inside has to know the
  * scale exists.
+ *
+ * Bands the learner has not opened are drawn as their header alone. The band
+ * still states its name, its kicker and its tally, so a collapsed map is a table
+ * of contents rather than a hole — and it is a button, so opening one is a
+ * click on the thing you were already reading.
  */
 export function GraphCanvas({
   path,
+  level,
   progress,
   completed,
   hidden,
+  expanded,
   matches,
+  visited,
+  focusedId,
   zoom,
   onOpen,
   onToggle,
+  onToggleStage,
 }: GraphCanvasProps): ReactNode {
+  const collapsed = useMemo(() => {
+    const set = new Set<StageId>()
+    for (const stageId of path.stages) if (!expanded.has(stageId)) set.add(stageId)
+    return set
+  }, [path.stages, expanded])
+
   const layout = useMemo(
-    () => computeLayout(path.id, { hidden, completed }),
-    [path.id, hidden, completed],
+    () => computeLayout(path.id, { hidden, completed, collapsed }),
+    [path.id, hidden, completed, collapsed],
   )
 
   const outer: CSSProperties = {
@@ -83,19 +106,35 @@ export function GraphCanvas({
 
         {layout.bands.map((band) => {
           const tally = tallyFor(progress, band.stage.id)
-          const cleared = tally.total > 0 && tally.done === tally.total
+          const state = stageStateFor(progress, band.stage.id)
           return (
             <div
               key={band.stage.id}
+              id={`stage-${band.stage.id}`}
               className="band"
               style={{ top: `${band.y}px`, height: `${band.headerHeight}px` }}
-              data-cleared={cleared ? 'true' : undefined}
+              data-stage-state={state}
+              data-collapsed={band.collapsed ? 'true' : undefined}
             >
-              <p className="band__kicker">{band.stage.kicker}</p>
-              <h3 className="band__title">{band.stage.title}</h3>
+              <p className="band__kicker">
+                {state === 'current' ? <span className="band__here">You are here</span> : null}
+                {band.stage.kicker}
+              </p>
+              <button
+                type="button"
+                className="band__toggle"
+                aria-expanded={!band.collapsed}
+                onClick={() => onToggleStage(band.stage.id)}
+              >
+                <span className="band__caret" aria-hidden="true">
+                  {band.collapsed ? '+' : '−'}
+                </span>
+                <span className="band__title">{band.stage.title}</span>
+              </button>
               <p className="band__tally">
                 {tally.done} / {tally.total}
-                {cleared ? ' · cleared' : null}
+                {state === 'cleared' ? ' · cleared' : null}
+                {band.collapsed ? ` · ${band.count} hidden` : null}
               </p>
             </div>
           )
@@ -108,6 +147,9 @@ export function GraphCanvas({
             state={progress.states.get(laid.node.id) ?? 'locked'}
             isNext={laid.node.id === nextId}
             dimmed={matches !== null && !matches.has(laid.node.id)}
+            visited={visited.has(laid.node.id)}
+            focused={laid.node.id === focusedId}
+            fit={levelFit(laid.node, level)}
             onOpen={onOpen}
             onToggle={onToggle}
           />

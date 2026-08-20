@@ -1,13 +1,15 @@
-import { useCallback, useMemo, useState, type ReactNode } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState, type ReactNode } from 'react'
 
 import { useProgressContext } from '../data/ProgressContext.ts'
 import { registry } from '../data/roadmap.ts'
 import { computePathProgress } from '../data/state.ts'
 import { useMediaQuery } from '../hooks/useMediaQuery.ts'
-import type { LearningPath, Level } from '../types.ts'
+import { useVisited } from '../hooks/useVisited.ts'
+import type { LearningPath, Level, StageId } from '../types.ts'
 import { GraphCanvas, matchNodes } from './GraphCanvas.tsx'
 import { MapControls, type MapView } from './MapControls.tsx'
 import { NextUp } from './NextUp.tsx'
+import { PathBar } from './PathBar.tsx'
 import { QuestPanel } from './QuestPanel.tsx'
 import { StageList } from './StageList.tsx'
 
@@ -37,24 +39,39 @@ function Legend(): ReactNode {
       <li className="legend__item" data-legend="boss">
         Capstone — the thing you show people
       </li>
+      <li className="legend__item" data-legend="visited">
+        Opened before
+      </li>
     </ul>
   )
 }
 
 /**
- * The map screen: the recommendation, the controls, the graph, the legend, and the
- * one dialog that everything opens into.
+ * The map screen: the orientation bar, the recommendation, the controls, the
+ * graph, the legend, and the one dialog that everything opens into.
  *
  * All of the derived state is computed here, once, from the completed set — so the
  * banner, the stage tallies, the node states and the edge states are the same
  * numbers rather than four independent counts that can drift apart.
  *
- * Nothing here navigates. Marking a quest done changes the recommendation and the
- * colours; it never scrolls the page or moves the view, because a screen that
- * jumps out from under a pointer is worse than a stale one.
+ * Two pieces of interface state live here rather than inside a view, because
+ * both views have to agree about them:
+ *
+ *   expanded   which stages are drawn in full. The map opens on the stage in
+ *              play and nothing else, which is what stops a fifty-nine quest
+ *              path from arriving as an undifferentiated wall
+ *   focusedId  the quest opened most recently, kept after its dialog closes, so
+ *              closing a panel does not erase the record of where you were
+ *
+ * Marking a quest done still never moves the view: a screen that jumps out from
+ * under a pointer is worse than a stale one. Scrolling happens for one reason
+ * only — an explicit "take me to that quest", from a search hit, a prerequisite
+ * chip or the stage stepper — where standing still would be the confusing
+ * answer.
  */
 export function RoadmapScreen({ path, level }: RoadmapScreenProps): ReactNode {
   const { completed, toggle } = useProgressContext()
+  const { visited, markVisited } = useVisited()
   const wide = useMediaQuery(WIDE)
 
   const [preferredView, setPreferredView] = useState<MapView | null>(null)
@@ -63,9 +80,49 @@ export function RoadmapScreen({ path, level }: RoadmapScreenProps): ReactNode {
   const [hideDone, setHideDone] = useState(false)
   const [zoom, setZoom] = useState(1)
   const [openId, setOpenId] = useState<string | null>(null)
+  const [focusedId, setFocusedId] = useState<string | null>(null)
 
   const progress = useMemo(() => computePathProgress(path, completed), [path, completed])
   const nodes = useMemo(() => registry.nodesForPath(path.id), [path.id])
+
+  const [expanded, setExpanded] = useState<ReadonlySet<StageId>>(
+    () => new Set(progress.currentStage === null ? [] : [progress.currentStage]),
+  )
+
+  // Finishing the last quest in a stage moves the recommendation into the next
+  // one. Opening that stage is the only sensible reading of "you are here now" —
+  // and it only ever adds, so a stage the learner opened by hand stays open.
+  const currentStage = progress.currentStage
+  useEffect(() => {
+    if (currentStage === null) return
+    setExpanded((current) => (current.has(currentStage) ? current : new Set([...current, currentStage])))
+  }, [currentStage])
+
+  // Switching paths re-bases the collapse state on the new path's own current
+  // stage, rather than carrying over a set of stage ids from somewhere else.
+  const lastPath = useRef(path.id)
+  useEffect(() => {
+    if (lastPath.current === path.id) return
+    lastPath.current = path.id
+    setExpanded(new Set(currentStage === null ? [] : [currentStage]))
+  }, [path.id, currentStage])
+
+  const allStages = path.stages.every((stageId) => expanded.has(stageId))
+
+  const setAllStages = useCallback(
+    (value: boolean) => {
+      setExpanded(new Set(value ? path.stages : currentStage === null ? [] : [currentStage]))
+    },
+    [path.stages, currentStage],
+  )
+
+  const toggleStage = useCallback((stageId: StageId) => {
+    setExpanded((current) => {
+      const next = new Set(current)
+      if (!next.delete(stageId)) next.add(stageId)
+      return next
+    })
+  }, [])
 
   const hidden = useMemo(() => {
     const set = new Set<string>()
@@ -91,23 +148,65 @@ export function RoadmapScreen({ path, level }: RoadmapScreenProps): ReactNode {
   const view: MapView = preferredView ?? (wide ? 'map' : 'list')
   const openNode = openId === null ? null : registry.getNode(openId)
 
-  const open = useCallback((id: string) => setOpenId(id), [])
+  // Set together with whatever expands the target's stage, so the effect below
+  // runs on the paint that has the target on the page rather than the one before.
+  const [scrollTo, setScrollTo] = useState<string | null>(null)
+
+  useEffect(() => {
+    if (scrollTo === null) return
+    setScrollTo(null)
+    const element = document.getElementById(scrollTo)
+    if (!element) return
+    const still = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+    element.scrollIntoView({ block: 'center', inline: 'center', behavior: still ? 'auto' : 'smooth' })
+  }, [scrollTo, expanded, view])
+
+  const open = useCallback(
+    (id: string) => {
+      const node = registry.getNode(id)
+      setExpanded((current) => (current.has(node.stage) ? current : new Set([...current, node.stage])))
+      setOpenId(id)
+      setFocusedId(id)
+      markVisited(id)
+    },
+    [markVisited],
+  )
+
+  /** Open the quest *and* take the map to it. For jumps from somewhere else. */
+  const goTo = useCallback(
+    (id: string) => {
+      open(id)
+      setScrollTo(`quest-${id}`)
+    },
+    [open],
+  )
+
+  const jumpToStage = useCallback((stageId: StageId) => {
+    setExpanded((current) => (current.has(stageId) ? current : new Set([...current, stageId])))
+    setScrollTo(`stage-${stageId}`)
+  }, [])
+
   const close = useCallback(() => setOpenId(null), [])
 
   return (
-    <div className="roadmap">
-      <header className="roadmap__head">
-        <p className="roadmap__kicker">
-          {path.title} — {path.tagline}
-        </p>
-        <h1 className="roadmap__title">{path.goal}</h1>
-        <p className="roadmap__note">
-          Every quest below has instructions, a finish condition, links that were checked when this
-          registry was written, and searches that cannot go stale. Level chosen: {level}.
-        </p>
-      </header>
+    <div className="roadmap" data-path={path.id}>
+      <PathBar
+        path={path}
+        level={level}
+        progress={progress}
+        expanded={expanded}
+        onJump={jumpToStage}
+      />
 
-      <NextUp progress={progress} onOpen={open} onToggle={toggle} />
+      {/* The finish line, in one line. The full editorial header this replaces
+          was three paragraphs of standing type that a returning learner had
+          read forty times and had to scroll past anyway. */}
+      <p className="roadmap__aim">
+        <span className="roadmap__aim-label">Finish line</span>
+        {path.goal}
+      </p>
+
+      <NextUp progress={progress} onOpen={goTo} onToggle={toggle} />
 
       <MapControls
         view={view}
@@ -119,6 +218,8 @@ export function RoadmapScreen({ path, level }: RoadmapScreenProps): ReactNode {
         onShowOptional={setShowOptional}
         hideDone={hideDone}
         onHideDone={setHideDone}
+        allStages={allStages}
+        onAllStages={setAllStages}
         zoom={zoom}
         onZoom={setZoom}
       />
@@ -133,7 +234,7 @@ export function RoadmapScreen({ path, level }: RoadmapScreenProps): ReactNode {
               .filter((node) => matches.has(node.id))
               .map((node) => (
                 <li key={node.id}>
-                  <button type="button" className="results__hit" onClick={() => open(node.id)}>
+                  <button type="button" className="results__hit" onClick={() => goTo(node.id)}>
                     <span className="results__hit-title">{node.title}</span>
                     <span className="results__hit-stage">{registry.getStage(node.stage).title}</span>
                   </button>
@@ -149,33 +250,45 @@ export function RoadmapScreen({ path, level }: RoadmapScreenProps): ReactNode {
           <div className="graph-scroll">
             <GraphCanvas
               path={path}
+              level={level}
               progress={progress}
               completed={completed}
               hidden={hidden}
+              expanded={expanded}
               matches={matches}
+              visited={visited}
+              focusedId={focusedId}
               zoom={zoom}
               onOpen={open}
               onToggle={toggle}
+              onToggleStage={toggleStage}
             />
           </div>
         </>
       ) : (
         <StageList
           path={path}
+          level={level}
           progress={progress}
           hidden={hidden}
+          expanded={expanded}
           matches={matches}
+          visited={visited}
+          focusedId={focusedId}
           onOpen={open}
           onToggle={toggle}
+          onToggleStage={toggleStage}
         />
       )}
 
       <QuestPanel
         node={openNode}
+        path={path}
+        level={level}
         completed={completed}
         onClose={close}
         onToggle={toggle}
-        onOpen={open}
+        onOpen={goTo}
         onPath={onPath}
       />
     </div>

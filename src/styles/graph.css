@@ -18,9 +18,100 @@
     gap: calc(var(--space-unit) * 8);
   }
 
-  /* ---- Screen heading ---------------------------------------------------- */
+  /* ---- The path's own colour ---------------------------------------------
+   * Every path resolves the two chrome tokens once, on the two roots the map
+   * screen has — the page and the dialog, which is in the top layer but still
+   * inherits down the DOM tree. Every rule below spends `--path-colour` /
+   * `--path-wash` without knowing which path it is on, so adding a fifth path
+   * is four lines in theme.css and three here.
+   *
+   * The wash goes on the map's ground, not on the boxes: a quest box means what
+   * kind of work it is, and it has to keep meaning that on all four maps. What
+   * changes is the room it is standing in.
+   */
 
-  .roadmap__kicker {
+  .roadmap[data-path='explorer'],
+  .quest[data-path='explorer'] {
+    --path-colour: var(--path-explorer);
+    --path-wash: var(--path-explorer-wash);
+  }
+
+  .roadmap[data-path='engineer'],
+  .quest[data-path='engineer'] {
+    --path-colour: var(--path-engineer);
+    --path-wash: var(--path-engineer-wash);
+  }
+
+  .roadmap[data-path='builder'],
+  .quest[data-path='builder'] {
+    --path-colour: var(--path-builder);
+    --path-wash: var(--path-builder-wash);
+  }
+
+  .roadmap[data-path='creator'],
+  .quest[data-path='creator'] {
+    --path-colour: var(--path-creator);
+    --path-wash: var(--path-creator-wash);
+  }
+
+  /* ---- The sticky orientation bar -----------------------------------------
+   * Pinned to the top of the viewport for the whole scroll, because the
+   * questions it answers — which path is this, where am I in it, how far in —
+   * are exactly the questions that used to become unanswerable the moment the
+   * page header left the screen.
+   */
+
+  /* Sticky only where it is affordable. On a phone the bar wraps to four rows
+     and would hold a fifth of the viewport hostage for the whole scroll, which
+     is a worse trade than scrolling back up for it — and the list view, which
+     is what a phone gets, marks the stage you are in on its own headings. The
+     breakpoint is the one that already decides map versus list. */
+  @media (min-width: 64rem) {
+    .pathbar {
+      position: sticky;
+      top: 0;
+    }
+  }
+
+  .pathbar {
+    z-index: 6;
+    background: var(--path-wash);
+    border: var(--rule-strong) solid var(--rule);
+    border-radius: var(--radius-paper);
+    padding: calc(var(--space-unit) * 3) calc(var(--space-unit) * 4);
+  }
+
+  .pathbar__row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: calc(var(--space-unit) * 2) calc(var(--space-unit) * 5);
+  }
+
+  .pathbar__id {
+    display: flex;
+    align-items: center;
+    gap: calc(var(--space-unit) * 2);
+    margin-right: auto;
+  }
+
+  /* The path, in the path's colour, sitting where a masthead would put a brand.
+     Same paper as the card that was clicked to get here. */
+  .pathbar__chip {
+    background: var(--path-colour);
+    border: var(--rule-strong) solid var(--surface-road);
+    border-radius: var(--radius-paper);
+    padding: calc(var(--space-unit) * 1) calc(var(--space-unit) * 3);
+    font-family: var(--font-display);
+    font-size: var(--size-card-title);
+    font-weight: var(--weight-black);
+    letter-spacing: var(--tracking-tight);
+    color: var(--text-primary);
+  }
+
+  .pathbar__level,
+  .pathbar__here-label,
+  .pathbar__numbers {
     font-family: var(--font-mono);
     font-size: var(--size-nano);
     font-weight: var(--weight-bold);
@@ -29,24 +120,142 @@
     color: var(--text-muted);
   }
 
-  .roadmap__title {
-    margin-top: calc(var(--space-unit) * 2);
-    max-width: var(--measure);
+  .pathbar__here {
+    display: flex;
+    flex-direction: column;
+    gap: calc(var(--space-unit) * 1);
+  }
+
+  .pathbar__here-stage {
     font-family: var(--font-display);
-    font-size: var(--size-title);
-    font-weight: var(--weight-black);
+    font-size: var(--size-card-title);
+    font-weight: var(--weight-bold);
     letter-spacing: var(--tracking-tight);
     line-height: var(--leading-tight);
     color: var(--text-primary);
   }
 
-  .roadmap__note {
+  .pathbar__score {
+    display: flex;
+    flex-direction: column;
+    gap: calc(var(--space-unit) * 1);
+    min-width: 12rem;
+  }
+
+  /* The accent, because this bar is measuring done — the one thing the action
+     accent means. It stays green on all four paths for that reason. */
+  .pathbar__meter {
+    display: block;
+    height: calc(var(--space-unit) * 2);
+    background: var(--surface-raised);
+    border: var(--rule-strong) solid var(--surface-road);
+    border-radius: var(--radius-badge);
+    overflow: hidden;
+  }
+
+  .pathbar__meter-fill {
+    display: block;
+    height: 100%;
+    background: var(--accent);
+    transition: width var(--dur-state) var(--ease-state);
+  }
+
+  /* ---- The stage stepper -------------------------------------------------- */
+
+  .rail {
     margin-top: calc(var(--space-unit) * 3);
+    border-top: var(--hairline) solid var(--rule);
+    padding-top: calc(var(--space-unit) * 3);
+    overflow-x: auto;
+  }
+
+  .rail__list {
+    display: flex;
+    gap: calc(var(--space-unit) * 2);
+    list-style: none;
+  }
+
+  .rail__chip {
+    display: flex;
+    align-items: baseline;
+    gap: calc(var(--space-unit) * 2);
+    white-space: nowrap;
+    background: var(--surface-raised);
+    border: var(--rule-strong) solid var(--surface-road);
+    border-radius: var(--radius-badge);
+    padding: calc(var(--space-unit) * 1) calc(var(--space-unit) * 3);
+    cursor: pointer;
+    transition: background-color var(--dur-state) var(--ease-state);
+  }
+
+  .rail__index,
+  .rail__tally {
+    font-family: var(--font-mono);
+    font-size: var(--size-nano);
+    font-weight: var(--weight-bold);
+    letter-spacing: var(--tracking-caps);
+    color: var(--text-muted);
+  }
+
+  .rail__title {
+    font-family: var(--font-body);
+    font-size: var(--size-meta);
+    font-weight: var(--weight-medium);
+    color: var(--text-primary);
+  }
+
+  /* Four states, four readings, no legend needed: the stage you are in wears
+     the path's colour and a heavier rule, cleared stages take the accent, a
+     stage with work available is plain paper, and one still waiting is quiet. */
+  .rail__chip[data-stage-state='current'] {
+    background: var(--path-colour);
+    border-width: var(--rule-thick);
+  }
+
+  .rail__chip[data-stage-state='cleared'] .rail__tally,
+  .rail__chip[data-stage-state='cleared'] .rail__index {
+    color: var(--accent-ink);
+  }
+
+  .rail__chip[data-stage-state='ahead'] {
+    background: var(--surface-base);
+  }
+
+  .rail__chip[data-stage-state='ahead'] .rail__title {
+    color: var(--text-muted);
+  }
+
+  /* An open stage carries the ink underline; a collapsed one does not. The map's
+     collapse state is readable from this row without scrolling the map. */
+  .rail__chip[data-open='true'] {
+    border-bottom-width: var(--rule-thick);
+  }
+
+  .rail__chip:hover {
+    background: var(--path-colour);
+  }
+
+  /* ---- The finish line, in one line -------------------------------------- */
+
+  .roadmap__aim {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: calc(var(--space-unit) * 3);
     max-width: var(--measure);
     font-family: var(--font-body);
     font-size: var(--size-meta);
     line-height: var(--leading-body);
     color: var(--text-secondary);
+  }
+
+  .roadmap__aim-label {
+    font-family: var(--font-mono);
+    font-size: var(--size-nano);
+    font-weight: var(--weight-bold);
+    letter-spacing: var(--tracking-caps);
+    text-transform: uppercase;
+    color: var(--text-muted);
   }
 
   /* ---- "Do this next" ----------------------------------------------------
@@ -312,12 +521,25 @@
     border-style: dashed;
   }
   .legend__item[data-legend='boss']::before { background: var(--paper-orange); }
+  .legend__item[data-legend='visited']::before {
+    background: var(--surface-raised);
+    border-left-width: var(--rule-thick);
+    border-left-color: var(--accent-quiet);
+  }
 
   /* ---- The map ----------------------------------------------------------- */
 
+  /* The path's wash goes on the scroller rather than on the canvas, so the
+     ground runs the full width of the page instead of stopping at whatever the
+     grid happens to measure. This is the largest single surface in the app and
+     therefore the one that answers "which map is this" before a word has been
+     read. */
   .graph-scroll {
     overflow-x: auto;
     overflow-y: hidden;
+    background: var(--path-wash);
+    border: var(--rule-strong) solid var(--rule);
+    border-radius: var(--radius-paper);
     padding-bottom: calc(var(--space-unit) * 4);
   }
 
@@ -377,10 +599,65 @@
     flex-wrap: wrap;
     align-items: baseline;
     gap: calc(var(--space-unit) * 1) calc(var(--space-unit) * 4);
-    /* Opaque on purpose: this is what occludes an edge passing behind the label. */
-    background: var(--surface-base);
+    /* Opaque on purpose: this is what occludes an edge passing behind the
+       label. It has to match the ground it sits on, which is now the path's
+       wash rather than the page. */
+    background: var(--path-wash);
     border-top: var(--rule-thick) solid var(--rule);
     padding: calc(var(--space-unit) * 3) calc(var(--space-unit) * 7) 0;
+  }
+
+  /* The stage in play. The path's colour on the rule, so the band you are
+     standing in is findable while scrolling past nine others. */
+  .band[data-stage-state='current'] {
+    border-top-color: var(--path-colour);
+    border-top-width: var(--rule-thick);
+  }
+
+  /* Collapsed bands are the default state of most of the map, so they have to
+     read as a table of contents rather than as an error. Header, kicker, tally
+     and count — everything except the boxes. */
+  .band[data-collapsed='true'] {
+    border-top-style: dashed;
+  }
+
+  /* The whole title is the open/close control: the thing you were already
+     reading is the thing you click. */
+  .band__toggle {
+    display: flex;
+    align-items: baseline;
+    gap: calc(var(--space-unit) * 2);
+    background: transparent;
+    border: 0;
+    padding: 0;
+    text-align: left;
+    color: var(--text-primary);
+    cursor: pointer;
+  }
+
+  .band__caret {
+    display: inline-grid;
+    place-items: center;
+    width: calc(var(--space-unit) * 5);
+    height: calc(var(--space-unit) * 5);
+    background: var(--surface-raised);
+    border: var(--rule-strong) solid var(--surface-road);
+    border-radius: var(--radius-badge);
+    font-family: var(--font-mono);
+    font-size: var(--size-micro);
+    font-weight: var(--weight-bold);
+    color: var(--text-primary);
+  }
+
+  /* Said in words, on the band itself, so "where am I" is answerable from the
+     map and not only from the bar at the top. */
+  .band__here {
+    background: var(--path-colour);
+    border: var(--hairline) solid var(--surface-road);
+    border-radius: var(--radius-badge);
+    padding: 0 calc(var(--space-unit) * 2);
+    margin-right: calc(var(--space-unit) * 2);
+    color: var(--text-primary);
   }
 
   .band__kicker,
@@ -409,7 +686,7 @@
     margin-left: auto;
   }
 
-  .band[data-cleared='true'] .band__tally {
+  .band[data-stage-state='cleared'] .band__tally {
     color: var(--accent-ink);
   }
 
@@ -450,6 +727,22 @@
   .qnode[data-next='true'] {
     outline: var(--rule-thick) solid var(--accent-ink);
     outline-offset: calc(var(--space-unit) * 1);
+  }
+
+  /* Where you were. Outlined in the path's colour rather than the accent,
+     because "last opened" is not "done" and must not borrow the one colour
+     that means done. It outlives the dialog closing — that is the point of it:
+     a panel you shut should not take your place on the map with it. */
+  .qnode[data-focused='true'] {
+    outline: var(--rule-thick) solid var(--path-colour);
+    outline-offset: calc(var(--space-unit) * 1);
+  }
+
+  /* Opened before. A ruled edge down the left of the card, which is legible at
+     a glance across a whole band and does not cost the card any width. */
+  .qnode[data-visited='true'] {
+    border-left-width: var(--rule-thick);
+    border-left-color: var(--accent-quiet);
   }
 
   .qnode[data-dimmed='true'] {
@@ -504,6 +797,31 @@
   .qnode__foot {
     margin-top: auto;
     color: var(--text-muted);
+  }
+
+  /* Review or stretch, relative to the level given at intake. It is printed,
+     never enforced — every quest stays open at every level. */
+  .qnode__fit {
+    border: var(--hairline) solid var(--surface-road);
+    border-radius: var(--radius-badge);
+    padding: 0 calc(var(--space-unit) * 1);
+    color: var(--text-secondary);
+  }
+
+  .qnode[data-focused='true'] .qnode__state {
+    color: var(--text-primary);
+  }
+
+  /* A second, quieter mark than the left rule, for the corner the eye lands on
+     when scanning a grid rather than a column. */
+  .qnode__seen {
+    position: absolute;
+    left: calc(var(--space-unit) * -1);
+    bottom: calc(var(--space-unit) * 3);
+    width: calc(var(--space-unit) * 2);
+    height: calc(var(--space-unit) * 2);
+    background: var(--accent-quiet);
+    border-radius: var(--radius-badge);
   }
 
   .qnode[data-next='true'] .qnode__state {
@@ -573,8 +891,51 @@
     color: var(--text-muted);
   }
 
-  .stagelist__title {
+  .stagelist__toggle {
+    display: flex;
+    align-items: baseline;
+    gap: calc(var(--space-unit) * 3);
     margin-top: calc(var(--space-unit) * 1);
+    background: transparent;
+    border: 0;
+    padding: 0;
+    text-align: left;
+    color: var(--text-primary);
+    cursor: pointer;
+  }
+
+  .stagelist__caret {
+    display: inline-grid;
+    place-items: center;
+    width: calc(var(--space-unit) * 6);
+    height: calc(var(--space-unit) * 6);
+    flex: none;
+    background: var(--surface-raised);
+    border: var(--rule-strong) solid var(--surface-road);
+    border-radius: var(--radius-badge);
+    font-family: var(--font-mono);
+    font-size: var(--size-meta);
+    font-weight: var(--weight-bold);
+    color: var(--text-primary);
+  }
+
+  .stagelist__here {
+    background: var(--path-colour);
+    border: var(--hairline) solid var(--surface-road);
+    border-radius: var(--radius-badge);
+    padding: 0 calc(var(--space-unit) * 2);
+    color: var(--text-primary);
+  }
+
+  .stagelist__stage[data-stage-state='current'] .stagelist__head {
+    border-top-color: var(--path-colour);
+  }
+
+  .stagelist__stage[data-collapsed='true'] .stagelist__summary {
+    color: var(--text-muted);
+  }
+
+  .stagelist__title {
     font-family: var(--font-display);
     font-size: var(--size-title);
     font-weight: var(--weight-black);
@@ -596,7 +957,7 @@
     margin-top: calc(var(--space-unit) * 2);
   }
 
-  .stagelist__stage[data-cleared='true'] .stagelist__tally {
+  .stagelist__stage[data-stage-state='cleared'] .stagelist__tally {
     color: var(--accent-ink);
   }
 
@@ -634,6 +995,16 @@
   .qrow[data-next='true'] {
     outline: var(--rule-thick) solid var(--accent-ink);
     outline-offset: calc(var(--space-unit) * 1);
+  }
+
+  .qrow[data-focused='true'] {
+    outline: var(--rule-thick) solid var(--path-colour);
+    outline-offset: calc(var(--space-unit) * 1);
+  }
+
+  .qrow[data-visited='true'] {
+    border-left-width: var(--rule-thick);
+    border-left-color: var(--accent-quiet);
   }
 
   .qrow[data-dimmed='true'] {
@@ -700,5 +1071,9 @@
   .qrow[data-next='true'] .qrow__meta,
   .qrow[data-state='done'] .qrow__meta {
     color: var(--accent-ink);
+  }
+
+  .qrow[data-focused='true'] .qrow__meta {
+    color: var(--text-primary);
   }
 }

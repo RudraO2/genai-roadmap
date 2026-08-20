@@ -79,6 +79,10 @@ export default function App(): ReactNode {
               setIntake(state)
               setEditing(false)
             }}
+            // Only offered when there is a map to go back to. Reaching this
+            // screen from "Change path" used to be one-way: no way out but to
+            // answer both questions again.
+            onCancel={intake ? () => setEditing(false) : undefined}
           />
           {panel}
         </Shell>
