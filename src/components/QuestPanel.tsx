@@ -127,7 +127,10 @@ export function QuestPanel({
           </div>
           <div className="quest__fact">
             <dt>Level</dt>
-            <dd data-fit={fit}>{node.level}</dd>
+            <dd>
+              {node.level}
+              {fit === 'match' ? null : ` · ${fit}`}
+            </dd>
           </div>
         </dl>
 

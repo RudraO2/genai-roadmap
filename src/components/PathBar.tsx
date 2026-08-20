@@ -39,10 +39,13 @@ export function PathBar({ path, level, progress, expanded, onJump }: PathBarProp
   return (
     <div className="pathbar">
       <div className="pathbar__row">
-        <p className="pathbar__id">
+        {/* The page's heading, and the only h1 the map screen has: the subject
+            of this screen is the path, and it is stated where it cannot scroll
+            away rather than in a banner above the fold. */}
+        <h1 className="pathbar__id">
           <span className="pathbar__chip">{path.title}</span>
           <span className="pathbar__level">{level}</span>
-        </p>
+        </h1>
 
         <p className="pathbar__here">
           <span className="pathbar__here-label">{complete ? 'Finished' : 'You are here'}</span>

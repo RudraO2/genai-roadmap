@@ -120,17 +120,22 @@ export function GraphCanvas({
                 {state === 'current' ? <span className="band__here">You are here</span> : null}
                 {band.stage.kicker}
               </p>
-              <button
-                type="button"
-                className="band__toggle"
-                aria-expanded={!band.collapsed}
-                onClick={() => onToggleStage(band.stage.id)}
-              >
-                <span className="band__caret" aria-hidden="true">
-                  {band.collapsed ? '+' : '−'}
-                </span>
-                <span className="band__title">{band.stage.title}</span>
-              </button>
+              {/* The button lives inside the heading rather than replacing it:
+                  a map of seventeen stages navigated by heading is most of how
+                  a screen reader gets around it. */}
+              <h3 className="band__heading">
+                <button
+                  type="button"
+                  className="band__toggle"
+                  aria-expanded={!band.collapsed}
+                  onClick={() => onToggleStage(band.stage.id)}
+                >
+                  <span className="band__caret" aria-hidden="true">
+                    {band.collapsed ? '+' : '−'}
+                  </span>
+                  <span className="band__title">{band.stage.title}</span>
+                </button>
+              </h3>
               <p className="band__tally">
                 {tally.done} / {tally.total}
                 {state === 'cleared' ? ' · cleared' : null}

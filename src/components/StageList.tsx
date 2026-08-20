@@ -78,17 +78,19 @@ export function StageList({
                 ) : null}
                 {stage.kicker}
               </p>
-              <button
-                type="button"
-                className="stagelist__toggle"
-                aria-expanded={open}
-                onClick={() => onToggleStage(stageId)}
-              >
-                <span className="stagelist__caret" aria-hidden="true">
-                  {open ? '−' : '+'}
-                </span>
-                <span className="stagelist__title">{stage.title}</span>
-              </button>
+              <h3 className="stagelist__heading">
+                <button
+                  type="button"
+                  className="stagelist__toggle"
+                  aria-expanded={open}
+                  onClick={() => onToggleStage(stageId)}
+                >
+                  <span className="stagelist__caret" aria-hidden="true">
+                    {open ? '−' : '+'}
+                  </span>
+                  <span className="stagelist__title">{stage.title}</span>
+                </button>
+              </h3>
               <p className="stagelist__summary">{stage.summary}</p>
               <p className="stagelist__tally">
                 {tally.done} / {tally.total} done · {tally.xp} / {tally.xpTotal} XP
@@ -110,7 +112,6 @@ export function StageList({
                       className="qrow"
                       data-state={nodeState}
                       data-type={node.type}
-                      data-fit={fit}
                       data-next={isNext ? 'true' : undefined}
                       data-visited={seen ? 'true' : undefined}
                       data-focused={node.id === focusedId ? 'true' : undefined}

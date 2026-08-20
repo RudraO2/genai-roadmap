@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useRef, useState, type ReactNode } from 'react'
+import { useCallback, useEffect, useMemo, useState, type ReactNode } from 'react'
 
 import { useProgressContext } from '../data/ProgressContext.ts'
 import { registry } from '../data/roadmap.ts'
@@ -89,23 +89,30 @@ export function RoadmapScreen({ path, level }: RoadmapScreenProps): ReactNode {
     () => new Set(progress.currentStage === null ? [] : [progress.currentStage]),
   )
 
-  // Finishing the last quest in a stage moves the recommendation into the next
-  // one. Opening that stage is the only sensible reading of "you are here now" —
-  // and it only ever adds, so a stage the learner opened by hand stays open.
+  // Two adjustments, both made during render rather than in an effect. An
+  // effect runs after paint, which would mean one visible frame of the wrong
+  // thing — the whole map collapsed on a path switch, or the stage you just
+  // unlocked shut. React re-runs the component before committing instead, so
+  // neither frame is ever drawn. This is the sanctioned shape for it: state
+  // set conditionally, on this component only, with the trigger stored beside
+  // the state it adjusts.
+  //
+  //   path changed     re-base on the new path's own current stage, rather
+  //                    than carrying over stage ids from somewhere else
+  //   stage advanced   finishing a stage moves the recommendation into the
+  //                    next one, and "you are here now" has to mean it is
+  //                    open. Additive, so a stage opened by hand stays open.
   const currentStage = progress.currentStage
-  useEffect(() => {
-    if (currentStage === null) return
-    setExpanded((current) => (current.has(currentStage) ? current : new Set([...current, currentStage])))
-  }, [currentStage])
-
-  // Switching paths re-bases the collapse state on the new path's own current
-  // stage, rather than carrying over a set of stage ids from somewhere else.
-  const lastPath = useRef(path.id)
-  useEffect(() => {
-    if (lastPath.current === path.id) return
-    lastPath.current = path.id
+  const [tracked, setTracked] = useState({ path: path.id, stage: currentStage })
+  if (tracked.path !== path.id) {
+    setTracked({ path: path.id, stage: currentStage })
     setExpanded(new Set(currentStage === null ? [] : [currentStage]))
-  }, [path.id, currentStage])
+  } else if (tracked.stage !== currentStage) {
+    setTracked({ path: path.id, stage: currentStage })
+    if (currentStage !== null && !expanded.has(currentStage)) {
+      setExpanded(new Set([...expanded, currentStage]))
+    }
+  }
 
   const allStages = path.stages.every((stageId) => expanded.has(stageId))
 

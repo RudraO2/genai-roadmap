@@ -86,7 +86,6 @@ export function GraphNode({
       data-state={state}
       data-type={node.type}
       data-level={node.level}
-      data-fit={fit}
       data-next={isNext ? 'true' : undefined}
       data-visited={visited ? 'true' : undefined}
       data-focused={focused ? 'true' : undefined}

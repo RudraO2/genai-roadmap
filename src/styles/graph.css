@@ -629,6 +629,10 @@
     border-top-style: dashed;
   }
 
+  .band__heading {
+    display: contents;
+  }
+
   /* The whole title is the open/close control: the thing you were already
      reading is the thing you click. */
   .band__toggle {
@@ -899,11 +903,14 @@
     color: var(--text-muted);
   }
 
+  .stagelist__heading {
+    margin-top: calc(var(--space-unit) * 1);
+  }
+
   .stagelist__toggle {
     display: flex;
     align-items: baseline;
     gap: calc(var(--space-unit) * 3);
-    margin-top: calc(var(--space-unit) * 1);
     background: transparent;
     border: 0;
     padding: 0;
