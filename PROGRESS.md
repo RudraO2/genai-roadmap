@@ -683,3 +683,91 @@ whenever the element *can* not exist until the condition is true; and the GitHub
 setting (`BACKLOG.md` T131) is still the most likely reason the live site looks broken —
 nothing in this codebase can fix it, only the repository's own Settings → Pages page can.
 
+---
+
+## Spec 15 — Closing the content gap: a real AI-engineering branch — 2026-08-20
+
+**Opened how:** directly by the project owner, same conversation as spec 14, two rounds
+after it. First round: seeing spec 14's real screenshots, the owner asked to keep the
+identity but make it feel more like a game — handled there. Second round, after another
+message: the deeper complaint was content, not chrome — "doesn't follow the content of
+famous GitHub repositories, where they have everything, like the whole roadmap," explicitly
+naming "the AI engineer roadmap," and a direct instruction to research those repositories.
+Asked two scoping questions (which gap to prioritise, where new content should live); the
+owner declined to pick and handed over full discretion instead — "you have every idea and
+every permission... it should be insanely good."
+
+**Investigated before building.** Read `data/nodes.json` in full first: all 67 nodes are
+about *using AI tools to build* — chat UIs, coding agents, MCP, deploy platforms, per-track
+creative tools. Then fetched two reference sources: `aishwaryanr/awesome-generative-ai-guide`'s
+roadmap.md (a 5-day structure — LLM foundations, prompting, **RAG, agents and tools,
+evaluation and shipping**, plus an optional fine-tuning day) and a web search summarising
+roadmap.sh's AI Engineer path (Python, ML basics, **LLMs, RAG, evaluation, deployment**).
+Both independently name the same gap this registry has: retrieval-augmented generation,
+vector databases, agent *frameworks* (distinct from the agent *harnesses* — Claude
+Code, Cursor — already covered), evals, and local/open-weight models. Confirmed this was
+`app`-track-shaped work, not a request to rewrite `CONTEXT.md`'s four outcome tracks into
+a skills-sequenced career path.
+
+**Re-read `CONTEXT.md` section 6 and `data/research-log.md` before writing a single node.**
+Section 6 is unconditional: every newly-discovered node is `zone: "frontier"`, and Phase A's
+own log confirms it applied that literally regardless of star count. A node `first_indexed`
+today cannot satisfy "≥90 days since first indexed" no matter how many stars it carries, so
+this content could not become a new main-road *act* — that would mean the pocket solver,
+new curve geometry, and a graduation this session has no standing to grant. A frontier
+*branch* is the existing, correct container, and — found by reading `branch.css` — a much
+lower-risk one: a branch's cards render as a stacked list at every width, never pocket-
+placed, so adding six nodes to one cost zero risk to the solver spec 13 built.
+
+**Did:** `specs/spec-15-ai-engineering-branch.md`, claimed and now closed. Six nodes added
+to `data/nodes.json` — `rag-techniques` (`NirDiamant/RAG_Techniques`), `chroma`
+(`chroma-core/chroma`), `langchain` (`langchain-ai/langchain`), `llamaindex`
+(`run-llama/llama_index`), `promptfoo` (`promptfoo/promptfoo`), `ollama` (`ollama/ollama`) —
+every one verified live this session via the GitHub MCP tools' `search_repositories`
+(exact `stargazers_count` / `pushed_at`, since `api.github.com` 403'd through plain
+`WebFetch`). All `zone: "frontier"`, `status: "core"`, `tracks: ["app"]` only. A new branch,
+`frontier-ai-engineering` ("Build with your own data"), added to the `app` track in
+`data/tracks.json`, anchored at `api-keys` under the Intuition act — chosen because
+`api-keys`'s own blurb ("the secret string that lets an app or plugin talk to a model on
+your behalf") is exactly the shared prerequisite for all six.
+
+**Decided:**
+
+- **Scoped to one track, not four.** `validate.ts`'s `UNPLACED_NODE` rule fails the build
+  if a node claims a track in its `tracks` array without being placed somewhere on that
+  track's road or branches — so extending to `game`/`portfolio`/`media` means placing the
+  same six nodes three more times, each needing its own anchor decision, not a one-line
+  array edit. Logged as `BACKLOG.md` T154 rather than rushed in this pass.
+- **One link per node, not the usual two or three.** Companion docs domains — `docs.
+  trychroma.com`, `python.langchain.com`, `ollama.com`, even `en.wikipedia.org` — are
+  blocked outright by this environment's egress proxy (`EGRESS_BLOCKED` from `WebFetch`
+  every time). Rather than write in a plausible URL this session could not itself fetch,
+  every node ships with exactly the one link this session did verify: its GitHub repo.
+  Logged as `BACKLOG.md` T156 for a session with different network access.
+- **`promptfoo` is `level: "advanced"`; the other five are `intermediate`.** Testing and
+  red-teaming is a step past building the thing that needs testing — matches the reference
+  roadmaps' own "Day 5, after RAG and agents" placement.
+- **Did not touch `CONTEXT.md`.** Nothing here needed an amendment — the frontier-branch
+  mechanism already covers exactly this case (content discovered outside a scheduled
+  Phase A pass), which is the whole reason Phase A's own log describes it in such literal
+  detail.
+
+**Verified:** `npm run validate:data` — 73 nodes, 0 errors, 0 warnings, first try. `npm run
+build` and `npx tsc --noEmit` both exit 0; the theme gate reports 0 violations (this spec
+touched no CSS or component code, only the two data files). In a real Chromium tab: at
+`level: "advanced"` only `promptfoo` (the one advanced-level node) rendered expanded and the
+other five correctly collapsed to stubs; at `level: "beginner"` all six rendered expanded,
+in the right order (RAG techniques → Chroma → LangChain → LlamaIndex → Promptfoo → Ollama),
+each on lime paper with a `REPO` kind tag, each `Repo` link resolving to exactly the URL
+verified during research. Zero console errors. Screenshot of the full branch under the
+Intuition act confirms it reads as one coherent unit — "Spur from API keys — 0/6 explored" —
+with no visual defects.
+
+**Next iteration should know:** everything under "Next session should know" in the spec 15
+notes in `State of the project.md`. Short version: read `data/research-log.md` before adding
+another node, not just this entry; this environment's egress proxy blocks nearly every
+non-GitHub domain, so lean on the GitHub MCP tools and expect `WebFetch` to fail on doc
+sites; every newly-discovered node is `frontier` regardless of star count, unconditionally;
+and a branch is the low-risk way to add content — reach for one over a new main-road act
+unless the content has actually earned graduation by section 6's rule.
+

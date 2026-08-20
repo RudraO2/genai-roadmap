@@ -181,6 +181,26 @@ same as spec 13. No pre-written task list; logged here after the fact, same as s
       `getComputedStyle` immediately after the triggering click, not just a screenshot) and
       never on load, on un-marking, or on an already-cleared act/track
 
+## Spec 15 — Closing the content gap: a real AI-engineering branch
+
+Opened directly by the project owner in conversation, same as specs 13 and 14. No
+pre-written task list; logged here after the fact.
+
+- [x] T148 — Write `specs/spec-15-ai-engineering-branch.md` and claim the spec
+- [x] T149 — Research: fetch `aishwaryanr/awesome-generative-ai-guide`'s roadmap and a
+      summary of roadmap.sh's AI Engineer path; diff their topic lists against the 67
+      existing nodes to name the actual gap
+- [x] T150 — Verify six candidate repos live via the GitHub API (stars, `pushed_at`):
+      `NirDiamant/RAG_Techniques`, `chroma-core/chroma`, `langchain-ai/langchain`,
+      `run-llama/llama_index`, `promptfoo/promptfoo`, `ollama/ollama`
+- [x] T151 — Add the six nodes to `data/nodes.json` — `zone: "frontier"`,
+      `status: "core"`, `tracks: ["app"]` only
+- [x] T152 — Add `frontier-ai-engineering` ("Build with your own data") to the `app`
+      track in `data/tracks.json`, anchored at `api-keys` under the `intuition` act
+- [x] T153 — Verify: `validate:data` (0 errors/warnings), build, typecheck; a real
+      Chromium tab confirming all six cards render in order with working links, at both
+      a level that collapses them to stubs and one that doesn't
+
 ## Noticed, not done
 
 Appended by sessions that spotted work outside their one task. Do not do these inline.
@@ -322,4 +342,24 @@ Appended by sessions that spotted work outside their one task. Do not do these i
       dim with `color-mix(in srgb, var(--surface-road) 40%, transparent)`; where that
       inheritance is missing the scrim is simply absent, and the modal still works. Revisit
       only if a browser matrix is ever written down.
+- [ ] T154 — Spec 15's `frontier-ai-engineering` branch (RAG, vector DB, agent frameworks,
+      evals, local models) is scoped to `app` only. `game`, `portfolio` and `media` are
+      arguably owed the same content — a game dev grounding NPC dialogue in a wiki, a
+      portfolio site with a RAG-backed chat widget, a media pipeline with an agent
+      choosing shots, are all real — but each needs its own placement decision (which
+      anchor, which act) and its own `UNPLACED_NODE` check once the nodes' `tracks`
+      arrays grow, not a copy-paste of `app`'s branch.
+- [ ] T155 — The owner also asked, in the same conversation as spec 15, for a smoother
+      first-use experience — "pop-ups," not landing on the intake screen not knowing what
+      to click. Not touched by spec 15, which is registry content only. Distinct from
+      anything `CONTEXT.md` section 2 forbids (it is app-navigation guidance, not tool
+      explanation) but needs its own scoping pass: what "doesn't know where to click"
+      actually refers to, and whether a guided first-run walkthrough fits the paper-roadmap
+      identity without turning into a tutorial-site tour that section 2 rules out.
+- [ ] T156 — Every one of spec 15's six new nodes carries exactly one link (its GitHub
+      repo). Companion docs sites that would normally pair with a "docs" or "playground"
+      link — `docs.trychroma.com`, `python.langchain.com`, `ollama.com` among them — are
+      blocked outright by this environment's egress proxy and could not be fetched this
+      session to confirm live. A session with different network access should try adding
+      the second link each of these six nodes is missing.
 
