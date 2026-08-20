@@ -63,6 +63,7 @@ spec at a time, inside the session that builds it.
 | 12 | `specs/spec-12-ship.md` | `DONE` | 01–11 |
 | 13 | `specs/spec-13-visual-overhaul.md` | `DONE` | 01–12 |
 | 14 | `specs/spec-14-completion-payoff.md` | `DONE` | 01–13 |
+| 15 | `specs/spec-15-ai-engineering-branch.md` | `IN PROGRESS` | 01–14 |
 
 Every spec 01–13 was `DONE` and the board was finished. On 2026-08-20 the project owner opened
 spec 14 directly, in conversation, after reviewing a real local build and giving explicit
@@ -70,9 +71,11 @@ direction: keep the paper-roadmap identity, add reward feedback on top of it. Se
 own "Why this spec exists" for the full account, including the separate GitHub Pages
 deployment fault this session found and logged rather than folded into the spec.
 
-Spec 14 is now `DONE` too, and there is again nothing `READY FOR DEVELOPMENT` on the board —
-`BACKLOG.md`'s "Noticed, not done" list, including the still-open T131 (Pages source setting),
-is where the next unit of work would come from.
+Spec 14 landed `DONE`, and in the same conversation the owner opened spec 15: the registry's
+content doesn't cover what reference "AI Engineer" roadmaps lead with (RAG, vector databases,
+agent frameworks, evals, local models), and was told directly to close that gap. See spec 15's
+own "Why this spec exists" for the two reference roadmaps this session actually fetched and
+compared against the registry, node by node.
 
 **Read the amended section 8 of `CONTEXT.md` before touching any UI.** On 2026-08-19 the
 project owner authorised the one edit that file has ever had: the visual identity moved from
@@ -1349,10 +1352,25 @@ like winning something rather than a routine hover.
   repository-settings change (Settings → Pages → Build and deployment → Source →
   "GitHub Actions"), not a code fix, and stays outside this spec and this codebase's reach.
 
+## 15 — Closing the content gap: a real AI-engineering branch
+
+**State:** `IN PROGRESS` — claimed 2026-08-20  **Depends on:** 01–14
+
+Opened directly by the project owner in conversation. Full rationale, the two reference
+roadmaps fetched and compared, and the exact six nodes in
+`specs/spec-15-ai-engineering-branch.md`.
+
 ## Change log
 
 Newest first. One line per state change. Whoever changes a state writes the line.
 
+- 2026-08-20 — Spec 15 claimed `IN PROGRESS`. Owner-directed: the registry has no RAG,
+  vector database, agent framework, evals or local-model content, which is what every
+  reference "AI Engineer" roadmap fetched this session leads with after prompting. Adding
+  one frontier branch on the `app` track — six nodes, each a real repo verified live via
+  the GitHub API this session. `specs/spec-15-ai-engineering-branch.md` has the full scope
+  and the reasoning for staying inside the frontier-branch mechanism rather than a new
+  main-road act or a `CONTEXT.md` amendment.
 - 2026-08-20 — Spec 14 `DONE`. Completion payoff: a one-shot stamp on `Mark done`
   (`useJustCompleted` + `cards.css`), an "Act cleared" badge (`Section`'s new `badge` slot),
   a track-shipped banner on the overview plus an accent-filled masthead chip, and a reveal
