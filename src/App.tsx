@@ -139,6 +139,12 @@ export default function App(): ReactNode {
               {rank.title} · {overall.xp} XP · {percent}%
             </span>
             {portabilityControl}
+            {/* The printed sheet is a real artifact of this app and nobody would
+                guess it existed. Only offered on the map: printing the picker
+                would produce a blank page. */}
+            <button type="button" className="intake-change" onClick={() => window.print()}>
+              Print
+            </button>
             <button type="button" className="intake-change" onClick={() => setEditing(true)}>
               Change path
             </button>

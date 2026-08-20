@@ -109,8 +109,15 @@ Colour is never the only channel. Every state that has a colour also has a word:
   clipped off-screen, overlapping another card, or laid across a rule is a bug.
 - **Touch targets are at least 44px** on any surface a phone can reach. The theme
   carries `--touch-min` for it, applied under `@media (pointer: coarse)` so a mouse
-  keeps the tighter instrument-panel sizing. Two controls are exempt by name and by
-  comment; a third exemption needs the same treatment.
+  keeps the tighter instrument-panel sizing.
+
+  The blanket rule in `base.css` sets `min-height` only. **A control drawn as a
+  square needs both dimensions naming in the coarse-pointer block at the foot of
+  `graph.css`**, or it stretches into an oval — `min-height` clamps a height
+  whatever the cascade layer says. Two controls are listed there, and one, the
+  map's corner tick, is exempt by name and by comment because it sits on a fixed
+  grid that has no room to grow. A new square control belongs in one list or the
+  other.
 
 ## Where the rules live in code
 

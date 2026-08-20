@@ -474,7 +474,7 @@
     {
       "id": "chat-craft",
       "stage": "drive",
-      "col": 1,
+      "col": 0,
       "row": 0,
       "type": "core",
       "level": "beginner",
@@ -604,7 +604,7 @@
     {
       "id": "prompt-library",
       "stage": "drive",
-      "col": 0,
+      "col": 1,
       "row": 0,
       "type": "build",
       "level": "beginner",
@@ -2595,7 +2595,7 @@
     {
       "id": "agent-loops",
       "stage": "agentic",
-      "col": 1,
+      "col": 0,
       "row": 1,
       "type": "core",
       "level": "advanced",
@@ -2765,7 +2765,7 @@
     {
       "id": "browser-agents",
       "stage": "agentic",
-      "col": 0,
+      "col": 1,
       "row": 1,
       "type": "side",
       "level": "advanced",

@@ -358,6 +358,143 @@
     color: var(--text-primary);
   }
 
+  /* ---- The session planner ------------------------------------------------
+   * Lives inside the recommendation banner, below the fold of it, because it
+   * is the same question asked with one more fact: what to do next, given the
+   * time you have. Ruled off rather than boxed — a panel inside a panel is a
+   * second thing on the screen, and this is meant to read as the rest of the
+   * sentence the banner started.
+   *
+   * Everything here sits on the action accent, which is the banner's own
+   * ground, so the surfaces are paper and ink and nothing spends a second
+   * colour.
+   */
+
+  .session {
+    margin-top: calc(var(--space-unit) * 5);
+    border-top: var(--rule-strong) solid var(--surface-road);
+    padding-top: calc(var(--space-unit) * 4);
+  }
+
+  .session__ask,
+  .session__summary,
+  .session__empty {
+    font-family: var(--font-mono);
+    font-size: var(--size-nano);
+    font-weight: var(--weight-bold);
+    letter-spacing: var(--tracking-caps);
+    text-transform: uppercase;
+    color: var(--text-primary);
+  }
+
+  .session__budgets {
+    margin-top: calc(var(--space-unit) * 3);
+    display: flex;
+    flex-wrap: wrap;
+    gap: calc(var(--space-unit) * 2);
+  }
+
+  .session__budget {
+    background: var(--surface-raised);
+    border: var(--rule-strong) solid var(--surface-road);
+    border-radius: var(--radius-badge);
+    padding: calc(var(--space-unit) * 1) calc(var(--space-unit) * 4);
+    font-family: var(--font-mono);
+    font-size: var(--size-micro);
+    font-weight: var(--weight-bold);
+    letter-spacing: var(--tracking-caps);
+    text-transform: uppercase;
+    color: var(--text-primary);
+    cursor: pointer;
+    transition: background-color var(--dur-state) var(--ease-state);
+  }
+
+  .session__budget[aria-pressed='true'] {
+    background: var(--surface-road);
+    color: var(--text-inverse);
+  }
+
+  .session__summary,
+  .session__empty {
+    margin-top: calc(var(--space-unit) * 4);
+    max-width: var(--measure);
+    text-transform: none;
+    letter-spacing: normal;
+    font-size: var(--size-meta);
+  }
+
+  .session__list {
+    margin-top: calc(var(--space-unit) * 3);
+    display: grid;
+    gap: calc(var(--space-unit) * 2);
+    list-style: none;
+    counter-reset: session;
+  }
+
+  .session__item {
+    display: flex;
+    align-items: stretch;
+    gap: calc(var(--space-unit) * 3);
+    background: var(--surface-raised);
+    border: var(--rule-strong) solid var(--surface-road);
+    border-radius: var(--radius-paper);
+    padding: calc(var(--space-unit) * 2) calc(var(--space-unit) * 3);
+  }
+
+  /* The same tick as everywhere else: a session is something you work through,
+     so each line has to be finishable without opening it. */
+  .session__tick {
+    flex: none;
+    align-self: center;
+    width: calc(var(--space-unit) * 6);
+    height: calc(var(--space-unit) * 6);
+    background: var(--surface-base);
+    border: var(--rule-strong) solid var(--surface-road);
+    border-radius: var(--radius-badge);
+    cursor: pointer;
+  }
+
+  .session__open {
+    display: flex;
+    flex: 1;
+    flex-wrap: wrap;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: calc(var(--space-unit) * 2);
+    text-align: left;
+    background: transparent;
+    border: 0;
+    padding: 0;
+    color: var(--text-primary);
+    cursor: pointer;
+  }
+
+  /* Numbered by CSS: the order is the whole point of a plan, and it is the
+     list that owns it rather than the data. */
+  .session__item-title {
+    counter-increment: session;
+    font-family: var(--font-body);
+    font-size: var(--size-body);
+    font-weight: var(--weight-medium);
+  }
+
+  .session__item-title::before {
+    content: counter(session, decimal-leading-zero) '  ';
+    font-family: var(--font-mono);
+    font-size: var(--size-nano);
+    font-weight: var(--weight-bold);
+    color: var(--text-muted);
+  }
+
+  .session__item-meta {
+    font-family: var(--font-mono);
+    font-size: var(--size-nano);
+    font-weight: var(--weight-bold);
+    letter-spacing: var(--tracking-caps);
+    text-transform: uppercase;
+    color: var(--text-muted);
+  }
+
   /* ---- Controls ---------------------------------------------------------- */
 
   .controls {
@@ -1203,8 +1340,12 @@
    * above.
    */
   @media (pointer: coarse) {
-    /* Square, at fingertip size. It sits in a flow row, so there is room. */
-    .qrow__tick {
+    /* Square, at fingertip size. Both sit in a flow row, so there is room.
+       Any new square control belongs in this list: the blanket rule will
+       otherwise stretch it into an oval, which is how both of these were
+       found. */
+    .qrow__tick,
+    .session__tick {
       width: var(--touch-min);
       height: var(--touch-min);
     }

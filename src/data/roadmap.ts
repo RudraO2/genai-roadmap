@@ -8,7 +8,11 @@
  * wrong roadmap is worse than no roadmap.
  */
 
-import raw from '../../data/roadmap.json'
+// The import attribute is load-bearing in both directions: Vite needs no help
+// with a JSON import, but plain Node does, and without it this module — and so
+// every module that reads the registry — could not be loaded by the test runner.
+// Do not remove it.
+import raw from '../../data/roadmap.json' with { type: 'json' }
 import type { LearningPath, PathId, RoadmapFile, RoadmapNode, Stage, StageId } from '../types.ts'
 import { formatIssues, validateRoadmap, type Issue } from './validate.ts'
 

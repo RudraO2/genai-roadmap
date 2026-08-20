@@ -55,6 +55,20 @@ tally — and expands on a click. `All stages` puts the whole thing back. Quests
 having been opened, and the last one you opened stays marked after you close it, so
 shutting a panel never costs you your place.
 
+**"How long have you got?"** The banner names one thing to do next, which is the
+right answer when that thing is forty minutes and the wrong one when it is a
+one-week capstone and you have an evening. Pick a budget — half an hour, an
+evening, a day, a weekend — and the app plans a run that fits: an ordered set of
+quests, chosen through its own unlocks, so finishing the first makes the second
+available and the second still fits in what is left. It never suggests something
+locked, and when nothing fits it says so and names what is next instead.
+
+**It prints.** `DESIGN.md` sets one test for this project — would it look at home as
+a printed road atlas — and until now printing it produced a screenshot of an
+interface. There is a separate print document now: every stage, every quest, in
+order, with a box to tick, the mission, and the URL spelled out, because on paper
+you cannot click a link.
+
 **Every quest has a URL.** `#/engineer/rag-pipeline` opens that quest on that path,
 in a fresh tab, for anyone you send it to. Opening a quest is a history entry, so the
 browser's Back — and a phone's back gesture — closes the dialog rather than leaving
@@ -79,10 +93,11 @@ what a roadmap is for. Nothing is ever hidden or disabled by the answer.
 ```
 npm install
 npm run dev        # http://localhost:5173
-npm run build      # data gate → theme gate → tsc → vite build → output gate
+npm test           # 58 tests, no test framework — node:test
+npm run build      # data → theme → tsc → tests → vite build → output
 ```
 
-`npm run build` runs five gates in sequence. All five must pass:
+`npm run build` runs six gates in sequence. All six must pass:
 
 | Gate | What it enforces |
 | --- | --- |
@@ -90,6 +105,7 @@ npm run build      # data gate → theme gate → tsc → vite build → output 
 | `check:theme` | No colour or type literal outside `src/theme.css`, no gradients, no blur, no unknown token |
 | `tsc --noEmit` | Types |
 | `vite build` | The bundle |
+| `test` | The pure logic — progress, layout, routing, durations, session planning — plus properties of the real registry that the interface assumes. Node's own runner; no framework, no dependency |
 | `check:output` | Relative asset paths, no sourcemaps, no banned Tailwind utility survived into the CSS |
 
 ## The data model
@@ -147,6 +163,8 @@ means that on all four paths.
 | `src/data/state.ts` | Everything derived from the completed set, in one place. |
 | `src/data/route.ts` | The URL, as state. The app's only address space. |
 | `src/data/duration.ts` | `est` as arithmetic, and the day/week assumptions behind it. |
+| `src/data/session.ts` | "What fits in the time I have." Pure, and the most-tested file here. |
+| `tests/` | 58 tests over the pure logic and the real registry. `npm test`. |
 | `src/components/` | Picker, path bar, stage rail, map, quest dialog, list view, controls. |
 | `src/theme.css` | Every colour and type value in the project. |
 | `DESIGN.md` | The design constitution. All of it. |

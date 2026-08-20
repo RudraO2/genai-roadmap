@@ -27,6 +27,7 @@
 @import './styles/graph.css';
 @import './styles/quest.css';
 @import './styles/portability.css';
+@import './styles/print.css';
 
 @theme {
   /* Colour: the entire default palette, deleted. theme.css is the only source. */

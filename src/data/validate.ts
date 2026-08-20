@@ -259,6 +259,18 @@ export function validateRoadmap(raw: unknown): ValidationResult {
           c.error('BACKWARD_EDGE', `${at}.stages`, `"${node.id}" requires "${id}" from a later stage`)
         } else if (there === here && required.row > node.row) {
           c.error('UPWARD_EDGE', `${at}.stages`, `"${node.id}" requires "${id}" from a lower row`)
+        } else if (there === here && required.row === node.row && required.col > node.col) {
+          // Same row, prerequisite further right. The map survives this — the
+          // edge just runs leftwards — but the reading order does not: the app
+          // walks a stage by row, then by column, so the list view prints the
+          // locked quest *above* the thing that unlocks it, and a "do this
+          // next" that scanned in order would reach the dependent first. Three
+          // nodes were sitting like this before the rule existed.
+          c.error(
+            'LEFTWARD_EDGE',
+            `${at}.stages`,
+            `"${node.id}" requires "${id}" from further right on the same row`,
+          )
         }
       }
     }

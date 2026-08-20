@@ -34,7 +34,7 @@ Do not restore them, and do not resurrect what they describe.
 
 ## Definition of done
 
-- `npm run build` passes — all five gates
+- `npm run build` passes — all six gates, tests included
 - `npx tsc --noEmit` passes
 - No hardcoded colour outside `src/theme.css`
 - No unverified deep link in `data/roadmap.json`
