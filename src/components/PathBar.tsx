@@ -1,7 +1,8 @@
 import type { ReactNode } from 'react'
 
+import { formatHours } from '../data/duration.ts'
 import { registry } from '../data/roadmap.ts'
-import type { PathProgress } from '../data/state.ts'
+import { tallyFor, type PathProgress } from '../data/state.ts'
 import type { LearningPath, Level, StageId } from '../types.ts'
 import { StageRail } from './StageRail.tsx'
 
@@ -35,6 +36,9 @@ export function PathBar({ path, level, progress, expanded, onJump }: PathBarProp
   const { overall, percent, rank, currentStage } = progress
   const stage = currentStage === null ? null : registry.getStage(currentStage)
   const complete = overall.total > 0 && overall.done === overall.total
+  // What is left in the stage in play, not in the whole path. A learner can do
+  // something about six hours; they cannot do anything about fifty-four weeks.
+  const stageHours = currentStage === null ? 0 : tallyFor(progress, currentStage).hoursLeft
 
   return (
     <div className="pathbar">
@@ -50,6 +54,9 @@ export function PathBar({ path, level, progress, expanded, onJump }: PathBarProp
         <p className="pathbar__here">
           <span className="pathbar__here-label">{complete ? 'Finished' : 'You are here'}</span>
           <span className="pathbar__here-stage">{complete ? path.title : (stage?.title ?? '—')}</span>
+          {complete || stageHours <= 0 ? null : (
+            <span className="pathbar__here-time">≈{formatHours(stageHours)} left here</span>
+          )}
         </p>
 
         <p className="pathbar__score">

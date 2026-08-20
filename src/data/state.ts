@@ -10,6 +10,7 @@
 
 import { LEVEL_RANK, RANKS } from '../constants.ts'
 import type { LearningPath, Level, NodeState, RoadmapNode, StageId } from '../types.ts'
+import { estimateHours } from './duration.ts'
 import { registry } from './roadmap.ts'
 
 export interface Tally {
@@ -17,6 +18,8 @@ export interface Tally {
   total: number
   xp: number
   xpTotal: number
+  /** Study hours still on the table in this stage. See `data/duration.ts`. */
+  hoursLeft: number
 }
 
 export interface Rank {
@@ -35,6 +38,15 @@ export interface PathProgress {
   rank: Rank
   /** How many nodes are unlocked and unfinished right now. */
   readyCount: number
+  /**
+   * Study hours still on the table across the whole path. Deliberately *not*
+   * shown on the map: "≈54 weeks left" is true of the Model Builder path and is
+   * the single most discouraging sentence this app could open with. It belongs
+   * where the number is a decision — the picker, choosing between four paths —
+   * and the map shows the current stage's figure instead, which is the one you
+   * can act on today. See `Tally.hoursLeft`.
+   */
+  hoursLeft: number
   /** The single node the banner tells the learner to do next, or null when done. */
   next: RoadmapNode | null
   /**
@@ -54,7 +66,7 @@ export interface PathProgress {
  */
 export type StageState = 'cleared' | 'current' | 'open' | 'ahead'
 
-const EMPTY_TALLY: Tally = { done: 0, total: 0, xp: 0, xpTotal: 0 }
+const EMPTY_TALLY: Tally = { done: 0, total: 0, xp: 0, xpTotal: 0, hoursLeft: 0 }
 
 function rankFor(percent: number): Rank {
   let current = RANKS[0]!
@@ -95,12 +107,13 @@ export function computePathProgress(
   let xp = 0
   let xpTotal = 0
   let readyCount = 0
+  let hoursLeft = 0
 
   for (const node of nodes) {
     const state = stateOf(node, completed)
     states.set(node.id, state)
 
-    const tally = stages.get(node.stage) ?? { done: 0, total: 0, xp: 0, xpTotal: 0 }
+    const tally = stages.get(node.stage) ?? { done: 0, total: 0, xp: 0, xpTotal: 0, hoursLeft: 0 }
     tally.total += 1
     tally.xpTotal += node.xp
     xpTotal += node.xp
@@ -109,6 +122,11 @@ export function computePathProgress(
       tally.xp += node.xp
       done += 1
       xp += node.xp
+    }
+    else {
+      const hours = estimateHours(node.est)
+      hoursLeft += hours
+      tally.hoursLeft += hours
     }
     if (state === 'ready') readyCount += 1
     stages.set(node.stage, tally)
@@ -127,11 +145,12 @@ export function computePathProgress(
   return {
     states,
     order: nodes.map((node) => node.id),
-    overall: { done, total: nodes.length, xp, xpTotal },
+    overall: { done, total: nodes.length, xp, xpTotal, hoursLeft },
     stages,
     percent,
     rank: rankFor(percent),
     readyCount,
+    hoursLeft,
     next,
     currentStage: next?.stage ?? path.stages[path.stages.length - 1] ?? null,
   }

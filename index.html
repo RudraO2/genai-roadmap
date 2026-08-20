@@ -13,7 +13,21 @@
          theme.css is the only file allowed to hold a colour, and the theme gate
          reads this file too. -->
     <meta name="theme-color" content="" />
-    <link rel="icon" href="data:," />
+    <link rel="icon" href="./icon.svg" type="image/svg+xml" />
+    <link rel="manifest" href="./manifest.webmanifest" />
+
+    <!-- What a shared link unfurls into. No og:image: this repo has no deploy
+         domain baked in, and the spec wants an absolute URL — a relative one
+         that half the scrapers drop is worse than none. -->
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="The Gen AI Roadmap" />
+    <meta property="og:title" content="The Gen AI Roadmap" />
+    <meta
+      property="og:description"
+      content="Four paths, 94 quests: what to learn about generative AI, in what order, and exactly where to go and learn it."
+    />
+    <meta name="twitter:card" content="summary" />
+
     <title>The Gen AI Roadmap</title>
   </head>
   <body>

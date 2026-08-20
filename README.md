@@ -55,6 +55,13 @@ tally — and expands on a click. `All stages` puts the whole thing back. Quests
 having been opened, and the last one you opened stays marked after you close it, so
 shutting a panel never costs you your place.
 
+**Every quest has a URL.** `#/engineer/rag-pipeline` opens that quest on that path,
+in a fresh tab, for anyone you send it to. Opening a quest is a history entry, so the
+browser's Back — and a phone's back gesture — closes the dialog rather than leaving
+the site. The URL carries place only: which path, which quest. Your level, your
+progress and what you have opened stay in `localStorage`, where they cannot end up in
+something you shared.
+
 **Built for a phone, not just shrunk onto one.** Below `64rem` the roadmap is a
 stage list rather than an absolute grid — the better experience on a phone and for a
 screen reader, not a degradation. Below `40rem` the masthead stops repeating numbers
@@ -138,6 +145,8 @@ means that on all four paths.
 | `src/data/roadmap.ts` | Loader and indexes. Nothing else parses the JSON. |
 | `src/data/layout.ts` | The graph layout: bands, boxes, routed edges. Pure. |
 | `src/data/state.ts` | Everything derived from the completed set, in one place. |
+| `src/data/route.ts` | The URL, as state. The app's only address space. |
+| `src/data/duration.ts` | `est` as arithmetic, and the day/week assumptions behind it. |
 | `src/components/` | Picker, path bar, stage rail, map, quest dialog, list view, controls. |
 | `src/theme.css` | Every colour and type value in the project. |
 | `DESIGN.md` | The design constitution. All of it. |

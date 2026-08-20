@@ -13,6 +13,7 @@
 
 import { LEVELS, LINK_KINDS, MAX_BLURB_LENGTH, NODE_TYPES, SEARCH_ENGINES } from '../constants.ts'
 import type { RoadmapFile, RoadmapNode } from '../types.ts'
+import { isEstimate } from './duration.ts'
 
 export type Severity = 'error' | 'warning'
 
@@ -61,6 +62,12 @@ function pathDepth(url: string): number {
 function checkNode(node: RoadmapNode, at: string, ids: ReadonlySet<string>, c: Collector): void {
   for (const field of ['id', 'title', 'blurb', 'stage', 'est', 'mission', 'why'] as const) {
     if (!isString(node[field])) c.error('BAD_FIELD', `${at}.${field}`, `must be a non-empty string`)
+  }
+
+  // `est` is summed into the "time left" figure, so a value that does not parse
+  // would not look wrong — it would quietly make that figure too small.
+  if (!isEstimate(node.est)) {
+    c.error('BAD_EST', `${at}.est`, `"${node.est}" is not <n>m|h|d|w or "ongoing"`)
   }
 
   if (!LEVELS.includes(node.level)) c.error('BAD_LEVEL', `${at}.level`, `unknown level "${node.level}"`)

@@ -108,7 +108,9 @@ Colour is never the only channel. Every state that has a colour also has a word:
   phone experience and a better screen-reader experience, not a degradation. A card
   clipped off-screen, overlapping another card, or laid across a rule is a bug.
 - **Touch targets are at least 44px** on any surface a phone can reach. The theme
-  carries `--touch-min` for it.
+  carries `--touch-min` for it, applied under `@media (pointer: coarse)` so a mouse
+  keeps the tighter instrument-panel sizing. Two controls are exempt by name and by
+  comment; a third exemption needs the same treatment.
 
 ## Where the rules live in code
 
@@ -118,6 +120,7 @@ Colour is never the only channel. Every state that has a colour also has a word:
 | `src/index.css` | Import order, and the `@theme` block that deletes the Tailwind namespaces a banned utility would need to exist at all. |
 | `src/styles/*.css` | Component styling, tokens only, one file per surface. |
 | `scripts/check-theme.ts` | The gate. Rejects a literal colour or type value outside `theme.css`, a banned property, and an unknown token. |
+| `public/icon.svg` | The one file outside `theme.css` that holds a colour, stated as an exception rather than discovered as one. An app icon is an asset, like the font files, and cannot read a stylesheet. It carries the ground and the ink, and it changes when they do. |
 
 Tailwind is for layout only — spacing, flex, grid, breakpoints, position. Colour and
 type reach components through `var(--…)`, never through a class.

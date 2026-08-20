@@ -16,6 +16,10 @@ import { StageList } from './StageList.tsx'
 export interface RoadmapScreenProps {
   path: LearningPath
   level: Level
+  /** The quest the URL says is open, already validated against this path. */
+  openId: string | null
+  onOpenQuest: (id: string) => void
+  onCloseQuest: () => void
 }
 
 /** Below this the absolute grid stops being readable and the list is simply better. */
@@ -63,13 +67,23 @@ function Legend(): ReactNode {
  *   focusedId  the quest opened most recently, kept after its dialog closes, so
  *              closing a panel does not erase the record of where you were
  *
+ * Which quest is *open* is not state here at all — it is the URL, handed down
+ * from `App`. That is what makes a quest linkable and what makes the phone's
+ * Back gesture close the dialog instead of leaving the site.
+ *
  * Marking a quest done still never moves the view: a screen that jumps out from
  * under a pointer is worse than a stale one. Scrolling happens for one reason
  * only — an explicit "take me to that quest", from a search hit, a prerequisite
  * chip or the stage stepper — where standing still would be the confusing
  * answer.
  */
-export function RoadmapScreen({ path, level }: RoadmapScreenProps): ReactNode {
+export function RoadmapScreen({
+  path,
+  level,
+  openId,
+  onOpenQuest,
+  onCloseQuest,
+}: RoadmapScreenProps): ReactNode {
   const { completed, toggle } = useProgressContext()
   const { visited, markVisited } = useVisited()
   const wide = useMediaQuery(WIDE)
@@ -79,8 +93,7 @@ export function RoadmapScreen({ path, level }: RoadmapScreenProps): ReactNode {
   const [showOptional, setShowOptional] = useState(true)
   const [hideDone, setHideDone] = useState(false)
   const [zoom, setZoom] = useState(1)
-  const [openId, setOpenId] = useState<string | null>(null)
-  const [focusedId, setFocusedId] = useState<string | null>(null)
+  const [focusedId, setFocusedId] = useState<string | null>(openId)
 
   const progress = useMemo(() => computePathProgress(path, completed), [path, completed])
   const nodes = useMemo(() => registry.nodesForPath(path.id), [path.id])
@@ -155,6 +168,18 @@ export function RoadmapScreen({ path, level }: RoadmapScreenProps): ReactNode {
   const view: MapView = preferredView ?? (wide ? 'map' : 'list')
   const openNode = openId === null ? null : registry.getNode(openId)
 
+  // Everything that follows from a quest being open, in one place, keyed on the
+  // URL rather than on the click. A quest reached by Back, by Forward, or by a
+  // link pasted into a fresh tab has to leave the same marks as one reached by
+  // clicking its card, and this is what guarantees that.
+  useEffect(() => {
+    if (openId === null) return
+    setFocusedId(openId)
+    markVisited(openId)
+    const stage = registry.getNode(openId).stage
+    setExpanded((current) => (current.has(stage) ? current : new Set([...current, stage])))
+  }, [openId, markVisited])
+
   // Set together with whatever expands the target's stage, so the effect below
   // runs on the paint that has the target on the page rather than the one before.
   const [scrollTo, setScrollTo] = useState<string | null>(null)
@@ -168,24 +193,13 @@ export function RoadmapScreen({ path, level }: RoadmapScreenProps): ReactNode {
     element.scrollIntoView({ block: 'center', inline: 'center', behavior: still ? 'auto' : 'smooth' })
   }, [scrollTo, expanded, view])
 
-  const open = useCallback(
-    (id: string) => {
-      const node = registry.getNode(id)
-      setExpanded((current) => (current.has(node.stage) ? current : new Set([...current, node.stage])))
-      setOpenId(id)
-      setFocusedId(id)
-      markVisited(id)
-    },
-    [markVisited],
-  )
-
   /** Open the quest *and* take the map to it. For jumps from somewhere else. */
   const goTo = useCallback(
     (id: string) => {
-      open(id)
+      onOpenQuest(id)
       setScrollTo(`quest-${id}`)
     },
-    [open],
+    [onOpenQuest],
   )
 
   const jumpToStage = useCallback((stageId: StageId) => {
@@ -193,7 +207,6 @@ export function RoadmapScreen({ path, level }: RoadmapScreenProps): ReactNode {
     setScrollTo(`stage-${stageId}`)
   }, [])
 
-  const close = useCallback(() => setOpenId(null), [])
 
   return (
     <div className="roadmap" data-path={path.id}>
@@ -266,7 +279,7 @@ export function RoadmapScreen({ path, level }: RoadmapScreenProps): ReactNode {
               visited={visited}
               focusedId={focusedId}
               zoom={zoom}
-              onOpen={open}
+              onOpen={onOpenQuest}
               onToggle={toggle}
               onToggleStage={toggleStage}
             />
@@ -282,7 +295,7 @@ export function RoadmapScreen({ path, level }: RoadmapScreenProps): ReactNode {
           matches={matches}
           visited={visited}
           focusedId={focusedId}
-          onOpen={open}
+          onOpen={onOpenQuest}
           onToggle={toggle}
           onToggleStage={toggleStage}
         />
@@ -293,7 +306,7 @@ export function RoadmapScreen({ path, level }: RoadmapScreenProps): ReactNode {
         path={path}
         level={level}
         completed={completed}
-        onClose={close}
+        onClose={onCloseQuest}
         onToggle={toggle}
         onOpen={goTo}
         onPath={onPath}

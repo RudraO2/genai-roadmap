@@ -1,6 +1,7 @@
 import { useState, type FormEvent, type ReactNode } from 'react'
 
 import { LEVELS } from '../constants.ts'
+import { estimateHours, formatHours } from '../data/duration.ts'
 import type { IntakeState } from '../data/intake.ts'
 import { registry } from '../data/roadmap.ts'
 import type { Level, PathId } from '../types.ts'
@@ -56,6 +57,18 @@ export function PathPicker({
   const [path, setPath] = useState<PathId | null>(initialPath ?? null)
   const [level, setLevel] = useState<Level | null>(initialLevel ?? null)
 
+  // The seed can change under a mounted picker: pasting `#/builder` into the
+  // address bar, or stepping Back onto this screen, both hand it a new path
+  // without remounting it. Adopting the new one is right — it is a navigation,
+  // and the answer it carries is more recent than the one on screen. Adjusted
+  // during render rather than in an effect so the card is never drawn
+  // unselected for a frame first.
+  const [seed, setSeed] = useState<PathId | null>(initialPath ?? null)
+  if (seed !== (initialPath ?? null)) {
+    setSeed(initialPath ?? null)
+    setPath(initialPath ?? null)
+  }
+
   const chosen = path === null ? null : registry.getPath(path)
   const canSubmit = path !== null && level !== null
 
@@ -96,6 +109,10 @@ export function PathPicker({
             const nodes = registry.nodesForPath(meta.id)
             const selected = path === meta.id
             const xp = nodes.reduce((total, node) => total + node.xp, 0)
+            // The question people actually weigh these four against each other
+            // on, and the one thing the cards never said. A sum of estimates,
+            // so it is printed as an approximation.
+            const hours = nodes.reduce((total, node) => total + estimateHours(node.est), 0)
             return (
               <li key={meta.id}>
                 <button
@@ -113,6 +130,7 @@ export function PathPicker({
                   <span className="path-card__meta">
                     {nodes.length} quests / {meta.stages.length} stages / {xp} XP
                   </span>
+                  <span className="path-card__time">≈{formatHours(hours)} of work</span>
                   {/* The affordance. A card that only *behaves* like a button
                       gets clicked by the people who already knew; this row is
                       for everyone else. */}

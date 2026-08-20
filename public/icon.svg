@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="The Gen AI Roadmap">
+  <title>The Gen AI Roadmap</title>
+  <!--
+    The map's own motif: an ink block with a routed path through it and three
+    stops on it, drawn with the same orthogonal jog and rounded corner the
+    graph edges use. Letterforms were the first attempt and the wrong one — a
+    two-letter monogram at 16 pixels is a smudge, and this project's subject is
+    the route, not its initials.
+
+    An icon is an asset, like the font files beside it, not a stylesheet, which
+    is why these two values sit here rather than being spent as tokens. They
+    are the ground and the ink from src/theme.css and must be changed with
+    them. DESIGN.md records this as the one file outside theme.css holding a
+    colour.
+  -->
+  <rect width="64" height="64" fill="#fffceb"/>
+  <rect x="4" y="4" width="56" height="56" rx="8" fill="#17191b"/>
+  <path
+    d="M18 15 v10 a6 6 0 0 0 6 6 h16 a6 6 0 0 1 6 6 v12"
+    fill="none" stroke="#fffceb" stroke-width="4" stroke-linecap="round"/>
+  <circle cx="18" cy="15" r="6" fill="#fffceb"/>
+  <circle cx="46" cy="49" r="6" fill="#fffceb"/>
+  <circle cx="32" cy="31" r="4.5" fill="#17191b" stroke="#fffceb" stroke-width="3"/>
+</svg>
