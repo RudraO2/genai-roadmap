@@ -178,6 +178,9 @@
   .rail__chip {
     display: flex;
     align-items: baseline;
+    transition:
+      transform var(--dur-state) var(--ease-state),
+      background-color var(--dur-state) var(--ease-state);
     gap: calc(var(--space-unit) * 2);
     white-space: nowrap;
     background: var(--surface-raised);
@@ -185,7 +188,6 @@
     border-radius: var(--radius-badge);
     padding: calc(var(--space-unit) * 1) calc(var(--space-unit) * 3);
     cursor: pointer;
-    transition: background-color var(--dur-state) var(--ease-state);
   }
 
   .rail__index,
@@ -231,8 +233,11 @@
     border-bottom-width: var(--rule-thick);
   }
 
+  /* Hover lifts rather than colours. The path colour on a rail chip means
+     exactly one thing — this is the stage you are in — and a hover state that
+     borrowed it would put "you are here" under the pointer wherever it went. */
   .rail__chip:hover {
-    background: var(--path-colour);
+    transform: translate(-1px, -1px);
   }
 
   /* ---- The finish line, in one line -------------------------------------- */
@@ -543,8 +548,11 @@
     padding-bottom: calc(var(--space-unit) * 4);
   }
 
+  /* Centred when the grid is narrower than the window, so a four-column map on
+     a wide screen does not sit against the left edge of its own ground. */
   .graph {
     position: relative;
+    margin-inline: auto;
   }
 
   .graph__canvas {

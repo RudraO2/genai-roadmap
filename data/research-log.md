@@ -1,4 +1,58 @@
-# Research log — Phase A
+# Research log
+
+## Phase B — 2026-08-20, the UX pass
+
+Twenty-six links and fifty-five search queries were added in this session. The egress
+policy this session ran under was much narrower than Phase A's: only `docs.claude.com`
+and `raw.githubusercontent.com` answered at all. `github.com`, `api.github.com`,
+`developers.google.com`, `ai.google.dev`, `www.deeplearning.ai`, `huggingface.co`,
+`learn.microsoft.com`, `platform.openai.com` and `www.anthropic.com` all returned 403 at
+the proxy. That shaped what could honestly be added, in three tiers.
+
+**Tier 1 — fetched directly, `verified: true`.** Every `docs.claude.com` URL added here
+returned HTTP 200 to `curl -L` in this session, deep path and all:
+
+    /en/docs/intro                                            /en/api/getting-started
+    /en/api/rate-limits                                       /en/docs/about-claude/models/overview
+    /en/docs/about-claude/use-case-guides/overview            /en/docs/build-with-claude/context-windows
+    /en/docs/build-with-claude/prompt-engineering/overview    /en/docs/build-with-claude/structured-outputs
+    /en/docs/build-with-claude/prompt-engineering/be-clear-and-direct
+    /en/docs/build-with-claude/prompt-engineering/chain-of-thought
+    /en/docs/build-with-claude/prompt-caching                 /en/docs/build-with-claude/embeddings
+    /en/docs/build-with-claude/streaming                      /en/docs/build-with-claude/vision
+    /en/docs/build-with-claude/files                          /en/docs/build-with-claude/extended-thinking
+    /en/docs/agents-and-tools/tool-use/overview               /en/docs/test-and-evaluate/define-success
+    /en/docs/test-and-evaluate/eval-tool
+    /en/docs/test-and-evaluate/strengthen-guardrails/mitigate-jailbreaks
+    /en/docs/test-and-evaluate/strengthen-guardrails/reduce-hallucinations
+
+`https://docs.claude.com` itself resolves 200 through a redirect to
+`platform.claude.com/docs/en/home`. It replaced the unverified `https://docs.anthropic.com`
+root on `api-keys`; that old domain now answers 403 and was dropped from `prompt-tutorial`
+outright, which had gained two verified deep pages and did not need a bare root as well.
+
+**Tier 2 — existence proved through `raw.githubusercontent.com`, `verified: true`.**
+`github.com` was unreachable, but `raw.githubusercontent.com/<owner>/<repo>/HEAD/README.md`
+was not. Each repo added below returned 200 and a README whose opening lines were read and
+matched the project it claims to be, so `https://github.com/<owner>/<repo>` is a URL that
+exists rather than one that was guessed:
+
+    anthropics/claude-quickstarts        modelcontextprotocol/python-sdk
+
+Star counts are absent on these two. `api.github.com` was blocked, and an invented star
+count is worse than a missing one.
+
+**Tier 3 — everything else became a search query.** Nothing was added as a deep link to a
+host that could not be reached. The named courses this pass was asked to surface —
+Google's Machine Learning Crash Course and Prompting Essentials, DeepLearning.AI's short
+courses, Microsoft Learn's AI paths, Kaggle Learn, the Hugging Face LLM and Agents courses,
+Anthropic's own course catalogue — are all reached through Google queries that name them.
+A constructed search URL always resolves, and it is honest about being a search rather
+than a promise that a specific page is still where it was. That is the rule this project
+already had for anything needing a deep non-GitHub URL, and it is why fifty-five of the
+eighty-one additions are searches rather than links.
+
+## Phase A
 
 Registry built 2026-08-18. Every URL in `nodes.json` was fetched with `curl -L` in that
 session and returned HTTP 200 (98 unique URLs, re-verified as a batch after generation).
