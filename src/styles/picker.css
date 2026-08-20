@@ -1,0 +1,186 @@
+/**
+ * picker.css — the path and level chooser. @layer components, tokens only.
+ *
+ * The path cards are the first thing anyone sees, so they carry the most weight on
+ * the page: each states a finish line rather than a syllabus, because "ship a
+ * retrieval-backed app" is a decision someone can make and "10 modules" is not.
+ *
+ * Each path prints on its own paper, keyed on its id. Colour by identity, never by
+ * position in the list — reordering the registry must not repaint the interface.
+ */
+
+@layer components {
+  .picker {
+    display: flex;
+    flex-direction: column;
+    gap: calc(var(--space-unit) * 16);
+  }
+
+  .path-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(17rem, 1fr));
+    gap: calc(var(--space-unit) * 5);
+  }
+
+  .path-card {
+    display: grid;
+    grid-template-rows: auto auto auto 1fr auto auto;
+    gap: calc(var(--space-unit) * 2);
+    width: 100%;
+    height: 100%;
+    text-align: left;
+    padding: calc(var(--space-unit) * 5);
+    background: var(--surface-raised);
+    border: var(--rule-strong) solid var(--surface-road);
+    border-radius: var(--radius-paper);
+    color: var(--text-primary);
+    cursor: pointer;
+    filter: drop-shadow(var(--lift) var(--lift) 0 var(--surface-road));
+    transition:
+      transform var(--dur-state) var(--ease-state),
+      background-color var(--dur-state) var(--ease-state);
+  }
+
+  .path-card[data-path='explorer'] { background: var(--paper-blue); }
+  .path-card[data-path='engineer'] { background: var(--paper-lime); }
+  .path-card[data-path='builder'] { background: var(--paper-lilac); }
+  .path-card[data-path='creator'] { background: var(--paper-orange); }
+
+  .path-card:hover,
+  .path-card:focus-visible {
+    transform: translate(-1px, -1px);
+  }
+
+  .path-card--selected {
+    outline: var(--rule-thick) solid var(--surface-road);
+    outline-offset: calc(var(--space-unit) * 1);
+  }
+
+  .path-card__index,
+  .path-card__meta {
+    font-family: var(--font-mono);
+    font-size: var(--size-nano);
+    font-weight: var(--weight-bold);
+    letter-spacing: var(--tracking-caps);
+    text-transform: uppercase;
+    color: var(--text-secondary);
+  }
+
+  .path-card__title {
+    font-family: var(--font-display);
+    font-size: var(--size-title);
+    font-weight: var(--weight-black);
+    letter-spacing: var(--tracking-tight);
+    line-height: var(--leading-tight);
+  }
+
+  .path-card__tagline {
+    font-family: var(--font-body);
+    font-size: var(--size-lead);
+    line-height: var(--leading-snug);
+    color: var(--text-primary);
+  }
+
+  .path-card__goal,
+  .path-card__for {
+    font-family: var(--font-body);
+    font-size: var(--size-body);
+    line-height: var(--leading-body);
+    color: var(--text-secondary);
+  }
+
+  .path-card__for {
+    font-size: var(--size-meta);
+    color: var(--text-muted);
+  }
+
+  .path-card__meta {
+    border-top: var(--hairline) solid var(--surface-road);
+    padding-top: calc(var(--space-unit) * 2);
+  }
+
+  .level-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr));
+    gap: calc(var(--space-unit) * 4);
+  }
+
+  .level-row {
+    display: flex;
+    flex-direction: column;
+    gap: calc(var(--space-unit) * 1);
+    width: 100%;
+    height: 100%;
+    text-align: left;
+    padding: calc(var(--space-unit) * 4);
+    background: var(--surface-raised);
+    border: var(--rule-strong) solid var(--surface-road);
+    border-radius: var(--radius-paper);
+    cursor: pointer;
+    color: var(--text-primary);
+    transition: background-color var(--dur-state) var(--ease-state);
+  }
+
+  .level-row--selected {
+    background: var(--accent);
+  }
+
+  .level-row__title {
+    font-family: var(--font-display);
+    font-size: var(--size-card-title);
+    font-weight: var(--weight-black);
+    letter-spacing: var(--tracking-tight);
+  }
+
+  .level-row__hint {
+    font-family: var(--font-body);
+    font-size: var(--size-meta);
+    line-height: var(--leading-body);
+    color: var(--text-secondary);
+  }
+
+  .picker__submit {
+    display: flex;
+    justify-content: flex-end;
+  }
+
+  .picker__continue {
+    background: var(--surface-road);
+    color: var(--text-inverse);
+    border: var(--rule-strong) solid var(--surface-road);
+    border-radius: var(--radius-paper);
+    padding: calc(var(--space-unit) * 3) calc(var(--space-unit) * 8);
+    font-family: var(--font-mono);
+    font-size: var(--size-meta);
+    font-weight: var(--weight-bold);
+    letter-spacing: var(--tracking-caps);
+    text-transform: uppercase;
+    cursor: pointer;
+  }
+
+  .picker__continue:disabled {
+    background: var(--surface-raised);
+    color: var(--text-muted);
+    cursor: not-allowed;
+  }
+
+  /* The masthead control that reopens this picker. Lives here because this is the
+     only screen that can be reached from it. */
+  .intake-change {
+    background: var(--surface-raised);
+    border: var(--rule-strong) solid var(--surface-road);
+    border-radius: var(--radius-badge);
+    padding: calc(var(--space-unit) * 1) calc(var(--space-unit) * 3);
+    font-family: var(--font-mono);
+    font-size: var(--size-nano);
+    font-weight: var(--weight-bold);
+    letter-spacing: var(--tracking-caps);
+    text-transform: uppercase;
+    color: var(--text-secondary);
+    cursor: pointer;
+  }
+
+  .intake-change:hover {
+    color: var(--text-primary);
+  }
+}

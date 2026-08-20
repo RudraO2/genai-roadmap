@@ -1,0 +1,704 @@
+/**
+ * graph.css — the map screen. @layer components, tokens only.
+ *
+ * Three surfaces share this file because they are three views of one model and
+ * their states have to agree exactly: the recommendation banner, the graph, and
+ * the same graph as a list. A quest that is "ready" must look ready in all three,
+ * and splitting the rules across files is how that stops being true.
+ *
+ * Geometry note: every position on the map comes from `data/layout.ts` as an
+ * inline style. Nothing here computes a coordinate. What is here is paper, ink,
+ * weight and state — the things CSS is actually for.
+ */
+
+@layer components {
+  .roadmap {
+    display: flex;
+    flex-direction: column;
+    gap: calc(var(--space-unit) * 8);
+  }
+
+  /* ---- Screen heading ---------------------------------------------------- */
+
+  .roadmap__kicker {
+    font-family: var(--font-mono);
+    font-size: var(--size-nano);
+    font-weight: var(--weight-bold);
+    letter-spacing: var(--tracking-caps);
+    text-transform: uppercase;
+    color: var(--text-muted);
+  }
+
+  .roadmap__title {
+    margin-top: calc(var(--space-unit) * 2);
+    max-width: var(--measure);
+    font-family: var(--font-display);
+    font-size: var(--size-title);
+    font-weight: var(--weight-black);
+    letter-spacing: var(--tracking-tight);
+    line-height: var(--leading-tight);
+    color: var(--text-primary);
+  }
+
+  .roadmap__note {
+    margin-top: calc(var(--space-unit) * 3);
+    max-width: var(--measure);
+    font-family: var(--font-body);
+    font-size: var(--size-meta);
+    line-height: var(--leading-body);
+    color: var(--text-secondary);
+  }
+
+  /* ---- "Do this next" ----------------------------------------------------
+   * The loudest thing on the page, and deliberately so: a roadmap that shows you
+   * ninety-four options and no starting point has handed the hardest decision
+   * back to the person least equipped to make it.
+   */
+
+  .nextup {
+    background: var(--accent);
+    border: var(--rule-thick) solid var(--surface-road);
+    border-radius: var(--radius-paper);
+    padding: calc(var(--space-unit) * 6);
+    filter: drop-shadow(var(--lift) var(--lift) 0 var(--surface-road));
+  }
+
+  .nextup[data-complete='true'] {
+    background: var(--paper-lime);
+  }
+
+  .nextup__head {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: calc(var(--space-unit) * 2);
+  }
+
+  .nextup__kicker,
+  .nextup__rank,
+  .nextup__meta {
+    font-family: var(--font-mono);
+    font-size: var(--size-nano);
+    font-weight: var(--weight-bold);
+    letter-spacing: var(--tracking-caps);
+    text-transform: uppercase;
+    color: var(--text-primary);
+  }
+
+  .nextup__title {
+    margin-top: calc(var(--space-unit) * 2);
+    font-family: var(--font-display);
+    font-size: var(--size-title);
+    font-weight: var(--weight-black);
+    letter-spacing: var(--tracking-tight);
+    line-height: var(--leading-tight);
+    color: var(--text-primary);
+  }
+
+  .nextup__mission {
+    margin-top: calc(var(--space-unit) * 2);
+    max-width: var(--measure);
+    font-family: var(--font-body);
+    font-size: var(--size-lead);
+    line-height: var(--leading-snug);
+    color: var(--text-primary);
+  }
+
+  .nextup__actions {
+    margin-top: calc(var(--space-unit) * 5);
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: calc(var(--space-unit) * 3);
+  }
+
+  .nextup__open,
+  .nextup__done {
+    border: var(--rule-strong) solid var(--surface-road);
+    border-radius: var(--radius-paper);
+    padding: calc(var(--space-unit) * 2) calc(var(--space-unit) * 5);
+    font-family: var(--font-mono);
+    font-size: var(--size-meta);
+    font-weight: var(--weight-bold);
+    letter-spacing: var(--tracking-caps);
+    text-transform: uppercase;
+    cursor: pointer;
+  }
+
+  .nextup__open {
+    background: var(--surface-road);
+    color: var(--text-inverse);
+  }
+
+  .nextup__done {
+    background: var(--surface-raised);
+    color: var(--text-primary);
+  }
+
+  /* ---- Controls ---------------------------------------------------------- */
+
+  .controls {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: calc(var(--space-unit) * 3) calc(var(--space-unit) * 5);
+    border-block: var(--rule-strong) solid var(--rule);
+    padding-block: calc(var(--space-unit) * 3);
+  }
+
+  .controls__group {
+    display: flex;
+    align-items: center;
+    gap: calc(var(--space-unit) * 2);
+  }
+
+  .controls__group--find {
+    margin-right: auto;
+  }
+
+  .controls__search {
+    display: flex;
+    align-items: center;
+    gap: calc(var(--space-unit) * 2);
+  }
+
+  .controls__label {
+    font-family: var(--font-mono);
+    font-size: var(--size-nano);
+    font-weight: var(--weight-bold);
+    letter-spacing: var(--tracking-caps);
+    text-transform: uppercase;
+    color: var(--text-muted);
+  }
+
+  .controls__input {
+    width: 14rem;
+    max-width: 40vw;
+    background: var(--surface-raised);
+    border: var(--rule-strong) solid var(--surface-road);
+    border-radius: var(--radius-paper);
+    padding: calc(var(--space-unit) * 1) calc(var(--space-unit) * 2);
+    font-family: var(--font-mono);
+    font-size: var(--size-meta);
+    color: var(--text-primary);
+  }
+
+  .controls__toggle,
+  .controls__step,
+  .controls__zoom {
+    background: var(--surface-raised);
+    border: var(--rule-strong) solid var(--surface-road);
+    border-radius: var(--radius-badge);
+    padding: calc(var(--space-unit) * 1) calc(var(--space-unit) * 3);
+    font-family: var(--font-mono);
+    font-size: var(--size-nano);
+    font-weight: var(--weight-bold);
+    letter-spacing: var(--tracking-caps);
+    text-transform: uppercase;
+    color: var(--text-secondary);
+    cursor: pointer;
+    transition:
+      background-color var(--dur-state) var(--ease-state),
+      color var(--dur-state) var(--ease-state);
+  }
+
+  .controls__toggle[aria-pressed='true'] {
+    background: var(--surface-road);
+    color: var(--text-inverse);
+  }
+
+  .controls__toggle:disabled,
+  .controls__step:disabled {
+    color: var(--text-muted);
+    cursor: not-allowed;
+  }
+
+  .controls__step {
+    min-width: calc(var(--space-unit) * 8);
+  }
+
+  /* ---- Search results -----------------------------------------------------
+   * Dimming the misses is not enough on its own: the matches are usually off
+   * screen, and a map that quietly highlights something four stages down has not
+   * actually answered the question. These jump straight into the quest.
+   */
+
+  .results {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: calc(var(--space-unit) * 2) calc(var(--space-unit) * 4);
+  }
+
+  .results__label {
+    font-family: var(--font-mono);
+    font-size: var(--size-nano);
+    font-weight: var(--weight-bold);
+    letter-spacing: var(--tracking-caps);
+    text-transform: uppercase;
+    color: var(--text-muted);
+  }
+
+  .results__list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: calc(var(--space-unit) * 2);
+    list-style: none;
+  }
+
+  .results__hit {
+    display: flex;
+    align-items: baseline;
+    gap: calc(var(--space-unit) * 2);
+    background: var(--surface-raised);
+    border: var(--rule-strong) solid var(--surface-road);
+    border-radius: var(--radius-badge);
+    padding: calc(var(--space-unit) * 1) calc(var(--space-unit) * 3);
+    cursor: pointer;
+    transition: background-color var(--dur-state) var(--ease-state);
+  }
+
+  .results__hit:hover {
+    background: var(--accent);
+  }
+
+  .results__hit-title {
+    font-family: var(--font-body);
+    font-size: var(--size-meta);
+    font-weight: var(--weight-medium);
+    color: var(--text-primary);
+  }
+
+  .results__hit-stage {
+    font-family: var(--font-mono);
+    font-size: var(--size-nano);
+    letter-spacing: var(--tracking-caps);
+    text-transform: uppercase;
+    color: var(--text-muted);
+  }
+
+  /* ---- Legend ------------------------------------------------------------ */
+
+  .legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: calc(var(--space-unit) * 2) calc(var(--space-unit) * 5);
+  }
+
+  .legend__item {
+    display: flex;
+    align-items: center;
+    gap: calc(var(--space-unit) * 2);
+    font-family: var(--font-mono);
+    font-size: var(--size-nano);
+    letter-spacing: var(--tracking-caps);
+    text-transform: uppercase;
+    color: var(--text-muted);
+  }
+
+  .legend__item::before {
+    content: '';
+    width: calc(var(--space-unit) * 4);
+    height: calc(var(--space-unit) * 4);
+    border: var(--rule-strong) solid var(--surface-road);
+    border-radius: var(--radius-paper);
+    background: var(--surface-raised);
+  }
+
+  .legend__item[data-legend='locked']::before { opacity: 0.5; }
+  .legend__item[data-legend='done']::before { background: var(--accent); }
+  .legend__item[data-legend='side']::before {
+    background: var(--paper-blue);
+    border-style: dashed;
+  }
+  .legend__item[data-legend='boss']::before { background: var(--paper-orange); }
+
+  /* ---- The map ----------------------------------------------------------- */
+
+  .graph-scroll {
+    overflow-x: auto;
+    overflow-y: hidden;
+    padding-bottom: calc(var(--space-unit) * 4);
+  }
+
+  .graph {
+    position: relative;
+  }
+
+  .graph__canvas {
+    position: relative;
+    transform-origin: top left;
+  }
+
+  /* Edges sit under the stage headers and the quest boxes, so a line crossing a
+     band boundary slips behind the label instead of through it. */
+  .graph__edges {
+    position: absolute;
+    left: 0;
+    top: 0;
+    z-index: 1;
+    pointer-events: none;
+    overflow: visible;
+  }
+
+  .graph__edge {
+    fill: none;
+    stroke: var(--rule);
+    stroke-width: var(--edge-w);
+    stroke-linecap: round;
+    opacity: 0.4;
+  }
+
+  /* The prerequisite is done, so the far end is reachable now. */
+  .graph__edge[data-state='open'] {
+    stroke: var(--accent-ink);
+    opacity: 1;
+  }
+
+  /* Both ends done: the road already walked. */
+  .graph__edge[data-state='walked'] {
+    stroke: var(--accent);
+    stroke-width: var(--edge-w-strong);
+    opacity: 1;
+  }
+
+  .graph__edge[data-optional='true'] {
+    stroke-dasharray: 7 7;
+  }
+
+  /* ---- Stage bands ------------------------------------------------------- */
+
+  .band {
+    position: absolute;
+    left: 0;
+    right: 0;
+    z-index: 2;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: calc(var(--space-unit) * 1) calc(var(--space-unit) * 4);
+    /* Opaque on purpose: this is what occludes an edge passing behind the label. */
+    background: var(--surface-base);
+    border-top: var(--rule-thick) solid var(--rule);
+    padding: calc(var(--space-unit) * 3) calc(var(--space-unit) * 7) 0;
+  }
+
+  .band__kicker,
+  .band__tally {
+    font-family: var(--font-mono);
+    font-size: var(--size-nano);
+    font-weight: var(--weight-bold);
+    letter-spacing: var(--tracking-caps);
+    text-transform: uppercase;
+    color: var(--text-muted);
+  }
+
+  .band__kicker {
+    flex-basis: 100%;
+  }
+
+  .band__title {
+    font-family: var(--font-display);
+    font-size: var(--size-card-title);
+    font-weight: var(--weight-black);
+    letter-spacing: var(--tracking-tight);
+    color: var(--text-primary);
+  }
+
+  .band__tally {
+    margin-left: auto;
+  }
+
+  .band[data-cleared='true'] .band__tally {
+    color: var(--accent-ink);
+  }
+
+  /* ---- A quest box ------------------------------------------------------- */
+
+  .qnode {
+    position: absolute;
+    z-index: 3;
+    background: var(--surface-raised);
+    border: var(--rule-strong) solid var(--surface-road);
+    border-radius: var(--radius-paper);
+    filter: drop-shadow(var(--lift) var(--lift) 0 var(--surface-road));
+    transition:
+      transform var(--dur-state) var(--ease-state),
+      opacity var(--dur-state) var(--ease-state);
+  }
+
+  .qnode[data-type='side'] {
+    background: var(--paper-blue);
+    border-style: dashed;
+  }
+  .qnode[data-type='build'] { background: var(--paper-lime); }
+  .qnode[data-type='boss'] { background: var(--paper-orange); }
+
+  /* Locked keeps its paper and loses its lift: the shape of the journey — which
+     stages are reading, which are building, which end in a capstone — has to be
+     legible on the first visit, when almost everything is still locked. Dimming
+     says "not yet"; repainting everything grey would have said "nothing here". */
+  .qnode[data-state='locked'] {
+    opacity: 0.58;
+    filter: none;
+  }
+
+  .qnode[data-state='done'] {
+    border-color: var(--accent-quiet);
+  }
+
+  .qnode[data-next='true'] {
+    outline: var(--rule-thick) solid var(--accent-ink);
+    outline-offset: calc(var(--space-unit) * 1);
+  }
+
+  .qnode[data-dimmed='true'] {
+    opacity: 0.3;
+  }
+
+  .qnode:hover {
+    transform: translate(-1px, -1px);
+  }
+
+  /* One shot, on the click that finishes a quest and on nothing else. */
+  .qnode[data-just-completed='true'] {
+    animation: quest-stamp var(--dur-reward) var(--ease-reward);
+  }
+
+  @keyframes quest-stamp {
+    from {
+      transform: scale(1.05);
+    }
+    to {
+      transform: scale(1);
+    }
+  }
+
+  .qnode__open {
+    display: flex;
+    flex-direction: column;
+    gap: calc(var(--space-unit) * 1);
+    width: 100%;
+    height: 100%;
+    text-align: left;
+    background: transparent;
+    border: 0;
+    padding: calc(var(--space-unit) * 3);
+    color: var(--text-primary);
+    cursor: pointer;
+  }
+
+  .qnode__kicker,
+  .qnode__foot {
+    display: flex;
+    justify-content: space-between;
+    gap: calc(var(--space-unit) * 2);
+    font-family: var(--font-mono);
+    font-size: var(--size-nano);
+    font-weight: var(--weight-bold);
+    letter-spacing: var(--tracking-caps);
+    text-transform: uppercase;
+    color: var(--text-secondary);
+  }
+
+  .qnode__foot {
+    margin-top: auto;
+    color: var(--text-muted);
+  }
+
+  .qnode[data-next='true'] .qnode__state {
+    color: var(--accent-ink);
+  }
+
+  .qnode[data-state='done'] .qnode__state {
+    color: var(--accent-ink);
+  }
+
+  .qnode__title {
+    font-family: var(--font-display);
+    font-size: var(--size-card-title);
+    font-weight: var(--weight-bold);
+    letter-spacing: var(--tracking-tight);
+    line-height: var(--leading-snug);
+    overflow-wrap: break-word;
+  }
+
+  /* The tick is a second control, not a shortcut inside the first: marking
+     something done should never cost a dialog. */
+  .qnode__tick {
+    position: absolute;
+    right: calc(var(--space-unit) * -2);
+    top: calc(var(--space-unit) * -2);
+    width: calc(var(--space-unit) * 6);
+    height: calc(var(--space-unit) * 6);
+    display: grid;
+    place-items: center;
+    background: var(--surface-base);
+    border: var(--rule-strong) solid var(--surface-road);
+    border-radius: var(--radius-badge);
+    font-family: var(--font-mono);
+    font-size: var(--size-micro);
+    font-weight: var(--weight-bold);
+    color: var(--text-primary);
+    cursor: pointer;
+    transition: background-color var(--dur-state) var(--ease-state);
+  }
+
+  .qnode__tick[aria-pressed='true'] {
+    background: var(--accent);
+  }
+
+  /* ---- The same map as a list -------------------------------------------- */
+
+  .stagelist {
+    display: flex;
+    flex-direction: column;
+    gap: calc(var(--space-unit) * 10);
+  }
+
+  .stagelist__head {
+    border-top: var(--rule-thick) solid var(--rule);
+    padding-top: calc(var(--space-unit) * 3);
+  }
+
+  .stagelist__kicker,
+  .stagelist__tally {
+    display: flex;
+    gap: calc(var(--space-unit) * 3);
+    font-family: var(--font-mono);
+    font-size: var(--size-nano);
+    font-weight: var(--weight-bold);
+    letter-spacing: var(--tracking-caps);
+    text-transform: uppercase;
+    color: var(--text-muted);
+  }
+
+  .stagelist__title {
+    margin-top: calc(var(--space-unit) * 1);
+    font-family: var(--font-display);
+    font-size: var(--size-title);
+    font-weight: var(--weight-black);
+    letter-spacing: var(--tracking-tight);
+    line-height: var(--leading-tight);
+    color: var(--text-primary);
+  }
+
+  .stagelist__summary {
+    margin-top: calc(var(--space-unit) * 2);
+    max-width: var(--measure);
+    font-family: var(--font-body);
+    font-size: var(--size-body);
+    line-height: var(--leading-body);
+    color: var(--text-secondary);
+  }
+
+  .stagelist__tally {
+    margin-top: calc(var(--space-unit) * 2);
+  }
+
+  .stagelist__stage[data-cleared='true'] .stagelist__tally {
+    color: var(--accent-ink);
+  }
+
+  .stagelist__nodes {
+    margin-top: calc(var(--space-unit) * 4);
+    display: grid;
+    gap: calc(var(--space-unit) * 3);
+  }
+
+  .qrow {
+    display: flex;
+    align-items: flex-start;
+    gap: calc(var(--space-unit) * 3);
+    background: var(--surface-raised);
+    border: var(--rule-strong) solid var(--surface-road);
+    border-radius: var(--radius-paper);
+    padding: calc(var(--space-unit) * 3);
+  }
+
+  .qrow[data-type='side'] {
+    background: var(--paper-blue);
+    border-style: dashed;
+  }
+  .qrow[data-type='build'] { background: var(--paper-lime); }
+  .qrow[data-type='boss'] { background: var(--paper-orange); }
+
+  .qrow[data-state='locked'] {
+    opacity: 0.6;
+  }
+
+  .qrow[data-state='done'] {
+    border-color: var(--accent-quiet);
+  }
+
+  .qrow[data-next='true'] {
+    outline: var(--rule-thick) solid var(--accent-ink);
+    outline-offset: calc(var(--space-unit) * 1);
+  }
+
+  .qrow[data-dimmed='true'] {
+    opacity: 0.35;
+  }
+
+  .qrow__tick {
+    flex: none;
+    width: calc(var(--space-unit) * 6);
+    height: calc(var(--space-unit) * 6);
+    display: grid;
+    place-items: center;
+    background: var(--surface-base);
+    border: var(--rule-strong) solid var(--surface-road);
+    border-radius: var(--radius-badge);
+    font-family: var(--font-mono);
+    font-size: var(--size-micro);
+    font-weight: var(--weight-bold);
+    color: var(--text-primary);
+    cursor: pointer;
+  }
+
+  .qrow__tick[aria-pressed='true'] {
+    background: var(--accent);
+  }
+
+  .qrow__open {
+    display: flex;
+    flex-direction: column;
+    gap: calc(var(--space-unit) * 1);
+    flex: 1;
+    text-align: left;
+    background: transparent;
+    border: 0;
+    padding: 0;
+    color: var(--text-primary);
+    cursor: pointer;
+  }
+
+  .qrow__title {
+    font-family: var(--font-display);
+    font-size: var(--size-card-title);
+    font-weight: var(--weight-bold);
+    letter-spacing: var(--tracking-tight);
+    line-height: var(--leading-snug);
+  }
+
+  .qrow__blurb {
+    font-family: var(--font-body);
+    font-size: var(--size-body);
+    line-height: var(--leading-body);
+    color: var(--text-secondary);
+  }
+
+  .qrow__meta {
+    font-family: var(--font-mono);
+    font-size: var(--size-nano);
+    font-weight: var(--weight-bold);
+    letter-spacing: var(--tracking-caps);
+    text-transform: uppercase;
+    color: var(--text-muted);
+  }
+
+  .qrow[data-next='true'] .qrow__meta,
+  .qrow[data-state='done'] .qrow__meta {
+    color: var(--accent-ink);
+  }
+}

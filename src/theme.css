@@ -119,19 +119,18 @@
   --accent-ink: #006b49;
   --accent-quiet: #007a54;
 
-  /* ---- The four papers ----------------------------------------------------
-   * Semantic, assigned from node data and never from position in a list. The
-   * axis is the kind of a node's *first link* (`NodeCard.paperFor`), not its
-   * level — level was tried in spec 13 and measured wrong, because an act's
-   * nodes almost all share a level and every screen came out one flat colour:
-   *   lime    first link kind: repo
-   *   blue    first link kind: docs
-   *   lilac   first link kind: playground
-   *   orange  first link kind: article / thread / video / anything else
-   *   grey    dormant — no commits in twelve months, still on the map
-   * Dormancy overrides every other rule; frontier does not repaint the paper at
-   * all and is said with a dashed border instead, so a card's colour never has
-   * to mean two different things depending on which axis is looking at it.
+  /* ---- The five papers ----------------------------------------------------
+   * Semantic, assigned from a quest's own data and never from position in a list.
+   * The axis is the *kind of work* a node asks for, which is the thing a learner
+   * is choosing between when they look at the map:
+   *   white   core      the spine of a stage
+   *   blue    side      an optional detour
+   *   lime    build     a quest: you make something
+   *   orange  boss      a stage capstone
+   *   grey    locked    prerequisites outstanding — dimmed, never hidden
+   * State overrides paper only for `locked`; `done` keeps the paper and takes the
+   * action accent on its border and its tick, so colour never has to carry two
+   * meanings at once.
    * Ink text sits on all five. Contrast against ink: lime 15.0 : 1, blue 12.6 : 1,
    * lilac 10.6 : 1, orange 12.1 : 1, grey 13.9 : 1.
    */
@@ -196,35 +195,23 @@
   --lift: 3px;
   --gutter: clamp(1.25rem, 0.5rem + 3vw, 4rem);
 
-  /* ---- The road, in viewBox user units -----------------------------------
-   * Unitless on purpose. A length inside an `<svg>` resolves against the local
-   * coordinate system, not the page, so `2.4rem` would be 38 *user units* — a road
-   * that is 38/1400ths of the drawing at every size, which is not what a rem
-   * reads as anywhere else in this file. Declaring the gauge as a plain number
-   * says what is true: the road is 34 units of a 1400-unit-wide map, and it
-   * scales with the map.
+  /* ---- The graph ----------------------------------------------------------
+   * The map is an absolutely positioned grid computed in `data/layout.ts`, which
+   * owns the pixel geometry — a stylesheet cannot solve a layout and the solver
+   * cannot read a stylesheet, so exactly one of them holds those numbers and it
+   * is the solver.
    *
-   * --card-w / --card-h are the pocket card's size, in CSS pixels, and are the
-   * one exception to "theme.css holds the value": ActPath overrides both inline
-   * per act, because the placement solver and the stylesheet have to agree about
-   * a card's size to the pixel and only one of them can measure the stage. The
-   * values here are the desktop maximum and the fallback if measurement fails.
+   * What lives here is what CSS actually draws: the two edge weights. They are
+   * unitless on purpose. A length inside an `<svg>` resolves against the local
+   * coordinate system, and the edge SVG is sized 1:1 with CSS pixels, so a plain
+   * number is both correct and honest about being a user-unit stroke width.
    */
-  --road-gauge: 34;
-  --road-centre: 3;
-  --road-gauge-spur: 16;
-  --dot-r: 13;
-  --dot-r-spur: 8;
-  --size-stop: 15px;
-
-  --card-w: 17rem;
-  --card-h: 12.25rem;
-  --char-h: 9%;
+  --edge-w: 2.5;
+  --edge-w-strong: 3.5;
 
   /* ---- Motion -------------------------------------------------------------
    * Section 8: motion only to show state change. There is no ambient animation
-   * token here on purpose, and there should never be one. --dur-walk is the
-   * sprite's frame interval, which runs only while `t` is actually changing.
+   * token here on purpose, and there should never be one.
    *
    * --dur-reward / --ease-reward (spec 14) are for the small set of one-shot
    * moments that mark the learner actually finishing something — completing a
@@ -238,7 +225,6 @@
    * walker's per-frame re-renders.
    */
   --dur-state: 120ms;
-  --dur-walk: 520ms;
   --dur-reward: 420ms;
   --ease-state: cubic-bezier(0.2, 0, 0, 1);
   --ease-reward: cubic-bezier(0.34, 1.56, 0.64, 1);

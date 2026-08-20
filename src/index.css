@@ -23,14 +23,10 @@
 @import './theme.css';
 @import './styles/base.css';
 @import './styles/shell.css';
-@import './styles/intake.css';
-@import './styles/path.css';
-@import './styles/navigation.css';
-@import './styles/branch.css';
-@import './styles/cards.css';
-@import './styles/panel.css';
+@import './styles/picker.css';
+@import './styles/graph.css';
+@import './styles/quest.css';
 @import './styles/portability.css';
-@import './styles/character.css';
 
 @theme {
   /* Colour: the entire default palette, deleted. theme.css is the only source. */
