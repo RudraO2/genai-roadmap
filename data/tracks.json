@@ -665,6 +665,46 @@
               "side": "left"
             }
           ]
+        },
+        {
+          "id": "frontier-ai-engineering",
+          "title": "Build with your own data",
+          "anchor": "api-keys",
+          "act": "intuition",
+          "viewBox": "0 0 640 320",
+          "path": "M 20 292 C 150 292 168 152 300 142 C 424 133 452 62 620 38",
+          "nodes": [
+            {
+              "id": "rag-techniques",
+              "t": 0.07,
+              "side": "right"
+            },
+            {
+              "id": "chroma",
+              "t": 0.242,
+              "side": "left"
+            },
+            {
+              "id": "langchain",
+              "t": 0.414,
+              "side": "right"
+            },
+            {
+              "id": "llamaindex",
+              "t": 0.586,
+              "side": "left"
+            },
+            {
+              "id": "promptfoo",
+              "t": 0.758,
+              "side": "right"
+            },
+            {
+              "id": "ollama",
+              "t": 0.93,
+              "side": "left"
+            }
+          ]
         }
       ]
     },

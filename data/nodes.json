@@ -2055,6 +2055,162 @@
       "first_indexed": "2026-08-18",
       "verified_at": "2026-08-18",
       "note": "3 stars, single maintainer, last push 2026-07-15. Real, but effectively unproven."
+    },
+    {
+      "id": "rag-techniques",
+      "title": "RAG techniques",
+      "blurb": "Ground answers in your own data instead of the model's memory. 40+ runnable patterns.",
+      "level": "intermediate",
+      "tracks": [
+        "app"
+      ],
+      "requires": [
+        "api-keys"
+      ],
+      "links": [
+        {
+          "label": "Repo",
+          "url": "https://github.com/NirDiamant/RAG_Techniques",
+          "kind": "repo"
+        }
+      ],
+      "repo": "NirDiamant/RAG_Techniques",
+      "stars": 29133,
+      "last_commit": "2026-08-19",
+      "status": "core",
+      "zone": "frontier",
+      "first_indexed": "2026-08-20",
+      "verified_at": "2026-08-20"
+    },
+    {
+      "id": "chroma",
+      "title": "Chroma",
+      "blurb": "Open-source vector database: embed, store and search your own documents in minutes.",
+      "level": "intermediate",
+      "tracks": [
+        "app"
+      ],
+      "requires": [
+        "api-keys"
+      ],
+      "links": [
+        {
+          "label": "Repo",
+          "url": "https://github.com/chroma-core/chroma",
+          "kind": "repo"
+        }
+      ],
+      "repo": "chroma-core/chroma",
+      "stars": 29098,
+      "last_commit": "2026-08-19",
+      "status": "core",
+      "zone": "frontier",
+      "first_indexed": "2026-08-20",
+      "verified_at": "2026-08-20"
+    },
+    {
+      "id": "langchain",
+      "title": "LangChain",
+      "blurb": "The default framework for chaining models, retrieval and tools into a real application.",
+      "level": "intermediate",
+      "tracks": [
+        "app"
+      ],
+      "requires": [
+        "api-keys"
+      ],
+      "links": [
+        {
+          "label": "Repo",
+          "url": "https://github.com/langchain-ai/langchain",
+          "kind": "repo"
+        }
+      ],
+      "repo": "langchain-ai/langchain",
+      "stars": 144622,
+      "last_commit": "2026-08-20",
+      "status": "core",
+      "zone": "frontier",
+      "first_indexed": "2026-08-20",
+      "verified_at": "2026-08-20"
+    },
+    {
+      "id": "llamaindex",
+      "title": "LlamaIndex",
+      "blurb": "Data framework for RAG: connectors, indexing and retrieval tuned to your own documents.",
+      "level": "intermediate",
+      "tracks": [
+        "app"
+      ],
+      "requires": [
+        "api-keys"
+      ],
+      "links": [
+        {
+          "label": "Repo",
+          "url": "https://github.com/run-llama/llama_index",
+          "kind": "repo"
+        }
+      ],
+      "repo": "run-llama/llama_index",
+      "stars": 51761,
+      "last_commit": "2026-08-19",
+      "status": "core",
+      "zone": "frontier",
+      "first_indexed": "2026-08-20",
+      "verified_at": "2026-08-20"
+    },
+    {
+      "id": "promptfoo",
+      "title": "Promptfoo",
+      "blurb": "Test prompts and agents like code: compare models, catch regressions, red-team for safety.",
+      "level": "advanced",
+      "tracks": [
+        "app"
+      ],
+      "requires": [
+        "api-keys"
+      ],
+      "links": [
+        {
+          "label": "Repo",
+          "url": "https://github.com/promptfoo/promptfoo",
+          "kind": "repo"
+        }
+      ],
+      "repo": "promptfoo/promptfoo",
+      "stars": 24399,
+      "last_commit": "2026-08-20",
+      "status": "core",
+      "zone": "frontier",
+      "first_indexed": "2026-08-20",
+      "verified_at": "2026-08-20"
+    },
+    {
+      "id": "ollama",
+      "title": "Ollama",
+      "blurb": "Run open-weight models on your own machine. No API key, no per-token bill, full control.",
+      "level": "intermediate",
+      "tracks": [
+        "app"
+      ],
+      "requires": [
+        "api-keys"
+      ],
+      "links": [
+        {
+          "label": "Repo",
+          "url": "https://github.com/ollama/ollama",
+          "kind": "repo"
+        }
+      ],
+      "repo": "ollama/ollama",
+      "stars": 179025,
+      "last_commit": "2026-08-20",
+      "status": "core",
+      "zone": "frontier",
+      "first_indexed": "2026-08-20",
+      "verified_at": "2026-08-20"
     }
   ]
 }
