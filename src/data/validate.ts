@@ -13,6 +13,7 @@
 
 import { LEVELS, LINK_KINDS, MAX_BLURB_LENGTH, NODE_TYPES, SEARCH_ENGINES } from '../constants.ts'
 import type { RoadmapFile, RoadmapNode } from '../types.ts'
+import { isEstimate } from './duration.ts'
 
 export type Severity = 'error' | 'warning'
 
@@ -61,6 +62,12 @@ function pathDepth(url: string): number {
 function checkNode(node: RoadmapNode, at: string, ids: ReadonlySet<string>, c: Collector): void {
   for (const field of ['id', 'title', 'blurb', 'stage', 'est', 'mission', 'why'] as const) {
     if (!isString(node[field])) c.error('BAD_FIELD', `${at}.${field}`, `must be a non-empty string`)
+  }
+
+  // `est` is summed into the "time left" figure, so a value that does not parse
+  // would not look wrong — it would quietly make that figure too small.
+  if (!isEstimate(node.est)) {
+    c.error('BAD_EST', `${at}.est`, `"${node.est}" is not <n>m|h|d|w or "ongoing"`)
   }
 
   if (!LEVELS.includes(node.level)) c.error('BAD_LEVEL', `${at}.level`, `unknown level "${node.level}"`)
@@ -252,6 +259,18 @@ export function validateRoadmap(raw: unknown): ValidationResult {
           c.error('BACKWARD_EDGE', `${at}.stages`, `"${node.id}" requires "${id}" from a later stage`)
         } else if (there === here && required.row > node.row) {
           c.error('UPWARD_EDGE', `${at}.stages`, `"${node.id}" requires "${id}" from a lower row`)
+        } else if (there === here && required.row === node.row && required.col > node.col) {
+          // Same row, prerequisite further right. The map survives this — the
+          // edge just runs leftwards — but the reading order does not: the app
+          // walks a stage by row, then by column, so the list view prints the
+          // locked quest *above* the thing that unlocks it, and a "do this
+          // next" that scanned in order would reach the dependent first. Three
+          // nodes were sitting like this before the rule existed.
+          c.error(
+            'LEFTWARD_EDGE',
+            `${at}.stages`,
+            `"${node.id}" requires "${id}" from further right on the same row`,
+          )
         }
       }
     }

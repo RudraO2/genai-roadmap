@@ -1,10 +1,10 @@
 /**
  * The slice of the Node runtime `scripts/validate-data.ts` uses.
  *
- * Declared here rather than pulling in `@types/node`, because CONTEXT.md section 10
+ * Declared here rather than pulling in `@types/node`, because the project
  * caps the dependency list at Vite, React, TypeScript and Tailwind. If a later spec
  * needs materially more of the Node API than this, that is the moment to log the
- * `@types/node` question to BLOCKED.md rather than to keep growing this file.
+ * `@types/node` question rather than to keep growing this file.
  */
 
 declare module 'node:fs' {

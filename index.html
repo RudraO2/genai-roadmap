@@ -5,10 +5,30 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta
       name="description"
-      content="An index of external links for learning modern AI/GenAI tooling: what to learn, in what order, and from where."
+      content="An interactive roadmap for generative AI. Four paths, 94 quests: what to learn, in what order, and exactly where to go and learn it."
     />
-    <link rel="icon" href="data:," />
-    <title>Interactive Roadmap</title>
+    <!-- Paints the phone browser's own chrome in the page's paper, so the app
+         does not sit in a white or black frame it did not choose. The value is
+         left empty on purpose and filled in main.tsx from --surface-base:
+         theme.css is the only file allowed to hold a colour, and the theme gate
+         reads this file too. -->
+    <meta name="theme-color" content="" />
+    <link rel="icon" href="./icon.svg" type="image/svg+xml" />
+    <link rel="manifest" href="./manifest.webmanifest" />
+
+    <!-- What a shared link unfurls into. No og:image: this repo has no deploy
+         domain baked in, and the spec wants an absolute URL — a relative one
+         that half the scrapers drop is worse than none. -->
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="The Gen AI Roadmap" />
+    <meta property="og:title" content="The Gen AI Roadmap" />
+    <meta
+      property="og:description"
+      content="Four paths, 94 quests: what to learn about generative AI, in what order, and exactly where to go and learn it."
+    />
+    <meta name="twitter:card" content="summary" />
+
+    <title>The Gen AI Roadmap</title>
   </head>
   <body>
     <div id="root"></div>

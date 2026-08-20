@@ -1,0 +1,192 @@
+/**
+ * print.css — the roadmap on paper. @layer components, tokens only.
+ *
+ * Two rules do most of the work: on screen the sheet does not exist, and on
+ * paper nothing else does. That swap is why this is a separate document rather
+ * than a print stylesheet layered over the interface — the output cannot depend
+ * on which stages happened to be open or which view was selected.
+ *
+ * Ink on white, and structure carried by rules and by words. Browsers do not
+ * print backgrounds by default and this design does not ask them to: a paper
+ * ground printed on paper is paper. Every state that was a colour on screen is
+ * also a word here — "Core", "Side quest", "Capstone" — which is the same rule
+ * DESIGN.md already sets for the screen, doing its job in the medium that
+ * needed it most.
+ */
+
+@layer components {
+  .printsheet {
+    display: none;
+  }
+
+  @media print {
+    /* The interface, all of it: masthead, roadmap, dialog, colophon. */
+    .shell__skip-link,
+    .shell__masthead,
+    .shell__colophon,
+    .roadmap {
+      display: none;
+    }
+
+    .shell {
+      display: block;
+      min-height: 0;
+      padding-inline: 0;
+    }
+
+    .shell__main {
+      padding-block: 0;
+    }
+
+    .printsheet {
+      display: block;
+      color: var(--text-primary);
+      background: var(--surface-raised);
+    }
+
+    @page {
+      margin: 14mm;
+    }
+
+    /* ---- Head ------------------------------------------------------------ */
+
+    .printsheet__head {
+      border-bottom: var(--rule-thick) solid var(--rule);
+      padding-bottom: calc(var(--space-unit) * 3);
+      margin-bottom: calc(var(--space-unit) * 5);
+    }
+
+    .printsheet__eyebrow,
+    .printsheet__meta,
+    .printsheet__kicker,
+    .printsheet__index,
+    .printsheet__tally,
+    .printsheet__quest-meta,
+    .printsheet__quest-link {
+      font-family: var(--font-mono);
+      font-size: var(--size-nano);
+      font-weight: var(--weight-bold);
+      letter-spacing: var(--tracking-caps);
+      text-transform: uppercase;
+      color: var(--text-secondary);
+    }
+
+    .printsheet__title {
+      font-family: var(--font-display);
+      font-size: var(--size-title);
+      font-weight: var(--weight-black);
+      letter-spacing: var(--tracking-tight);
+      line-height: var(--leading-tight);
+      color: var(--text-primary);
+    }
+
+    .printsheet__goal {
+      margin-block: calc(var(--space-unit) * 2);
+      font-family: var(--font-body);
+      font-size: var(--size-body);
+      line-height: var(--leading-snug);
+      color: var(--text-primary);
+    }
+
+    /* ---- Stages ---------------------------------------------------------- */
+
+    .printsheet__stage {
+      margin-bottom: calc(var(--space-unit) * 6);
+      /* A heading is never the last thing on a page. */
+      break-inside: auto;
+    }
+
+    .printsheet__stage-title {
+      display: flex;
+      align-items: baseline;
+      gap: calc(var(--space-unit) * 3);
+      border-bottom: var(--rule-strong) solid var(--rule);
+      padding-bottom: calc(var(--space-unit) * 1);
+      font-family: var(--font-display);
+      font-size: var(--size-card-title);
+      font-weight: var(--weight-black);
+      letter-spacing: var(--tracking-tight);
+      color: var(--text-primary);
+      break-after: avoid;
+    }
+
+    .printsheet__tally {
+      margin-left: auto;
+    }
+
+    .printsheet__kicker {
+      margin-top: calc(var(--space-unit) * 1);
+      break-after: avoid;
+    }
+
+    /* ---- Quests ---------------------------------------------------------- */
+
+    .printsheet__quests {
+      margin-top: calc(var(--space-unit) * 3);
+      list-style: none;
+    }
+
+    /* A quest split across a page break is a quest nobody reads. */
+    .printsheet__quest {
+      display: flex;
+      gap: calc(var(--space-unit) * 3);
+      padding-block: calc(var(--space-unit) * 2);
+      border-bottom: var(--hairline) solid var(--rule-faint);
+      break-inside: avoid;
+    }
+
+    /* The reason this is worth printing at all: something to tick. Ink outline
+       rather than a filled block, because a printer's job here is the box and
+       the reader's job is the mark inside it. */
+    .printsheet__box {
+      flex: none;
+      display: grid;
+      place-items: center;
+      width: calc(var(--space-unit) * 5);
+      height: calc(var(--space-unit) * 5);
+      border: var(--rule-strong) solid var(--surface-road);
+      border-radius: var(--radius-paper);
+      font-family: var(--font-mono);
+      font-size: var(--size-meta);
+      font-weight: var(--weight-bold);
+      color: var(--text-primary);
+    }
+
+    .printsheet__quest-body {
+      display: block;
+    }
+
+    .printsheet__quest-title {
+      display: block;
+      font-family: var(--font-display);
+      font-size: var(--size-body);
+      font-weight: var(--weight-bold);
+      letter-spacing: var(--tracking-tight);
+      color: var(--text-primary);
+    }
+
+    .printsheet__quest-blurb,
+    .printsheet__quest-mission {
+      display: block;
+      max-width: var(--measure);
+      font-family: var(--font-body);
+      font-size: var(--size-meta);
+      line-height: var(--leading-snug);
+      color: var(--text-primary);
+    }
+
+    .printsheet__quest-mission {
+      color: var(--text-secondary);
+    }
+
+    /* Spelled out, because a link on paper is only ever a string to type. */
+    .printsheet__quest-link {
+      display: block;
+      margin-top: calc(var(--space-unit) * 1);
+      text-transform: none;
+      letter-spacing: normal;
+      overflow-wrap: anywhere;
+      color: var(--text-muted);
+    }
+  }
+}

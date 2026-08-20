@@ -1,10 +1,9 @@
 /**
  * shell.css — the shell's own classes. @layer components, tokens only.
  *
- * Owns the app frame (masthead / main / colophon) and the Section heading
- * pattern. Nothing else belongs here — a surface that needs its own styling gets
- * its own file, which is why the picker, the map and the quest dialog each have
- * one.
+ * Owns the app frame, and only the app frame: masthead, main, colophon. Nothing
+ * else belongs here — a surface that needs its own styling gets its own file,
+ * which is why the picker, the map and the quest dialog each have one.
  *
  * Spec 13 repainted every rule in here for the paper-roadmap identity. Two things
  * that were in this file are deliberately gone and must not come back:
@@ -50,7 +49,9 @@
     max-width: var(--frame-max);
     margin-inline: auto;
     padding-inline: var(--gutter);
-    min-height: 100vh;
+    /* dvh, so the frame is the viewport a phone actually has rather than the
+       one it has before the address bar collapses. */
+    min-height: 100dvh;
     display: flex;
     flex-direction: column;
   }
@@ -107,9 +108,9 @@
     transition: background-color var(--dur-state) var(--ease-state);
   }
 
-  /* Every main-zone node on the track is done (spec 14, `App.tsx`'s `shipped`).
-   * The same accent this chip's own numbers already imply, just said in its
-   * background too — still "done", not a fourth meaning for the colour. */
+  /* Every quest on the chosen path is done (`App.tsx`'s `shipped`). The same
+   * accent this chip's own numbers already imply, just said in its background
+   * too — still "done", not a fourth meaning for the colour. */
   .shell__masthead-meta[data-shipped='true'] {
     background: var(--accent);
     color: var(--text-primary);
@@ -118,6 +119,39 @@
   .shell__main {
     flex: 1;
     padding-block: clamp(2.5rem, 5vw, 4.5rem);
+  }
+
+  /* ---- The frame on a phone ----------------------------------------------
+   * The masthead is three stacked rows at this width — wordmark, then the
+   * rank chip, then "Change path" — which spends a fifth of the screen on
+   * furniture before the roadmap starts. Two things fix it:
+   *
+   *   1. The rank chip goes. Every number on it (rank, XP, per cent) is on the
+   *      path bar forty pixels below, and saying it twice is what made the
+   *      masthead wrap in the first place.
+   *   2. Everything left fits one row, tighter.
+   */
+  @media (max-width: 40rem) {
+    .shell__masthead {
+      gap: calc(var(--space-unit) * 2) calc(var(--space-unit) * 3);
+      padding-block: calc(var(--space-unit) * 3);
+    }
+
+    .shell__masthead-meta {
+      display: none;
+    }
+
+    .shell__wordmark {
+      font-size: var(--size-body);
+    }
+
+    .shell__main {
+      padding-block: calc(var(--space-unit) * 6);
+    }
+
+    .shell__colophon {
+      padding-block: calc(var(--space-unit) * 4);
+    }
   }
 
   .shell__colophon {
@@ -130,112 +164,13 @@
     color: var(--text-muted);
   }
 
-  /* ---- Section heading pattern ----------------------------------------
-   * Mono kicker on an ink chip, display title, body standfirst. Three faces,
-   * three jobs, in the smallest possible space.
-   */
+  /* The Section heading pattern that lived here — mono index chip, display
+     title, standfirst, plus a `reward-stamp-in` badge — is gone with the
+     component that rendered it. Onboarding was its only caller, and it asked
+     for two display-scale headings on a screen whose whole problem was that it
+     did not fit. The picker owns its own, much smaller, step headers now; see
+     styles/picker.css.
 
-  .section {
-    margin-bottom: calc(var(--space-unit) * 14);
-  }
-
-  .section:last-child {
-    margin-bottom: 0;
-  }
-
-  /* Holds the kicker pill and the optional reward badge (spec 14) side by side,
-   * as two separate chips rather than nesting one pill's padding inside the
-   * other's. */
-  .section__head {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    gap: calc(var(--space-unit) * 3);
-    margin-bottom: calc(var(--space-unit) * 3);
-  }
-
-  .section__kicker {
-    display: inline-flex;
-    gap: calc(var(--space-unit) * 2);
-    align-items: baseline;
-    background: var(--surface-road);
-    color: var(--text-inverse);
-    border-radius: var(--radius-paper);
-    padding: calc(var(--space-unit) * 1) calc(var(--space-unit) * 2);
-    font-family: var(--font-mono);
-    font-size: var(--size-nano);
-    font-weight: var(--weight-bold);
-    letter-spacing: var(--tracking-caps);
-    text-transform: uppercase;
-  }
-
-  /* The index is the quieter half of the chip, so it steps back one value
-   * rather than getting its own colour. */
-  .section__kicker-index {
-    color: var(--paper-lime);
-  }
-
-  /* ---- Reward moments (spec 14) -------------------------------------------
-   * One keyframe, two uses: a chip popping onto the page like a stamp landing.
-   * Both `.section__badge` and `.overview__shipped` set their own resting
-   * `transform` and end the keyframe on that same value, so nothing jumps once
-   * the animation finishes.
-   */
-  @keyframes reward-stamp-in {
-    0% {
-      opacity: 0;
-      transform: scale(0.5) rotate(-10deg);
-    }
-    60% {
-      opacity: 1;
-      transform: scale(1.1) rotate(2deg);
-    }
-    100% {
-      opacity: 1;
-      transform: scale(1) rotate(-2deg);
-    }
-  }
-
-  /* "Act cleared" (`TrackMap`). Exists in the DOM only once the act's own
-   * tally reads done === total, so this animation is the element's whole
-   * entrance — no transient class, no timer. The one other place `--accent`
-   * is spent beyond the three section 8 already names (done / here / go),
-   * because clearing an act *is* one of those three: it is "done", said at
-   * act scale instead of node scale. */
-  .section__badge {
-    background: var(--accent);
-    color: var(--text-primary);
-    border: var(--rule-strong) solid var(--surface-road);
-    border-radius: var(--radius-badge);
-    padding: calc(var(--space-unit) * 1) calc(var(--space-unit) * 3);
-    font-family: var(--font-mono);
-    font-size: var(--size-nano);
-    font-weight: var(--weight-bold);
-    letter-spacing: var(--tracking-caps);
-    text-transform: uppercase;
-    transform: rotate(-2deg);
-    animation: reward-stamp-in var(--dur-reward) var(--ease-reward);
-  }
-
-  .section__title {
-    font-family: var(--font-display);
-    font-size: var(--size-display);
-    font-weight: var(--weight-black);
-    letter-spacing: var(--tracking-tight);
-    line-height: var(--leading-tight);
-    color: var(--text-primary);
-    text-wrap: balance;
-  }
-
-  .section__standfirst {
-    font-size: var(--size-lead);
-    line-height: var(--leading-snug);
-    color: var(--text-secondary);
-    margin-top: calc(var(--space-unit) * 3);
-    max-width: var(--measure);
-  }
-
-  .section__body {
-    margin-top: calc(var(--space-unit) * 7);
-  }
+     Nothing else styles a `.section`. If a screen ever needs a heading block
+     again, write it where it is used rather than reviving a shared one. */
 }

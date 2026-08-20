@@ -24,9 +24,12 @@ lives in `localStorage` and exports to a JSON file you own.
 - **why now**, so the ordering is an argument rather than an assertion
 - **steps** — 4-6 concrete actions, 444 of them across the registry
 - **done when** — observable finishing conditions, not "understand X"
-- **links** — 171 of them, every GitHub URL fetched successfully while the registry was
-  written, with its star count recorded
-- **searches** — live Google, YouTube and GitHub queries, which cannot rot
+- **links** — 196 of them, 182 fetched successfully while the registry was written
+- **searches** — 179 live Google, YouTube and GitHub queries, which cannot rot. Every
+  quest carries at least two, and the well-known courses that live behind hosts this
+  build could not reach — Google's crash courses, DeepLearning.AI, Microsoft Learn,
+  Kaggle, the Hugging Face courses — are reached through queries that name them rather
+  than through a URL nobody checked
 
 **A graph, not a line.** Quests connect by prerequisite, so parallel work looks parallel:
 retrieval and agents are genuinely independent branches, side quests hang off the spine,
@@ -38,15 +41,63 @@ routed orthogonally between them and light up as you complete their source.
 and still opens, and it names what it is waiting for. One banner at the top always names
 the single next thing to do.
 
+**A map you can stand in.** Onboarding is two questions and a button, all on one screen.
+Each path then keeps its own colour for as long as you are on it — the ground the map is
+drawn on, the sticky bar at the top, the stage rules and the dialog's spine — so Creative
+Studio and AI Engineer are visibly different places rather than the same grid with
+different words in it. The bar names the path, the level, the stage you are standing in
+and how far along you are, and it does not scroll away. Under it, a stage stepper marks
+what is cleared, what you are in, and what is still ahead, and jumps to any of them.
+
+**One stage at a time, by default.** Fifty-nine quests arriving at once is a wall, not a
+map. Every stage except the one in play opens as a header — its title, its kicker, its
+tally — and expands on a click. `All stages` puts the whole thing back. Quests remember
+having been opened, and the last one you opened stays marked after you close it, so
+shutting a panel never costs you your place.
+
+**"How long have you got?"** The banner names one thing to do next, which is the
+right answer when that thing is forty minutes and the wrong one when it is a
+one-week capstone and you have an evening. Pick a budget — half an hour, an
+evening, a day, a weekend — and the app plans a run that fits: an ordered set of
+quests, chosen through its own unlocks, so finishing the first makes the second
+available and the second still fits in what is left. It never suggests something
+locked, and when nothing fits it says so and names what is next instead.
+
+**It prints.** `DESIGN.md` sets one test for this project — would it look at home as
+a printed road atlas — and until now printing it produced a screenshot of an
+interface. There is a separate print document now: every stage, every quest, in
+order, with a box to tick, the mission, and the URL spelled out, because on paper
+you cannot click a link.
+
+**Every quest has a URL.** `#/engineer/rag-pipeline` opens that quest on that path,
+in a fresh tab, for anyone you send it to. Opening a quest is a history entry, so the
+browser's Back — and a phone's back gesture — closes the dialog rather than leaving
+the site. The URL carries place only: which path, which quest. Your level, your
+progress and what you have opened stay in `localStorage`, where they cannot end up in
+something you shared.
+
+**Built for a phone, not just shrunk onto one.** Below `64rem` the roadmap is a
+stage list rather than an absolute grid — the better experience on a phone and for a
+screen reader, not a degradation. Below `40rem` the masthead stops repeating numbers
+the path bar already shows, the recommendation banner and onboarding cards tighten,
+the quest dialog goes full-screen with a pinned Close / Mark done bar, and every
+control a finger can reach is at least 44px. `dvh`, not `vh`, so the layout is the
+viewport a phone actually has.
+
+**The level you gave does something.** Quests below it are marked review; quests two
+levels above it are marked stretch. One level up is not flagged, because one level up is
+what a roadmap is for. Nothing is ever hidden or disabled by the answer.
+
 ## Running it
 
 ```
 npm install
 npm run dev        # http://localhost:5173
-npm run build      # data gate → theme gate → tsc → vite build → output gate
+npm test           # 58 tests, no test framework — node:test
+npm run build      # data → theme → tsc → tests → vite build → output
 ```
 
-`npm run build` runs five gates in sequence. All five must pass:
+`npm run build` runs six gates in sequence. All six must pass:
 
 | Gate | What it enforces |
 | --- | --- |
@@ -54,6 +105,7 @@ npm run build      # data gate → theme gate → tsc → vite build → output 
 | `check:theme` | No colour or type literal outside `src/theme.css`, no gradients, no blur, no unknown token |
 | `tsc --noEmit` | Types |
 | `vite build` | The bundle |
+| `test` | The pure logic — progress, layout, routing, durations, session planning — plus properties of the real registry that the interface assumes. Node's own runner; no framework, no dependency |
 | `check:output` | Relative asset paths, no sourcemaps, no banned Tailwind utility survived into the CSS |
 
 ## The data model
@@ -87,16 +139,18 @@ being a search rather than a promise that a specific page exists.
 
 ## Design
 
-`CONTEXT.md` section 8 still governs the visual language and is worth reading before
+`DESIGN.md` is the whole of the design constitution and is worth reading before
 touching any UI: paper ground, near-black ink, hard registration offsets rather than
 shadows, three typefaces with three jobs, colour assigned from data and never from
 position in a list, motion only to show a state change. No gradients, no glow, no
 glassmorphism, no emoji icons. Tailwind is for layout only — `src/index.css` deletes the
 theme namespaces that would let a banned utility exist at all.
 
-Colour on the map means one thing each: white is core work, blue is an optional side
-quest, lime is something you build, orange is a capstone, and the action accent means
-done, ready, or go.
+Colour runs on two channels that never mix. On a quest box it says what kind of work it
+is: white is core, blue is an optional side quest, lime is something you build, orange is
+a capstone. On the chrome around it — ground, bar, stage rules, dialog spine — it says
+which of the four paths you are on. The action accent means done, ready or go, and it
+means that on all four paths.
 
 ## Repo map
 
@@ -107,10 +161,15 @@ done, ready, or go.
 | `src/data/roadmap.ts` | Loader and indexes. Nothing else parses the JSON. |
 | `src/data/layout.ts` | The graph layout: bands, boxes, routed edges. Pure. |
 | `src/data/state.ts` | Everything derived from the completed set, in one place. |
-| `src/components/` | Picker, map, quest dialog, list view, controls. |
+| `src/data/route.ts` | The URL, as state. The app's only address space. |
+| `src/data/duration.ts` | `est` as arithmetic, and the day/week assumptions behind it. |
+| `src/data/session.ts` | "What fits in the time I have." Pure, and the most-tested file here. |
+| `tests/` | 58 tests over the pure logic and the real registry. `npm test`. |
+| `src/components/` | Picker, path bar, stage rail, map, quest dialog, list view, controls. |
 | `src/theme.css` | Every colour and type value in the project. |
-| `CONTEXT.md` | The original design constitution. Section 8 still applies. |
+| `DESIGN.md` | The design constitution. All of it. |
 
-The other markdown at the root (`State of the project.md`, `BACKLOG.md`, `PROGRESS.md`,
-`seeds.md`, `specs/`) documents the earlier single-path iteration of this project and is
-kept as history. It does not describe the current data model.
+There is no other documentation, on purpose. An earlier set of process documents
+(`CONTEXT.md`, `BACKLOG.md`, `PROGRESS.md`, `specs/` and the rest) described a version
+of this project that no longer exists, and was deleted rather than kept — git history
+has it.

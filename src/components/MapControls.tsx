@@ -13,6 +13,9 @@ export interface MapControlsProps {
   onShowOptional: (value: boolean) => void
   hideDone: boolean
   onHideDone: (value: boolean) => void
+  /** True when every stage is drawn in full rather than collapsed to a header. */
+  allStages: boolean
+  onAllStages: (value: boolean) => void
   zoom: number
   onZoom: (zoom: number) => void
 }
@@ -38,6 +41,8 @@ export function MapControls({
   onShowOptional,
   hideDone,
   onHideDone,
+  allStages,
+  onAllStages,
   zoom,
   onZoom,
 }: MapControlsProps): ReactNode {
@@ -57,6 +62,17 @@ export function MapControls({
       </div>
 
       <div className="controls__group">
+        {/* The default is one stage at a time. Ninety-four boxes on first paint
+            is not a map, it is a wall, and the person it defeats is exactly the
+            person a roadmap is for. This is the way back to the whole thing. */}
+        <button
+          type="button"
+          className="controls__toggle"
+          aria-pressed={allStages}
+          onClick={() => onAllStages(!allStages)}
+        >
+          All stages
+        </button>
         <button
           type="button"
           className="controls__toggle"

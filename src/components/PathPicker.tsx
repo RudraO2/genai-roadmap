@@ -1,15 +1,17 @@
 import { useState, type FormEvent, type ReactNode } from 'react'
 
 import { LEVELS } from '../constants.ts'
+import { estimateHours, formatHours } from '../data/duration.ts'
 import type { IntakeState } from '../data/intake.ts'
 import { registry } from '../data/roadmap.ts'
 import type { Level, PathId } from '../types.ts'
-import { Section } from './Section.tsx'
 
 export interface PathPickerProps {
   initialPath?: PathId | undefined
   initialLevel?: Level | undefined
   onComplete: (state: IntakeState) => void
+  /** Present only when a map already exists behind this screen. */
+  onCancel?: (() => void) | undefined
 }
 
 const LEVEL_LABEL: Readonly<Record<Level, string>> = {
@@ -19,22 +21,55 @@ const LEVEL_LABEL: Readonly<Record<Level, string>> = {
 }
 
 const LEVEL_HINT: Readonly<Record<Level, string>> = {
-  beginner: 'New to this. Nothing is assumed and nothing is hidden.',
-  intermediate: 'Comfortable with the basics. Earlier quests are marked as review.',
-  advanced: 'Here for the hard parts. Beginner quests are dimmed but still open.',
+  beginner: 'New to all of this. Nothing is assumed, and the quests that are a genuine jump are flagged.',
+  intermediate: 'You have the basics. Anything below your level is marked review, so you can skim and tick it.',
+  advanced: 'Here for the hard parts. Everything below you is marked review — still open, never hidden.',
 }
 
 /**
- * Path and level picker. Both lists render together; there is no wizard.
+ * The whole of onboarding: two questions, one screen, one button.
  *
- * The level is advice, not a gate. Nothing is ever removed from the map because of
- * it — a roadmap that hides the thing you were curious about has failed at the one
- * job a roadmap has.
+ * Both questions were already on one page before this, but the page was two
+ * full-bleed editorial sections and the only way to leave it was a control at
+ * the very bottom that nobody scrolled to. Three things changed, and all three
+ * are about the same thing — a first-time visitor should never have to hunt for
+ * the way forward:
+ *
+ *   1. Nothing is display-scale any more. The headline is a line of type, not a
+ *      hero, so both questions and the button fit above the fold together.
+ *   2. Every path card ends in a pick row — a radio dot and the word "Choose".
+ *      The card was always a button; now it looks like one, which is the entire
+ *      complaint people had about it.
+ *   3. The action bar is sticky and always on screen, and it says what is still
+ *      missing rather than sitting there greyed out and silent.
+ *
+ * The level is advice, not a gate. Nothing is ever removed from the map because
+ * of it — a roadmap that hides the thing you were curious about has failed at
+ * the one job a roadmap has. What it does do is mark quests as review or stretch
+ * relative to you, which is what these hints promise.
  */
-export function PathPicker({ initialPath, initialLevel, onComplete }: PathPickerProps): ReactNode {
+export function PathPicker({
+  initialPath,
+  initialLevel,
+  onComplete,
+  onCancel,
+}: PathPickerProps): ReactNode {
   const [path, setPath] = useState<PathId | null>(initialPath ?? null)
   const [level, setLevel] = useState<Level | null>(initialLevel ?? null)
 
+  // The seed can change under a mounted picker: pasting `#/builder` into the
+  // address bar, or stepping Back onto this screen, both hand it a new path
+  // without remounting it. Adopting the new one is right — it is a navigation,
+  // and the answer it carries is more recent than the one on screen. Adjusted
+  // during render rather than in an effect so the card is never drawn
+  // unselected for a frame first.
+  const [seed, setSeed] = useState<PathId | null>(initialPath ?? null)
+  if (seed !== (initialPath ?? null)) {
+    setSeed(initialPath ?? null)
+    setPath(initialPath ?? null)
+  }
+
+  const chosen = path === null ? null : registry.getPath(path)
   const canSubmit = path !== null && level !== null
 
   function handleSubmit(event: FormEvent): void {
@@ -43,19 +78,41 @@ export function PathPicker({ initialPath, initialLevel, onComplete }: PathPicker
     onComplete({ path, level })
   }
 
+  // The bar states the one thing left to do, in the order the form asks for it.
+  // "Ready" is the only line that names what you picked back to you, because
+  // that is the only moment the answer matters more than the question.
+  const status = (): string => {
+    if (path === null) return 'Pick a path to continue — you can change it later.'
+    if (level === null) return `${chosen?.title}. Now pick where you are starting from.`
+    const nodes = registry.nodesForPath(path)
+    return `${chosen?.title}, ${LEVEL_LABEL[level].toLowerCase()} — ${nodes.length} quests waiting.`
+  }
+
   return (
     <form className="picker" onSubmit={handleSubmit}>
-      <Section
-        index="01"
-        kicker="Choose a path"
-        title="Four ways in"
-        standfirst="Every path is a graph of quests with real links, real steps, and a finish line. Quests are shared between paths — nothing you do here is wasted if you switch."
-      >
+      <header className="picker__head">
+        <p className="picker__eyebrow">Two questions, then the map</p>
+        <h1 className="picker__headline">Set up your roadmap</h1>
+        <p className="picker__standfirst">
+          Every path is a graph of quests with real links, real steps and a finish line. Quests are
+          shared between paths, so nothing you do here is wasted if you switch.
+        </p>
+      </header>
+
+      <section className="picker__step" aria-labelledby="step-path">
+        <h2 className="picker__step-head" id="step-path">
+          <span className="picker__step-index">1</span>
+          What do you want to learn?
+        </h2>
         <ul className="path-list">
-          {registry.paths.map((meta, index) => {
+          {registry.paths.map((meta) => {
             const nodes = registry.nodesForPath(meta.id)
             const selected = path === meta.id
             const xp = nodes.reduce((total, node) => total + node.xp, 0)
+            // The question people actually weigh these four against each other
+            // on, and the one thing the cards never said. A sum of estimates,
+            // so it is printed as an approximation.
+            const hours = nodes.reduce((total, node) => total + estimateHours(node.est), 0)
             return (
               <li key={meta.id}>
                 <button
@@ -65,29 +122,34 @@ export function PathPicker({ initialPath, initialLevel, onComplete }: PathPicker
                   aria-pressed={selected}
                   onClick={() => setPath(meta.id)}
                 >
-                  <span className="path-card__index">{String(index + 1).padStart(2, '0')}</span>
                   <span className="path-card__title">{meta.title}</span>
                   <span className="path-card__tagline">{meta.tagline}</span>
                   <span className="path-card__goal">
                     <strong>Finish line.</strong> {meta.goal}
                   </span>
-                  <span className="path-card__for">{meta.for}</span>
                   <span className="path-card__meta">
                     {nodes.length} quests / {meta.stages.length} stages / {xp} XP
+                  </span>
+                  <span className="path-card__time">≈{formatHours(hours)} of work</span>
+                  {/* The affordance. A card that only *behaves* like a button
+                      gets clicked by the people who already knew; this row is
+                      for everyone else. */}
+                  <span className="path-card__pick">
+                    <span className="path-card__dot" aria-hidden="true" />
+                    {selected ? 'Chosen' : 'Choose this path'}
                   </span>
                 </button>
               </li>
             )
           })}
         </ul>
-      </Section>
+      </section>
 
-      <Section
-        index="02"
-        kicker="Starting point"
-        title="Where are you now?"
-        standfirst="This only changes what the map recommends and what it dims. Nothing is ever hidden from you."
-      >
+      <section className="picker__step" aria-labelledby="step-level">
+        <h2 className="picker__step-head" id="step-level">
+          <span className="picker__step-index">2</span>
+          Where are you starting from?
+        </h2>
         <ul className="level-list">
           {LEVELS.map((id) => {
             const selected = level === id
@@ -100,19 +162,32 @@ export function PathPicker({ initialPath, initialLevel, onComplete }: PathPicker
                   aria-pressed={selected}
                   onClick={() => setLevel(id)}
                 >
-                  <span className="level-row__title">{LEVEL_LABEL[id]}</span>
+                  <span className="level-row__title">
+                    <span className="level-row__dot" aria-hidden="true" />
+                    {LEVEL_LABEL[id]}
+                  </span>
                   <span className="level-row__hint">{LEVEL_HINT[id]}</span>
                 </button>
               </li>
             )
           })}
         </ul>
-      </Section>
+      </section>
 
-      <div className="picker__submit">
-        <button type="submit" className="picker__continue" disabled={!canSubmit}>
-          Open the map
-        </button>
+      <div className="picker__bar">
+        <p className="picker__status" data-ready={canSubmit ? 'true' : undefined}>
+          {status()}
+        </p>
+        <div className="picker__bar-actions">
+          {onCancel ? (
+            <button type="button" className="picker__cancel" onClick={onCancel}>
+              Cancel
+            </button>
+          ) : null}
+          <button type="submit" className="picker__continue" disabled={!canSubmit}>
+            Open the map
+          </button>
+        </div>
       </div>
     </form>
   )

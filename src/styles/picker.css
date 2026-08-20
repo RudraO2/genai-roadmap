@@ -1,35 +1,105 @@
 /**
- * picker.css — the path and level chooser. @layer components, tokens only.
+ * picker.css — onboarding. @layer components, tokens only.
  *
- * The path cards are the first thing anyone sees, so they carry the most weight on
- * the page: each states a finish line rather than a syllabus, because "ship a
- * retrieval-backed app" is a decision someone can make and "10 modules" is not.
+ * One screen, two questions, one button that never leaves the viewport. The
+ * whole file is sized against that: nothing here is display-scale, because the
+ * previous version's two hero headings alone were taller than a laptop's fold
+ * and pushed the only exit off the bottom of the page.
  *
- * Each path prints on its own paper, keyed on its id. Colour by identity, never by
- * position in the list — reordering the registry must not repaint the interface.
+ * Each path prints on its own paper, keyed on its id — the same colour it will
+ * wear as the map's identity once it is open, so the card you chose and the
+ * place you land are visibly the same thing. Colour by identity, never by
+ * position in the list: reordering the registry must not repaint the interface.
  */
 
 @layer components {
   .picker {
     display: flex;
     flex-direction: column;
-    gap: calc(var(--space-unit) * 16);
+    gap: calc(var(--space-unit) * 8);
   }
 
-  .path-list {
+  /* ---- Heading ----------------------------------------------------------- */
+
+  .picker__head {
+    max-width: var(--measure);
+  }
+
+  .picker__eyebrow {
+    font-family: var(--font-mono);
+    font-size: var(--size-nano);
+    font-weight: var(--weight-bold);
+    letter-spacing: var(--tracking-caps);
+    text-transform: uppercase;
+    color: var(--text-muted);
+  }
+
+  .picker__headline {
+    margin-top: calc(var(--space-unit) * 2);
+    font-family: var(--font-display);
+    font-size: var(--size-title);
+    font-weight: var(--weight-black);
+    letter-spacing: var(--tracking-tight);
+    line-height: var(--leading-tight);
+    color: var(--text-primary);
+  }
+
+  .picker__standfirst {
+    margin-top: calc(var(--space-unit) * 2);
+    font-family: var(--font-body);
+    font-size: var(--size-body);
+    line-height: var(--leading-body);
+    color: var(--text-secondary);
+  }
+
+  /* ---- A step ------------------------------------------------------------ */
+
+  .picker__step-head {
+    display: flex;
+    align-items: center;
+    gap: calc(var(--space-unit) * 3);
+    padding-bottom: calc(var(--space-unit) * 2);
+    border-bottom: var(--rule-strong) solid var(--rule);
+    font-family: var(--font-display);
+    font-size: var(--size-card-title);
+    font-weight: var(--weight-black);
+    letter-spacing: var(--tracking-tight);
+    color: var(--text-primary);
+  }
+
+  /* Numbered so the two questions read as a sequence rather than as two
+     unrelated grids of things to click. */
+  .picker__step-index {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(17rem, 1fr));
-    gap: calc(var(--space-unit) * 5);
+    place-items: center;
+    min-width: calc(var(--space-unit) * 6);
+    height: calc(var(--space-unit) * 6);
+    background: var(--surface-road);
+    color: var(--text-inverse);
+    border-radius: var(--radius-badge);
+    font-family: var(--font-mono);
+    font-size: var(--size-micro);
+    font-weight: var(--weight-bold);
+  }
+
+  /* ---- Path cards -------------------------------------------------------- */
+
+  .path-list {
+    margin-top: calc(var(--space-unit) * 4);
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr));
+    gap: calc(var(--space-unit) * 4);
+    list-style: none;
   }
 
   .path-card {
     display: grid;
-    grid-template-rows: auto auto auto 1fr auto auto;
+    grid-template-rows: auto auto 1fr auto auto auto;
     gap: calc(var(--space-unit) * 2);
     width: 100%;
     height: 100%;
     text-align: left;
-    padding: calc(var(--space-unit) * 5);
+    padding: calc(var(--space-unit) * 4);
     background: var(--surface-raised);
     border: var(--rule-strong) solid var(--surface-road);
     border-radius: var(--radius-paper);
@@ -41,10 +111,10 @@
       background-color var(--dur-state) var(--ease-state);
   }
 
-  .path-card[data-path='explorer'] { background: var(--paper-blue); }
-  .path-card[data-path='engineer'] { background: var(--paper-lime); }
-  .path-card[data-path='builder'] { background: var(--paper-lilac); }
-  .path-card[data-path='creator'] { background: var(--paper-orange); }
+  .path-card[data-path='explorer'] { background: var(--path-explorer); }
+  .path-card[data-path='engineer'] { background: var(--path-engineer); }
+  .path-card[data-path='builder'] { background: var(--path-builder); }
+  .path-card[data-path='creator'] { background: var(--path-creator); }
 
   .path-card:hover,
   .path-card:focus-visible {
@@ -56,7 +126,29 @@
     outline-offset: calc(var(--space-unit) * 1);
   }
 
-  .path-card__index,
+  .path-card__title {
+    font-family: var(--font-display);
+    font-size: var(--size-card-title);
+    font-weight: var(--weight-black);
+    letter-spacing: var(--tracking-tight);
+    line-height: var(--leading-tight);
+  }
+
+  .path-card__tagline {
+    font-family: var(--font-body);
+    font-size: var(--size-body);
+    font-weight: var(--weight-medium);
+    line-height: var(--leading-snug);
+    color: var(--text-primary);
+  }
+
+  .path-card__goal {
+    font-family: var(--font-body);
+    font-size: var(--size-meta);
+    line-height: var(--leading-body);
+    color: var(--text-secondary);
+  }
+
   .path-card__meta {
     font-family: var(--font-mono);
     font-size: var(--size-nano);
@@ -66,43 +158,51 @@
     color: var(--text-secondary);
   }
 
-  .path-card__title {
-    font-family: var(--font-display);
-    font-size: var(--size-title);
-    font-weight: var(--weight-black);
-    letter-spacing: var(--tracking-tight);
-    line-height: var(--leading-tight);
-  }
-
-  .path-card__tagline {
-    font-family: var(--font-body);
-    font-size: var(--size-lead);
-    line-height: var(--leading-snug);
+  .path-card__time {
+    font-family: var(--font-mono);
+    font-size: var(--size-nano);
+    font-weight: var(--weight-bold);
+    letter-spacing: var(--tracking-caps);
+    text-transform: uppercase;
     color: var(--text-primary);
   }
 
-  .path-card__goal,
-  .path-card__for {
-    font-family: var(--font-body);
-    font-size: var(--size-body);
-    line-height: var(--leading-body);
-    color: var(--text-secondary);
-  }
-
-  .path-card__for {
-    font-size: var(--size-meta);
-    color: var(--text-muted);
-  }
-
-  .path-card__meta {
+  /* The pick row: the part that says out loud that this is a control. The dot
+     is a radio in everything but markup — filled when chosen, hollow when not. */
+  .path-card__pick {
+    display: flex;
+    align-items: center;
+    gap: calc(var(--space-unit) * 2);
     border-top: var(--hairline) solid var(--surface-road);
     padding-top: calc(var(--space-unit) * 2);
+    font-family: var(--font-mono);
+    font-size: var(--size-nano);
+    font-weight: var(--weight-bold);
+    letter-spacing: var(--tracking-caps);
+    text-transform: uppercase;
+    color: var(--text-primary);
   }
 
+  .path-card__dot {
+    width: calc(var(--space-unit) * 4);
+    height: calc(var(--space-unit) * 4);
+    border: var(--rule-strong) solid var(--surface-road);
+    border-radius: var(--radius-badge);
+    background: var(--surface-raised);
+  }
+
+  .path-card--selected .path-card__dot {
+    background: var(--surface-road);
+  }
+
+  /* ---- Level rows -------------------------------------------------------- */
+
   .level-list {
+    margin-top: calc(var(--space-unit) * 4);
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr));
     gap: calc(var(--space-unit) * 4);
+    list-style: none;
   }
 
   .level-row {
@@ -112,7 +212,7 @@
     width: 100%;
     height: 100%;
     text-align: left;
-    padding: calc(var(--space-unit) * 4);
+    padding: calc(var(--space-unit) * 3) calc(var(--space-unit) * 4);
     background: var(--surface-raised);
     border: var(--rule-strong) solid var(--surface-road);
     border-radius: var(--radius-paper);
@@ -126,10 +226,25 @@
   }
 
   .level-row__title {
+    display: flex;
+    align-items: center;
+    gap: calc(var(--space-unit) * 2);
     font-family: var(--font-display);
     font-size: var(--size-card-title);
     font-weight: var(--weight-black);
     letter-spacing: var(--tracking-tight);
+  }
+
+  .level-row__dot {
+    width: calc(var(--space-unit) * 4);
+    height: calc(var(--space-unit) * 4);
+    border: var(--rule-strong) solid var(--surface-road);
+    border-radius: var(--radius-badge);
+    background: var(--surface-raised);
+  }
+
+  .level-row--selected .level-row__dot {
+    background: var(--surface-road);
   }
 
   .level-row__hint {
@@ -139,14 +254,46 @@
     color: var(--text-secondary);
   }
 
-  .picker__submit {
+  /* ---- The action bar ----------------------------------------------------
+   * Sticky to the bottom of the viewport, so the way out of this screen is
+   * visible from the first paint whatever the window height. Opaque, and
+   * ruled off at the top, because it sits over the page rather than in it.
+   */
+
+  .picker__bar {
+    position: sticky;
+    bottom: 0;
+    z-index: 5;
     display: flex;
-    justify-content: flex-end;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: calc(var(--space-unit) * 3);
+    margin-top: auto;
+    padding-block: calc(var(--space-unit) * 4);
+    background: var(--surface-base);
+    border-top: var(--rule-thick) solid var(--rule);
   }
 
-  .picker__continue {
-    background: var(--surface-road);
-    color: var(--text-inverse);
+  .picker__status {
+    font-family: var(--font-mono);
+    font-size: var(--size-meta);
+    font-weight: var(--weight-bold);
+    color: var(--text-secondary);
+  }
+
+  .picker__status[data-ready='true'] {
+    color: var(--accent-ink);
+  }
+
+  .picker__bar-actions {
+    display: flex;
+    align-items: center;
+    gap: calc(var(--space-unit) * 3);
+  }
+
+  .picker__continue,
+  .picker__cancel {
     border: var(--rule-strong) solid var(--surface-road);
     border-radius: var(--radius-paper);
     padding: calc(var(--space-unit) * 3) calc(var(--space-unit) * 8);
@@ -158,10 +305,96 @@
     cursor: pointer;
   }
 
+  .picker__continue {
+    background: var(--surface-road);
+    color: var(--text-inverse);
+    filter: drop-shadow(var(--lift) var(--lift) 0 var(--accent));
+  }
+
+  .picker__cancel {
+    background: var(--surface-raised);
+    color: var(--text-primary);
+  }
+
   .picker__continue:disabled {
     background: var(--surface-raised);
     color: var(--text-muted);
     cursor: not-allowed;
+    filter: none;
+  }
+
+  /* ---- Onboarding on a phone ---------------------------------------------
+   * Four full cards and three full level rows stack to nearly two thousand
+   * pixels here, which turns "two questions and a button" back into a scroll.
+   * The cards keep every word — the finish line is the whole basis for
+   * choosing — and lose the padding and the gaps instead. The level rows drop
+   * to a title-only row of three, with the explanation shown for the one that
+   * is chosen, because three paragraphs of advice about levels you did not
+   * pick is the least useful screenful in the app.
+   */
+  @media (max-width: 40rem) {
+    .picker {
+      gap: calc(var(--space-unit) * 6);
+    }
+
+    .path-list,
+    .level-list {
+      margin-top: calc(var(--space-unit) * 3);
+      gap: calc(var(--space-unit) * 3);
+    }
+
+    .path-card {
+      padding: calc(var(--space-unit) * 3);
+      gap: calc(var(--space-unit) * 1);
+    }
+
+    .path-card__goal,
+    .path-card__meta,
+    .path-card__time {
+      font-size: var(--size-micro);
+    }
+
+    .level-list {
+      grid-template-columns: repeat(3, 1fr);
+    }
+
+    .level-row {
+      padding: calc(var(--space-unit) * 3) calc(var(--space-unit) * 2);
+    }
+
+    .level-row__title {
+      font-size: var(--size-body);
+    }
+
+    /* The hint is inside its own button, so hiding it also shortens that
+       button's accessible name to the level word — which on a phone is the
+       better name anyway. It comes back, in place, for the level you pick. */
+    .level-row__hint {
+      display: none;
+    }
+
+    .level-row--selected .level-row__hint {
+      display: block;
+      font-size: var(--size-micro);
+    }
+
+    .picker__bar {
+      padding-block: calc(var(--space-unit) * 3);
+      gap: calc(var(--space-unit) * 2);
+    }
+
+    .picker__status {
+      font-size: var(--size-micro);
+    }
+
+    .picker__bar-actions {
+      width: 100%;
+    }
+
+    .picker__continue {
+      flex: 1;
+      padding-inline: calc(var(--space-unit) * 4);
+    }
   }
 
   /* The masthead control that reopens this picker. Lives here because this is the

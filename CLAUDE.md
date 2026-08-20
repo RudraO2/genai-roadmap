@@ -2,11 +2,17 @@
 
 Read `README.md` first. It describes what this project is now.
 
-`CONTEXT.md` section 8 still governs the visual language and must be re-read before
-writing any UI. The rest of `CONTEXT.md`, and the process documents it refers to
-(`State of the project.md`, `BACKLOG.md`, `PROGRESS.md`, `BLOCKED.md`, `specs/`), describe
-the earlier single-path iteration and are kept as history. Do not treat them as a
-worklist, and do not resurrect the `nodes.json` / `tracks.json` registry they describe.
+`DESIGN.md` governs the visual language and must be re-read before writing any UI.
+It is short, and it is the whole of the design constitution — there is no other
+document to consult.
+
+The earlier process documents (`CONTEXT.md`, `State of the project.md`, `BACKLOG.md`,
+`PROGRESS.md`, `BLOCKED.md`, `seeds.md`, `specs/`, `prompts/`) described a different
+version of this project — a serpentine SVG road with a walking character, and a
+`nodes.json` / `tracks.json` registry. None of that exists. They were deleted rather
+than kept as history, because a document describing a system that is gone is an
+invitation to rebuild it by accident. Git history has them if they are ever wanted.
+Do not restore them, and do not resurrect what they describe.
 
 ## Standing constraints
 
@@ -28,7 +34,7 @@ worklist, and do not resurrect the `nodes.json` / `tracks.json` registry they de
 
 ## Definition of done
 
-- `npm run build` passes — all five gates
+- `npm run build` passes — all six gates, tests included
 - `npx tsc --noEmit` passes
 - No hardcoded colour outside `src/theme.css`
 - No unverified deep link in `data/roadmap.json`

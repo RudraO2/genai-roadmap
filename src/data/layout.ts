@@ -14,7 +14,7 @@
  * a transform on the wrapper, so nothing here has to know about it.
  */
 
-import type { RoadmapNode, Stage } from '../types.ts'
+import type { RoadmapNode, Stage, StageId } from '../types.ts'
 import { registry } from './roadmap.ts'
 
 /** Grid metrics. The one place the picture's proportions are decided. */
@@ -27,6 +27,8 @@ export const METRICS = {
   padX: 28,
   /** Height of a stage's title block, plus the clear space beneath it. */
   headerH: 74,
+  /** The same block with no boxes under it: the title and its tally, and stop. */
+  collapsedH: 54,
   headerClearance: 30,
   /** Vertical space between the last row of a band and the next band's header. */
   bandGap: 52,
@@ -56,6 +58,10 @@ export interface LaidBand {
   height: number
   headerHeight: number
   nodes: readonly LaidNode[]
+  /** True when the band is drawn as its header alone — see `LayoutOptions`. */
+  collapsed: boolean
+  /** How many quests the band holds after filtering, collapsed or not. */
+  count: number
 }
 
 /**
@@ -188,6 +194,20 @@ export interface LayoutOptions {
   hidden?: ReadonlySet<string>
   /** Completed node ids, which decide each edge's state. */
   completed?: ReadonlySet<string>
+  /**
+   * Stages drawn as a header row and nothing else.
+   *
+   * This is what keeps a fifty-nine-quest path from opening as six thousand
+   * pixels of wall. A collapsed band keeps its title, its kicker and its tally,
+   * so the *shape* of the path — how many stages, how far in you are, what each
+   * one is called — survives at a fraction of the height; only the boxes go.
+   *
+   * Distinct from `hidden`, which means "this quest is filtered out". Here the
+   * quests still count in the band's tally, they are simply not drawn, and
+   * their edges drop out with them because an edge to a box that is not on the
+   * canvas has nowhere to land.
+   */
+  collapsed?: ReadonlySet<StageId>
 }
 
 /**
@@ -200,6 +220,7 @@ export interface LayoutOptions {
 export function computeLayout(pathId: string, options: LayoutOptions = {}): GraphLayout {
   const hidden = options.hidden ?? new Set<string>()
   const completed = options.completed ?? new Set<string>()
+  const collapsed = options.collapsed ?? new Set<StageId>()
   const path = registry.getPath(pathId)
 
   const bands: LaidBand[] = []
@@ -209,6 +230,20 @@ export function computeLayout(pathId: string, options: LayoutOptions = {}): Grap
   for (const stageId of path.stages) {
     const stageNodes = registry.nodesInStage(stageId).filter((node) => !hidden.has(node.id))
     if (stageNodes.length === 0) continue
+
+    if (collapsed.has(stageId)) {
+      bands.push({
+        stage: registry.getStage(stageId),
+        y: cursor,
+        height: METRICS.collapsedH,
+        headerHeight: METRICS.collapsedH,
+        nodes: [],
+        collapsed: true,
+        count: stageNodes.length,
+      })
+      cursor += METRICS.collapsedH + METRICS.bandGap
+      continue
+    }
 
     const rows = [...new Set(stageNodes.map((node) => node.row))].sort((a, b) => a - b)
     const rowIndex = new Map(rows.map((row, index) => [row, index]))
@@ -238,6 +273,8 @@ export function computeLayout(pathId: string, options: LayoutOptions = {}): Grap
       height,
       headerHeight: METRICS.headerH,
       nodes: laid,
+      collapsed: false,
+      count: stageNodes.length,
     })
     cursor += height + METRICS.bandGap
   }

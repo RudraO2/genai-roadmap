@@ -1,6 +1,6 @@
 # Fonts
 
-Self-hosted so the app makes no third-party request at runtime. `CONTEXT.md` section 10 puts
+Self-hosted so the app makes no third-party request at runtime. The project puts
 the whole project on a static host with no backend; a CDN font link would quietly
 reintroduce a network dependency the deploy cannot control.
 
@@ -25,6 +25,6 @@ Only latin and latin-ext are vendored. Cyrillic, Greek and Vietnamese are not â€
 the registry needs them. If one ever does, fetch the matching subset from the same endpoint
 rather than dropping the `unicode-range` guards.
 
-Instrument Serif was vendored here from spec 02 to spec 13 and is gone. `CONTEXT.md`
-section 8 was amended on 2026-08-19: the identity is paper roadmap, the display face is
-Gabarito, and there is no serif in the stack. Do not re-add one without amending it again.
+Instrument Serif was vendored here until 2026-08-19 and is gone. The identity is paper
+roadmap, the display face is Gabarito, and there is no serif in the stack. Do not re-add
+one without amending `DESIGN.md` first.

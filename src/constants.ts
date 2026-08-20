@@ -63,5 +63,5 @@ export const RANKS: readonly { at: number; title: string }[] = [
   { at: 1, title: 'Architect' },
 ]
 
-/** CONTEXT.md section 7: a blurb is one line. Enforced by the data validator. */
+/** A blurb is one line. Enforced by the data validator. */
 export const MAX_BLURB_LENGTH = 110

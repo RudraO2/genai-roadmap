@@ -18,9 +18,100 @@
     gap: calc(var(--space-unit) * 8);
   }
 
-  /* ---- Screen heading ---------------------------------------------------- */
+  /* ---- The path's own colour ---------------------------------------------
+   * Every path resolves the two chrome tokens once, on the two roots the map
+   * screen has — the page and the dialog, which is in the top layer but still
+   * inherits down the DOM tree. Every rule below spends `--path-colour` /
+   * `--path-wash` without knowing which path it is on, so adding a fifth path
+   * is four lines in theme.css and three here.
+   *
+   * The wash goes on the map's ground, not on the boxes: a quest box means what
+   * kind of work it is, and it has to keep meaning that on all four maps. What
+   * changes is the room it is standing in.
+   */
 
-  .roadmap__kicker {
+  .roadmap[data-path='explorer'],
+  .quest[data-path='explorer'] {
+    --path-colour: var(--path-explorer);
+    --path-wash: var(--path-explorer-wash);
+  }
+
+  .roadmap[data-path='engineer'],
+  .quest[data-path='engineer'] {
+    --path-colour: var(--path-engineer);
+    --path-wash: var(--path-engineer-wash);
+  }
+
+  .roadmap[data-path='builder'],
+  .quest[data-path='builder'] {
+    --path-colour: var(--path-builder);
+    --path-wash: var(--path-builder-wash);
+  }
+
+  .roadmap[data-path='creator'],
+  .quest[data-path='creator'] {
+    --path-colour: var(--path-creator);
+    --path-wash: var(--path-creator-wash);
+  }
+
+  /* ---- The sticky orientation bar -----------------------------------------
+   * Pinned to the top of the viewport for the whole scroll, because the
+   * questions it answers — which path is this, where am I in it, how far in —
+   * are exactly the questions that used to become unanswerable the moment the
+   * page header left the screen.
+   */
+
+  /* Sticky only where it is affordable. On a phone the bar wraps to four rows
+     and would hold a fifth of the viewport hostage for the whole scroll, which
+     is a worse trade than scrolling back up for it — and the list view, which
+     is what a phone gets, marks the stage you are in on its own headings. The
+     breakpoint is the one that already decides map versus list. */
+  @media (min-width: 64rem) {
+    .pathbar {
+      position: sticky;
+      top: 0;
+    }
+  }
+
+  .pathbar {
+    z-index: 6;
+    background: var(--path-wash);
+    border: var(--rule-strong) solid var(--rule);
+    border-radius: var(--radius-paper);
+    padding: calc(var(--space-unit) * 3) calc(var(--space-unit) * 4);
+  }
+
+  .pathbar__row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: calc(var(--space-unit) * 2) calc(var(--space-unit) * 5);
+  }
+
+  .pathbar__id {
+    display: flex;
+    align-items: center;
+    gap: calc(var(--space-unit) * 2);
+    margin-right: auto;
+  }
+
+  /* The path, in the path's colour, sitting where a masthead would put a brand.
+     Same paper as the card that was clicked to get here. */
+  .pathbar__chip {
+    background: var(--path-colour);
+    border: var(--rule-strong) solid var(--surface-road);
+    border-radius: var(--radius-paper);
+    padding: calc(var(--space-unit) * 1) calc(var(--space-unit) * 3);
+    font-family: var(--font-display);
+    font-size: var(--size-card-title);
+    font-weight: var(--weight-black);
+    letter-spacing: var(--tracking-tight);
+    color: var(--text-primary);
+  }
+
+  .pathbar__level,
+  .pathbar__here-label,
+  .pathbar__numbers {
     font-family: var(--font-mono);
     font-size: var(--size-nano);
     font-weight: var(--weight-bold);
@@ -29,24 +120,156 @@
     color: var(--text-muted);
   }
 
-  .roadmap__title {
-    margin-top: calc(var(--space-unit) * 2);
-    max-width: var(--measure);
+  .pathbar__here {
+    display: flex;
+    flex-direction: column;
+    gap: calc(var(--space-unit) * 1);
+  }
+
+  .pathbar__here-time {
+    font-family: var(--font-mono);
+    font-size: var(--size-nano);
+    font-weight: var(--weight-bold);
+    letter-spacing: var(--tracking-caps);
+    text-transform: uppercase;
+    color: var(--text-secondary);
+  }
+
+  .pathbar__here-stage {
     font-family: var(--font-display);
-    font-size: var(--size-title);
-    font-weight: var(--weight-black);
+    font-size: var(--size-card-title);
+    font-weight: var(--weight-bold);
     letter-spacing: var(--tracking-tight);
     line-height: var(--leading-tight);
     color: var(--text-primary);
   }
 
-  .roadmap__note {
+  .pathbar__score {
+    display: flex;
+    flex-direction: column;
+    gap: calc(var(--space-unit) * 1);
+    min-width: 12rem;
+  }
+
+  /* The accent, because this bar is measuring done — the one thing the action
+     accent means. It stays green on all four paths for that reason. */
+  .pathbar__meter {
+    display: block;
+    height: calc(var(--space-unit) * 2);
+    background: var(--surface-raised);
+    border: var(--rule-strong) solid var(--surface-road);
+    border-radius: var(--radius-badge);
+    overflow: hidden;
+  }
+
+  .pathbar__meter-fill {
+    display: block;
+    height: 100%;
+    background: var(--accent);
+    transition: width var(--dur-state) var(--ease-state);
+  }
+
+  /* ---- The stage stepper -------------------------------------------------- */
+
+  .rail {
     margin-top: calc(var(--space-unit) * 3);
+    border-top: var(--hairline) solid var(--rule);
+    padding-top: calc(var(--space-unit) * 3);
+    overflow-x: auto;
+  }
+
+  .rail__list {
+    display: flex;
+    gap: calc(var(--space-unit) * 2);
+    list-style: none;
+  }
+
+  .rail__chip {
+    display: flex;
+    align-items: baseline;
+    transition:
+      transform var(--dur-state) var(--ease-state),
+      background-color var(--dur-state) var(--ease-state);
+    gap: calc(var(--space-unit) * 2);
+    white-space: nowrap;
+    background: var(--surface-raised);
+    border: var(--rule-strong) solid var(--surface-road);
+    border-radius: var(--radius-badge);
+    padding: calc(var(--space-unit) * 1) calc(var(--space-unit) * 3);
+    cursor: pointer;
+  }
+
+  .rail__index,
+  .rail__tally {
+    font-family: var(--font-mono);
+    font-size: var(--size-nano);
+    font-weight: var(--weight-bold);
+    letter-spacing: var(--tracking-caps);
+    color: var(--text-muted);
+  }
+
+  .rail__title {
+    font-family: var(--font-body);
+    font-size: var(--size-meta);
+    font-weight: var(--weight-medium);
+    color: var(--text-primary);
+  }
+
+  /* Four states, four readings, no legend needed: the stage you are in wears
+     the path's colour and a heavier rule, cleared stages take the accent, a
+     stage with work available is plain paper, and one still waiting is quiet. */
+  .rail__chip[data-stage-state='current'] {
+    background: var(--path-colour);
+    border-width: var(--rule-thick);
+  }
+
+  .rail__chip[data-stage-state='cleared'] .rail__tally,
+  .rail__chip[data-stage-state='cleared'] .rail__index {
+    color: var(--accent-ink);
+  }
+
+  .rail__chip[data-stage-state='ahead'] {
+    background: var(--surface-base);
+  }
+
+  .rail__chip[data-stage-state='ahead'] .rail__title {
+    color: var(--text-muted);
+  }
+
+  /* An open stage carries the ink underline; a collapsed one does not. The map's
+     collapse state is readable from this row without scrolling the map. */
+  .rail__chip[data-open='true'] {
+    border-bottom-width: var(--rule-thick);
+  }
+
+  /* Hover lifts rather than colours. The path colour on a rail chip means
+     exactly one thing — this is the stage you are in — and a hover state that
+     borrowed it would put "you are here" under the pointer wherever it went. */
+  .rail__chip:hover {
+    transform: translate(-1px, -1px);
+  }
+
+  /* ---- The finish line, in one line -------------------------------------- */
+
+  .roadmap__aim {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: calc(var(--space-unit) * 3);
     max-width: var(--measure);
     font-family: var(--font-body);
     font-size: var(--size-meta);
     line-height: var(--leading-body);
     color: var(--text-secondary);
+  }
+
+  .roadmap__aim-label {
+    font-family: var(--font-mono);
+    font-size: var(--size-nano);
+    font-weight: var(--weight-bold);
+    letter-spacing: var(--tracking-caps);
+    text-transform: uppercase;
+    color: var(--text-muted);
   }
 
   /* ---- "Do this next" ----------------------------------------------------
@@ -135,6 +358,143 @@
     color: var(--text-primary);
   }
 
+  /* ---- The session planner ------------------------------------------------
+   * Lives inside the recommendation banner, below the fold of it, because it
+   * is the same question asked with one more fact: what to do next, given the
+   * time you have. Ruled off rather than boxed — a panel inside a panel is a
+   * second thing on the screen, and this is meant to read as the rest of the
+   * sentence the banner started.
+   *
+   * Everything here sits on the action accent, which is the banner's own
+   * ground, so the surfaces are paper and ink and nothing spends a second
+   * colour.
+   */
+
+  .session {
+    margin-top: calc(var(--space-unit) * 5);
+    border-top: var(--rule-strong) solid var(--surface-road);
+    padding-top: calc(var(--space-unit) * 4);
+  }
+
+  .session__ask,
+  .session__summary,
+  .session__empty {
+    font-family: var(--font-mono);
+    font-size: var(--size-nano);
+    font-weight: var(--weight-bold);
+    letter-spacing: var(--tracking-caps);
+    text-transform: uppercase;
+    color: var(--text-primary);
+  }
+
+  .session__budgets {
+    margin-top: calc(var(--space-unit) * 3);
+    display: flex;
+    flex-wrap: wrap;
+    gap: calc(var(--space-unit) * 2);
+  }
+
+  .session__budget {
+    background: var(--surface-raised);
+    border: var(--rule-strong) solid var(--surface-road);
+    border-radius: var(--radius-badge);
+    padding: calc(var(--space-unit) * 1) calc(var(--space-unit) * 4);
+    font-family: var(--font-mono);
+    font-size: var(--size-micro);
+    font-weight: var(--weight-bold);
+    letter-spacing: var(--tracking-caps);
+    text-transform: uppercase;
+    color: var(--text-primary);
+    cursor: pointer;
+    transition: background-color var(--dur-state) var(--ease-state);
+  }
+
+  .session__budget[aria-pressed='true'] {
+    background: var(--surface-road);
+    color: var(--text-inverse);
+  }
+
+  .session__summary,
+  .session__empty {
+    margin-top: calc(var(--space-unit) * 4);
+    max-width: var(--measure);
+    text-transform: none;
+    letter-spacing: normal;
+    font-size: var(--size-meta);
+  }
+
+  .session__list {
+    margin-top: calc(var(--space-unit) * 3);
+    display: grid;
+    gap: calc(var(--space-unit) * 2);
+    list-style: none;
+    counter-reset: session;
+  }
+
+  .session__item {
+    display: flex;
+    align-items: stretch;
+    gap: calc(var(--space-unit) * 3);
+    background: var(--surface-raised);
+    border: var(--rule-strong) solid var(--surface-road);
+    border-radius: var(--radius-paper);
+    padding: calc(var(--space-unit) * 2) calc(var(--space-unit) * 3);
+  }
+
+  /* The same tick as everywhere else: a session is something you work through,
+     so each line has to be finishable without opening it. */
+  .session__tick {
+    flex: none;
+    align-self: center;
+    width: calc(var(--space-unit) * 6);
+    height: calc(var(--space-unit) * 6);
+    background: var(--surface-base);
+    border: var(--rule-strong) solid var(--surface-road);
+    border-radius: var(--radius-badge);
+    cursor: pointer;
+  }
+
+  .session__open {
+    display: flex;
+    flex: 1;
+    flex-wrap: wrap;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: calc(var(--space-unit) * 2);
+    text-align: left;
+    background: transparent;
+    border: 0;
+    padding: 0;
+    color: var(--text-primary);
+    cursor: pointer;
+  }
+
+  /* Numbered by CSS: the order is the whole point of a plan, and it is the
+     list that owns it rather than the data. */
+  .session__item-title {
+    counter-increment: session;
+    font-family: var(--font-body);
+    font-size: var(--size-body);
+    font-weight: var(--weight-medium);
+  }
+
+  .session__item-title::before {
+    content: counter(session, decimal-leading-zero) '  ';
+    font-family: var(--font-mono);
+    font-size: var(--size-nano);
+    font-weight: var(--weight-bold);
+    color: var(--text-muted);
+  }
+
+  .session__item-meta {
+    font-family: var(--font-mono);
+    font-size: var(--size-nano);
+    font-weight: var(--weight-bold);
+    letter-spacing: var(--tracking-caps);
+    text-transform: uppercase;
+    color: var(--text-muted);
+  }
+
   /* ---- Controls ---------------------------------------------------------- */
 
   .controls {
@@ -215,6 +575,98 @@
 
   .controls__step {
     min-width: calc(var(--space-unit) * 8);
+  }
+
+  /* ---- The map screen on a phone -----------------------------------------
+   * One breakpoint, everything that has to change at it, in one place rather
+   * than scattered through the file. Below 40rem the map view is already
+   * unavailable and the list is what a phone gets, so what is left to fix is
+   * the furniture around it: a banner sized for a laptop, a control strip that
+   * wraps to four rows, and instrument-panel controls drawn at mouse sizes.
+   */
+  @media (max-width: 40rem) {
+    .roadmap {
+      gap: calc(var(--space-unit) * 5);
+    }
+
+    /* The recommendation is still the loudest thing here, but at laptop sizing
+       it was three hundred and fifty pixels of a phone screen and pushed the
+       roadmap itself entirely below the fold. */
+    .nextup {
+      padding: calc(var(--space-unit) * 4);
+    }
+
+    .nextup__mission {
+      font-size: var(--size-body);
+    }
+
+    .nextup__actions {
+      margin-top: calc(var(--space-unit) * 4);
+      gap: calc(var(--space-unit) * 2);
+    }
+
+    .nextup__open,
+    .nextup__done {
+      flex: 1 1 auto;
+      text-align: center;
+      padding-inline: calc(var(--space-unit) * 3);
+    }
+
+    /* The search field takes the row; the toggles get the next one and scroll
+       sideways if they need to, rather than wrapping into a four-line block. */
+    .controls {
+      gap: calc(var(--space-unit) * 3);
+    }
+
+    .controls__group--find {
+      flex: 1 0 100%;
+    }
+
+    .controls__search {
+      width: 100%;
+    }
+
+    .controls__input {
+      flex: 1;
+      width: auto;
+      max-width: none;
+      padding-block: calc(var(--space-unit) * 2);
+    }
+
+    .controls__toggle,
+    .controls__step,
+    .controls__zoom {
+      padding-block: calc(var(--space-unit) * 2);
+    }
+
+    .pathbar {
+      padding: calc(var(--space-unit) * 3);
+    }
+
+    .pathbar__row {
+      gap: calc(var(--space-unit) * 2) calc(var(--space-unit) * 4);
+    }
+
+    .pathbar__score {
+      min-width: 100%;
+    }
+
+    .stagelist {
+      gap: calc(var(--space-unit) * 6);
+    }
+
+    .stagelist__nodes {
+      gap: calc(var(--space-unit) * 2);
+    }
+
+    .qrow {
+      padding: calc(var(--space-unit) * 2);
+      gap: calc(var(--space-unit) * 2);
+    }
+
+    .legend {
+      gap: calc(var(--space-unit) * 2) calc(var(--space-unit) * 4);
+    }
   }
 
   /* ---- Search results -----------------------------------------------------
@@ -312,17 +764,33 @@
     border-style: dashed;
   }
   .legend__item[data-legend='boss']::before { background: var(--paper-orange); }
+  .legend__item[data-legend='visited']::before {
+    background: var(--surface-raised);
+    border-left-width: var(--rule-thick);
+    border-left-color: var(--accent-quiet);
+  }
 
   /* ---- The map ----------------------------------------------------------- */
 
+  /* The path's wash goes on the scroller rather than on the canvas, so the
+     ground runs the full width of the page instead of stopping at whatever the
+     grid happens to measure. This is the largest single surface in the app and
+     therefore the one that answers "which map is this" before a word has been
+     read. */
   .graph-scroll {
     overflow-x: auto;
     overflow-y: hidden;
+    background: var(--path-wash);
+    border: var(--rule-strong) solid var(--rule);
+    border-radius: var(--radius-paper);
     padding-bottom: calc(var(--space-unit) * 4);
   }
 
+  /* Centred when the grid is narrower than the window, so a four-column map on
+     a wide screen does not sit against the left edge of its own ground. */
   .graph {
     position: relative;
+    margin-inline: auto;
   }
 
   .graph__canvas {
@@ -377,10 +845,69 @@
     flex-wrap: wrap;
     align-items: baseline;
     gap: calc(var(--space-unit) * 1) calc(var(--space-unit) * 4);
-    /* Opaque on purpose: this is what occludes an edge passing behind the label. */
-    background: var(--surface-base);
+    /* Opaque on purpose: this is what occludes an edge passing behind the
+       label. It has to match the ground it sits on, which is now the path's
+       wash rather than the page. */
+    background: var(--path-wash);
     border-top: var(--rule-thick) solid var(--rule);
     padding: calc(var(--space-unit) * 3) calc(var(--space-unit) * 7) 0;
+  }
+
+  /* The stage in play. The path's colour on the rule, so the band you are
+     standing in is findable while scrolling past nine others. */
+  .band[data-stage-state='current'] {
+    border-top-color: var(--path-colour);
+    border-top-width: var(--rule-thick);
+  }
+
+  /* Collapsed bands are the default state of most of the map, so they have to
+     read as a table of contents rather than as an error. Header, kicker, tally
+     and count — everything except the boxes. */
+  .band[data-collapsed='true'] {
+    border-top-style: dashed;
+  }
+
+  .band__heading {
+    display: contents;
+  }
+
+  /* The whole title is the open/close control: the thing you were already
+     reading is the thing you click. */
+  .band__toggle {
+    display: flex;
+    align-items: baseline;
+    gap: calc(var(--space-unit) * 2);
+    background: transparent;
+    border: 0;
+    padding: 0;
+    text-align: left;
+    color: var(--text-primary);
+    cursor: pointer;
+  }
+
+  .band__caret {
+    display: inline-grid;
+    place-items: center;
+    width: calc(var(--space-unit) * 5);
+    height: calc(var(--space-unit) * 5);
+    background: var(--surface-raised);
+    border: var(--rule-strong) solid var(--surface-road);
+    border-radius: var(--radius-badge);
+    font-family: var(--font-mono);
+    font-size: var(--size-micro);
+    font-weight: var(--weight-bold);
+    color: var(--text-primary);
+  }
+
+  /* Said in words, on the band itself, so "where am I" is answerable from the
+     map and not only from the bar at the top. */
+  .band__here {
+    background: var(--path-colour);
+    border: var(--hairline) solid var(--surface-road);
+    border-radius: var(--radius-badge);
+    padding: 0 calc(var(--space-unit) * 2);
+    margin-right: calc(var(--space-unit) * 2);
+    color: var(--text-primary);
   }
 
   .band__kicker,
@@ -409,7 +936,7 @@
     margin-left: auto;
   }
 
-  .band[data-cleared='true'] .band__tally {
+  .band[data-stage-state='cleared'] .band__tally {
     color: var(--accent-ink);
   }
 
@@ -450,6 +977,22 @@
   .qnode[data-next='true'] {
     outline: var(--rule-thick) solid var(--accent-ink);
     outline-offset: calc(var(--space-unit) * 1);
+  }
+
+  /* Where you were. Outlined in the path's colour rather than the accent,
+     because "last opened" is not "done" and must not borrow the one colour
+     that means done. It outlives the dialog closing — that is the point of it:
+     a panel you shut should not take your place on the map with it. */
+  .qnode[data-focused='true'] {
+    outline: var(--rule-thick) solid var(--path-colour);
+    outline-offset: calc(var(--space-unit) * 1);
+  }
+
+  /* Opened before. A ruled edge down the left of the card, which is legible at
+     a glance across a whole band and does not cost the card any width. */
+  .qnode[data-visited='true'] {
+    border-left-width: var(--rule-thick);
+    border-left-color: var(--accent-quiet);
   }
 
   .qnode[data-dimmed='true'] {
@@ -504,6 +1047,31 @@
   .qnode__foot {
     margin-top: auto;
     color: var(--text-muted);
+  }
+
+  /* Review or stretch, relative to the level given at intake. It is printed,
+     never enforced — every quest stays open at every level. */
+  .qnode__fit {
+    border: var(--hairline) solid var(--surface-road);
+    border-radius: var(--radius-badge);
+    padding: 0 calc(var(--space-unit) * 1);
+    color: var(--text-secondary);
+  }
+
+  .qnode[data-focused='true'] .qnode__state {
+    color: var(--text-primary);
+  }
+
+  /* A second, quieter mark than the left rule, for the corner the eye lands on
+     when scanning a grid rather than a column. */
+  .qnode__seen {
+    position: absolute;
+    left: calc(var(--space-unit) * -1);
+    bottom: calc(var(--space-unit) * 3);
+    width: calc(var(--space-unit) * 2);
+    height: calc(var(--space-unit) * 2);
+    background: var(--accent-quiet);
+    border-radius: var(--radius-badge);
   }
 
   .qnode[data-next='true'] .qnode__state {
@@ -573,8 +1141,54 @@
     color: var(--text-muted);
   }
 
-  .stagelist__title {
+  .stagelist__heading {
     margin-top: calc(var(--space-unit) * 1);
+  }
+
+  .stagelist__toggle {
+    display: flex;
+    align-items: baseline;
+    gap: calc(var(--space-unit) * 3);
+    background: transparent;
+    border: 0;
+    padding: 0;
+    text-align: left;
+    color: var(--text-primary);
+    cursor: pointer;
+  }
+
+  .stagelist__caret {
+    display: inline-grid;
+    place-items: center;
+    width: calc(var(--space-unit) * 6);
+    height: calc(var(--space-unit) * 6);
+    flex: none;
+    background: var(--surface-raised);
+    border: var(--rule-strong) solid var(--surface-road);
+    border-radius: var(--radius-badge);
+    font-family: var(--font-mono);
+    font-size: var(--size-meta);
+    font-weight: var(--weight-bold);
+    color: var(--text-primary);
+  }
+
+  .stagelist__here {
+    background: var(--path-colour);
+    border: var(--hairline) solid var(--surface-road);
+    border-radius: var(--radius-badge);
+    padding: 0 calc(var(--space-unit) * 2);
+    color: var(--text-primary);
+  }
+
+  .stagelist__stage[data-stage-state='current'] .stagelist__head {
+    border-top-color: var(--path-colour);
+  }
+
+  .stagelist__stage[data-collapsed='true'] .stagelist__summary {
+    color: var(--text-muted);
+  }
+
+  .stagelist__title {
     font-family: var(--font-display);
     font-size: var(--size-title);
     font-weight: var(--weight-black);
@@ -596,7 +1210,7 @@
     margin-top: calc(var(--space-unit) * 2);
   }
 
-  .stagelist__stage[data-cleared='true'] .stagelist__tally {
+  .stagelist__stage[data-stage-state='cleared'] .stagelist__tally {
     color: var(--accent-ink);
   }
 
@@ -634,6 +1248,16 @@
   .qrow[data-next='true'] {
     outline: var(--rule-thick) solid var(--accent-ink);
     outline-offset: calc(var(--space-unit) * 1);
+  }
+
+  .qrow[data-focused='true'] {
+    outline: var(--rule-thick) solid var(--path-colour);
+    outline-offset: calc(var(--space-unit) * 1);
+  }
+
+  .qrow[data-visited='true'] {
+    border-left-width: var(--rule-thick);
+    border-left-color: var(--accent-quiet);
   }
 
   .qrow[data-dimmed='true'] {
@@ -700,5 +1324,43 @@
   .qrow[data-next='true'] .qrow__meta,
   .qrow[data-state='done'] .qrow__meta {
     color: var(--accent-ink);
+  }
+
+  .qrow[data-focused='true'] .qrow__meta {
+    color: var(--text-primary);
+  }
+
+  /* ---- Fingertip sizing ---------------------------------------------------
+   * Last in the file on purpose. base.css gives every button a `min-height` of
+   * one fingertip under a coarse pointer, which is the right blanket rule and
+   * the wrong answer for a control that is drawn as a square: `min-height`
+   * clamps the height whatever the layer order, so a 24px tick came out 24
+   * wide and 44 tall. These two rules have to come after the declarations they
+   * are correcting, which is why they are here rather than in the phone block
+   * above.
+   */
+  @media (pointer: coarse) {
+    /* Square, at fingertip size. Both sit in a flow row, so there is room.
+       Any new square control belongs in this list: the blanket rule will
+       otherwise stretch it into an oval, which is how both of these were
+       found. */
+    .qrow__tick,
+    .session__tick {
+      width: var(--touch-min);
+      height: var(--touch-min);
+    }
+
+    /* Square, at mouse size, and deliberately so: this one hangs off the corner
+       of a box on a fixed 28px grid, and growing it would push it into the card
+       beside it. The map is a desktop artefact; a touch tablet wide enough to
+       show it still has the whole card as an open target and a full "Mark done"
+       button inside the dialog. */
+    .qnode__tick {
+      min-height: 0;
+    }
+
+    .rail__chip {
+      padding-block: calc(var(--space-unit) * 2);
+    }
   }
 }

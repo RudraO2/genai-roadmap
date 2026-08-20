@@ -64,7 +64,12 @@ export interface RoadmapNode {
   level: Level
   type: NodeType
   requires: string[]
-  /** Human time estimate, e.g. "2h", "1w". Displayed, never parsed. */
+  /**
+   * How long this takes: `<n>m`, `<n>h`, `<n>d`, `<n>w`, or `ongoing` for a
+   * habit. Printed as written, and summed into the path's remaining time by
+   * `data/duration.ts`, which is also where the day and week assumptions live.
+   * The validator rejects anything else.
+   */
   est: string
   xp: number
   /** One imperative sentence: the thing to actually do. */

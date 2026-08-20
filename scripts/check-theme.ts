@@ -1,10 +1,10 @@
 /**
- * The source gate. CONTEXT.md section 12, third bullet, as a command.
+ * The source gate. DESIGN.md's banned list, as a command.
  *
  *   npm run check:theme
  *
  * "No hardcoded colour outside theme.css" was checked by hand for eleven specs
- * (BACKLOG T019). This reads every file under src/ except theme.css itself, plus
+ * This reads every file under src/ except theme.css itself, plus
  * index.html and public/, and fails the build on:
  *
  *   colour-literal    a hex, an rgb()/hsl()/oklch() call, or a named CSS colour
@@ -89,7 +89,7 @@ const TYPE_KEYWORDS = new Set(['inherit', 'initial', 'unset', 'revert', 'normal'
  */
 const HEX = /(?<![\w/])#(?:[0-9a-fA-F]{8}|[0-9a-fA-F]{6}|[0-9a-fA-F]{3,4})(?![0-9a-zA-Z])/g
 
-/** `color-mix(` is absent by design — see the header of theme.css and spec 11. */
+/** `color-mix(` is absent by design — see the header of theme.css. */
 const COLOUR_FUNCTION = /\b(?:rgba?|hsla?|hwb|lab|lch|oklab|oklch|color)\(/g
 
 const GRADIENT = /\b(?:repeating-)?(?:linear|radial|conic)-gradient\(/g

@@ -1,6 +1,6 @@
 /**
  * Portability: the learner's progress as a file on disk. This is the entire
- * sync story — `CONTEXT.md` section 10 allows localStorage plus JSON
+ * sync story — the project allows localStorage plus JSON
  * export/import and forbids a backend, an account and a database, so there is
  * no upload here, no share link, and there must never be one.
  *

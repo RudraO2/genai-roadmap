@@ -12,7 +12,7 @@
  *
  * 2. Section 8 after Tailwind. index.css clears the theme namespaces that would let
  *    `backdrop-blur-md`, `shadow-lg`, `rounded-2xl` and `animate-pulse` exist. That is
- *    enforcement by construction, and this asserts it held (BACKLOG T077). The bare
+ *    enforcement by construction, and this asserts it held. The bare
  *    `.filter` and `.backdrop-filter` enabler classes are expected: Tailwind emits both
  *    unconditionally and each expands to a list of empty custom properties, so the
  *    string is present and the capability is not.

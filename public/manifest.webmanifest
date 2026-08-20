@@ -1,0 +1,14 @@
+{
+  "name": "The Gen AI Roadmap",
+  "short_name": "Gen AI Roadmap",
+  "description": "Four paths, 94 quests: what to learn about generative AI, in what order, and exactly where to go and learn it.",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#fffceb",
+  "theme_color": "#fffceb",
+  "icons": [
+    { "src": "./icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any" }
+  ]
+}

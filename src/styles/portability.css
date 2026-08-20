@@ -1,5 +1,5 @@
 /**
- * portability.css — spec 11's own surface: the export / import / reset
+ * portability.css — the export / import / reset
  * `<dialog>`. @layer components, tokens only.
  *
  * Deliberately the same surface language as `panel.css`: `--surface-raised` on
@@ -7,13 +7,13 @@
  * dialogs that look like two different products would be two designs.
  *
  * The accent appears in exactly two places — hover and the armed reset — so it
- * keeps meaning "here", never decoration (CONTEXT.md section 8).
+ * keeps meaning "here", never decoration (DESIGN.md).
  */
 
 @layer components {
   /* ---- The masthead control that opens the panel ----------------------
    * Its own class rather than spec 03's `.intake-change`: two controls that
-   * happen to look alike are not one control, and this file owns spec 11's.
+   * happen to look alike are not one control, and this file owns this one's.
    */
 
   .progress-open {

@@ -2,22 +2,20 @@
  * theme.css — the one swappable file.
  *
  * Every colour and every type value in this project is declared here as a custom
- * property, and nowhere else. CONTEXT.md section 10: "all colour/type via CSS custom
- * properties in one theme.css, so the theme is swappable in one file." Rewrite the
+ * property, and nowhere else, so the theme is swappable in one file. Rewrite the
  * values below and the whole aesthetic changes; touch nothing else.
  *
  * The only selectors permitted in this file are :root and the @font-face blocks.
  * No component styling lives here — that is src/styles/.
  *
- * The palette is CONTEXT.md section 8 as amended 2026-08-19 (spec 13): warm paper
- * ground, near-black ink for the road and every rule, four *semantic* paper accents,
- * and exactly one action accent. The four papers are assigned from a node's data —
- * level, zone, status — never cycled for decoration. The action accent means done,
- * here, or go, and nothing else.
+ * The palette is DESIGN.md: warm paper ground, near-black ink for every rule, four
+ * *semantic* paper accents, four path colours, and exactly one action accent. Every
+ * one of them is assigned from data — a node's type, a path's id — never cycled for
+ * decoration. The action accent means done, here, or go, and nothing else.
  *
- * The pre-spec-13 identity was editorial dark terminal: near-black ground, warm
- * off-white text, Instrument Serif. It is gone, including its font files. Do not
- * restore it — see the amendment note at the head of section 8.
+ * The identity before 2026-08-19 was editorial dark terminal: near-black ground,
+ * warm off-white text, Instrument Serif. It is gone, including its font files.
+ * Do not restore it.
  */
 
 /* Gabarito — display. Heavy, rounded, geometric. Vendored; see ./fonts/README.md. */
@@ -119,7 +117,7 @@
   --accent-ink: #006b49;
   --accent-quiet: #007a54;
 
-  /* ---- The five papers ----------------------------------------------------
+  /* ---- The four papers ----------------------------------------------------
    * Semantic, assigned from a quest's own data and never from position in a list.
    * The axis is the *kind of work* a node asks for, which is the thing a learner
    * is choosing between when they look at the map:
@@ -131,14 +129,60 @@
    * State overrides paper only for `locked`; `done` keeps the paper and takes the
    * action accent on its border and its tick, so colour never has to carry two
    * meanings at once.
-   * Ink text sits on all five. Contrast against ink: lime 15.0 : 1, blue 12.6 : 1,
-   * lilac 10.6 : 1, orange 12.1 : 1, grey 13.9 : 1.
+   * Ink text sits on all four. Contrast against ink: lime 15.0 : 1,
+   * blue 12.6 : 1, orange 12.1 : 1, grey 13.9 : 1.
    */
   --paper-lime: #dcff72;
   --paper-blue: #8fe0f2;
-  --paper-lilac: #cdb0ff;
   --paper-orange: #ffbc42;
   --paper-grey: #e7e4d6;
+
+  /* ---- The four path colours ----------------------------------------------
+   * A learner walking one path needs to know, at every moment and without
+   * reading anything, which of the four maps they are standing on. That is a
+   * second question from "what kind of work is this box", and it gets a second
+   * channel rather than a second meaning for the same one:
+   *
+   *   paper-*   on the node        what kind of work this quest is
+   *   path-*    on the chrome      which path you are walking
+   *
+   * So the papers are never repainted per path, and the path colour never
+   * lands on a quest box. It lands on the surfaces that frame one: the ground
+   * the map is drawn on, the sticky path bar, the stage rules, the stage
+   * stepper, the dialog's spine. Open Creative Studio after AI Engineer and
+   * the room has changed colour even though every box still means what it
+   * meant.
+   *
+   * Each path keeps the paper it already wears in the picker, so the card you
+   * chose and the map you land on are the same colour — the identity is
+   * assigned from the path's own id, never from its position in the list.
+   *
+   * The washes exist because a whole page cannot be painted in a signal
+   * colour without drowning the signals on top of it. Each is its own hue at
+   * roughly a tenth of the strength: enough to read as "this is a different
+   * place", not enough to fight a lime build card or an accent tick. Ink on
+   * every wash clears 15 : 1.
+   */
+  --path-explorer: var(--paper-blue);
+  --path-engineer: var(--paper-lime);
+  --path-creator: var(--paper-orange);
+  /* Lilac is the one of the five that never became a node paper — no kind of
+     work is lilac — so Model Builder's identity is declared here outright
+     rather than aliased out of a papers list it was the odd one out in.
+     Contrast against ink: 10.6 : 1. */
+  --path-builder: #cdb0ff;
+
+  --path-explorer-wash: #eefaff;
+  --path-engineer-wash: #f8ffe4;
+  --path-builder-wash: #f6f1ff;
+  --path-creator-wash: #fff6e6;
+
+  /* Resolved per screen: `[data-path]` in graph.css points these two at one of
+   * the eight above, and every rule that wants "the current path's colour"
+   * spends these instead of naming a path. Defaults are the neutral ground, so
+   * a surface outside any path still renders. */
+  --path-colour: var(--paper-grey);
+  --path-wash: var(--surface-base);
 
   /* ---- Type ---------------------------------------------------------------
    * Three faces, three jobs (section 8). Display headlines, body reads, mono is
@@ -149,11 +193,15 @@
   --font-mono: 'JetBrains Mono', ui-monospace, 'SFMono-Regular', 'Cascadia Mono', Menlo,
     Consolas, monospace;
 
-  /* Eight sizes. Display is 3.0x body at 360px and 5.3x at full width. Every
+  /* Seven sizes. Title is 1.9x body at 360px and 2.9x at full width. Every
    * font-size, letter-spacing and line-height in src/styles/ must be one of these
    * tokens verbatim — check-theme rejects a literal or a calc() on those
    * properties, which is what keeps the scale a scale. */
-  --size-display: clamp(2.75rem, 1.55rem + 4.6vw, 5rem);
+  /* The scale used to open on a display step of clamp(2.75rem … 5rem). It is
+     gone because the only screen that spent it was onboarding, where two
+     headings at that size were most of the reason the one button people needed
+     sat below the fold. Nothing reads it now, and a type step nothing reads is
+     an invitation to find a use for it. --size-title is the top of the scale. */
   --size-title: clamp(1.75rem, 1.2rem + 2.2vw, 2.75rem);
   --size-lead: clamp(1.0625rem, 1rem + 0.45vw, 1.3125rem);
   --size-card-title: clamp(1.0625rem, 1rem + 0.35vw, 1.25rem);
@@ -193,6 +241,10 @@
   --radius-paper: 4px;
   --radius-badge: 999px;
   --lift: 3px;
+  /* The smallest a control may be where a finger is the pointer. Applied under
+     `@media (pointer: coarse)` in base.css, so a mouse keeps the tighter
+     instrument-panel sizing this design is drawn at and a phone does not. */
+  --touch-min: 2.75rem;
   --gutter: clamp(1.25rem, 0.5rem + 3vw, 4rem);
 
   /* ---- The graph ----------------------------------------------------------
@@ -213,7 +265,7 @@
    * Section 8: motion only to show state change. There is no ambient animation
    * token here on purpose, and there should never be one.
    *
-   * --dur-reward / --ease-reward (spec 14) are for the small set of one-shot
+   * --dur-reward / --ease-reward are for the small set of one-shot
    * moments that mark the learner actually finishing something — completing a
    * node, clearing an act, shipping a track. Kept apart from --dur-state /
    * --ease-state on purpose: routine hover and focus feedback should stay

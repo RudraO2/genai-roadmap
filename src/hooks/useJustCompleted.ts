@@ -3,7 +3,7 @@
  * moment `value` flips `false → true`, then `false` again — never on mount with
  * `value` already `true`, and never on the reverse flip.
  *
- * This is what keeps a reward animation inside `CONTEXT.md` section 8's "motion
+ * This is what keeps a reward animation inside `DESIGN.md`'s "motion
  * only to show state change": a node that loads already complete (or one the
  * learner un-marks) gets no animation, only the click that actually finishes it
  * does. Same shape as `useWalking` — a ref holding the last value, a timer that
