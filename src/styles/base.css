@@ -14,10 +14,16 @@
 
   html {
     color-scheme: light;
+    /* iOS Safari inflates text in landscape unless told not to. The type scale
+       is a scale; the browser does not get a vote. */
+    -webkit-text-size-adjust: 100%;
   }
 
   body {
     margin: 0;
+    /* The grey flash on tap belongs to a different design language. Every
+       control below has its own :active state instead. */
+    -webkit-tap-highlight-color: transparent;
     background: var(--surface-base);
     color: var(--text-primary);
     font-family: var(--font-body);
@@ -41,6 +47,25 @@
 
   a {
     color: inherit;
+  }
+
+  /* Touch feedback. A phone has no hover, so the press itself has to be the
+     acknowledgement — otherwise a tap that takes a moment reads as a tap that
+     did not land, and people tap again. */
+  @media (pointer: coarse) {
+    button:active,
+    a:active {
+      opacity: 0.7;
+    }
+
+    /* No control smaller than a fingertip. 44px is the floor both platform
+       guidelines settle on, and several of this design's instrument-panel
+       controls are drawn at 24px for a mouse. */
+    button,
+    summary,
+    [role='button'] {
+      min-height: var(--touch-min);
+    }
   }
 
   ::selection {

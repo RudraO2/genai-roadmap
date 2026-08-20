@@ -42,6 +42,7 @@
 
   .quest__close {
     float: right;
+    margin-left: calc(var(--space-unit) * 3);
     background: var(--surface-base);
     border: var(--rule-strong) solid var(--surface-road);
     border-radius: var(--radius-badge);
@@ -358,6 +359,24 @@
     margin-top: calc(var(--space-unit) * 8);
     display: flex;
     justify-content: flex-end;
+    gap: calc(var(--space-unit) * 3);
+  }
+
+  /* Hidden at this width, where the floating Close at the top right is the way
+     out and the backdrop is tappable. It exists for the phone layout below. */
+  .quest__dismiss {
+    display: none;
+    background: var(--surface-base);
+    border: var(--rule-strong) solid var(--surface-road);
+    border-radius: var(--radius-paper);
+    padding: calc(var(--space-unit) * 3) calc(var(--space-unit) * 6);
+    font-family: var(--font-mono);
+    font-size: var(--size-meta);
+    font-weight: var(--weight-bold);
+    letter-spacing: var(--tracking-caps);
+    text-transform: uppercase;
+    color: var(--text-primary);
+    cursor: pointer;
   }
 
   .quest__complete {
@@ -377,5 +396,75 @@
   .quest__complete[aria-pressed='true'] {
     background: var(--surface-base);
     color: var(--text-secondary);
+  }
+
+  /* ---- The dialog on a phone ---------------------------------------------
+   * A modal that leaves a sliver of dimmed page around its edge reads as a
+   * card on a desktop and as a mistake on a 390px screen. Here it takes the
+   * whole viewport, and the padding drops from 32px a side — an eighth of the
+   * screen's width, spent on nothing — to 16px.
+   */
+  @media (max-width: 40rem) {
+    .quest {
+      max-height: 100dvh;
+      height: 100dvh;
+      width: 100vw;
+      max-width: 100vw;
+      border-width: 0;
+      border-radius: 0;
+    }
+
+    .quest__content {
+      max-height: 100dvh;
+      height: 100dvh;
+      padding: calc(var(--space-unit) * 4);
+      border-left-width: calc(var(--space-unit) * 1);
+    }
+
+    /* The floating Close goes; the actions bar at the foot becomes a pinned
+       bar holding both of the things you can do with an open quest. A sticky
+       *footer* rather than a sticky header, because a thumb is at the bottom
+       of a phone and because scrolling text passing behind a right-aligned
+       chip looks like a bug. The negative margins pull it out to the content
+       edges and the negative bottom cancels the container's own padding, so
+       it sits flush against the bottom of the screen. */
+    .quest__close {
+      display: none;
+    }
+
+    .quest__dismiss {
+      display: block;
+      flex: 1;
+      padding-inline: calc(var(--space-unit) * 3);
+    }
+
+    .quest__complete {
+      flex: 2;
+      padding-inline: calc(var(--space-unit) * 3);
+    }
+
+    .quest__actions {
+      position: sticky;
+      bottom: calc(var(--space-unit) * -4);
+      z-index: 2;
+      margin-top: calc(var(--space-unit) * 6);
+      margin-inline: calc(var(--space-unit) * -4);
+      padding: calc(var(--space-unit) * 3) calc(var(--space-unit) * 4);
+      background: var(--surface-raised);
+      border-top: var(--rule-strong) solid var(--rule);
+    }
+
+    .quest__facts {
+      gap: calc(var(--space-unit) * 3) calc(var(--space-unit) * 6);
+    }
+
+    .quest__title {
+      font-size: var(--size-card-title);
+    }
+
+    .quest__blurb,
+    .quest__mission {
+      font-size: var(--size-body);
+    }
   }
 }

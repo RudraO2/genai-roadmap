@@ -240,6 +240,12 @@ export function QuestPanel({
         ) : null}
 
         <div className="quest__actions">
+          {/* The second way out, for the phone layout, where the dialog fills
+              the screen and there is no backdrop left to tap. The stylesheet
+              shows exactly one of the two Close buttons at any width. */}
+          <button type="button" className="quest__dismiss" onClick={onClose}>
+            Close
+          </button>
           <button
             type="button"
             className="quest__complete"

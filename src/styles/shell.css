@@ -49,7 +49,9 @@
     max-width: var(--frame-max);
     margin-inline: auto;
     padding-inline: var(--gutter);
-    min-height: 100vh;
+    /* dvh, so the frame is the viewport a phone actually has rather than the
+       one it has before the address bar collapses. */
+    min-height: 100dvh;
     display: flex;
     flex-direction: column;
   }
@@ -117,6 +119,39 @@
   .shell__main {
     flex: 1;
     padding-block: clamp(2.5rem, 5vw, 4.5rem);
+  }
+
+  /* ---- The frame on a phone ----------------------------------------------
+   * The masthead is three stacked rows at this width — wordmark, then the
+   * rank chip, then "Change path" — which spends a fifth of the screen on
+   * furniture before the roadmap starts. Two things fix it:
+   *
+   *   1. The rank chip goes. Every number on it (rank, XP, per cent) is on the
+   *      path bar forty pixels below, and saying it twice is what made the
+   *      masthead wrap in the first place.
+   *   2. Everything left fits one row, tighter.
+   */
+  @media (max-width: 40rem) {
+    .shell__masthead {
+      gap: calc(var(--space-unit) * 2) calc(var(--space-unit) * 3);
+      padding-block: calc(var(--space-unit) * 3);
+    }
+
+    .shell__masthead-meta {
+      display: none;
+    }
+
+    .shell__wordmark {
+      font-size: var(--size-body);
+    }
+
+    .shell__main {
+      padding-block: calc(var(--space-unit) * 6);
+    }
+
+    .shell__colophon {
+      padding-block: calc(var(--space-unit) * 4);
+    }
   }
 
   .shell__colophon {

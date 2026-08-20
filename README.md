@@ -55,6 +55,14 @@ tally — and expands on a click. `All stages` puts the whole thing back. Quests
 having been opened, and the last one you opened stays marked after you close it, so
 shutting a panel never costs you your place.
 
+**Built for a phone, not just shrunk onto one.** Below `64rem` the roadmap is a
+stage list rather than an absolute grid — the better experience on a phone and for a
+screen reader, not a degradation. Below `40rem` the masthead stops repeating numbers
+the path bar already shows, the recommendation banner and onboarding cards tighten,
+the quest dialog goes full-screen with a pinned Close / Mark done bar, and every
+control a finger can reach is at least 44px. `dvh`, not `vh`, so the layout is the
+viewport a phone actually has.
+
 **The level you gave does something.** Quests below it are marked review; quests two
 levels above it are marked stretch. One level up is not flagged, because one level up is
 what a roadmap is for. Nothing is ever hidden or disabled by the answer.

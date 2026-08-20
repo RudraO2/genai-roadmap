@@ -241,6 +241,10 @@
   --radius-paper: 4px;
   --radius-badge: 999px;
   --lift: 3px;
+  /* The smallest a control may be where a finger is the pointer. Applied under
+     `@media (pointer: coarse)` in base.css, so a mouse keeps the tighter
+     instrument-panel sizing this design is drawn at and a phone does not. */
+  --touch-min: 2.75rem;
   --gutter: clamp(1.25rem, 0.5rem + 3vw, 4rem);
 
   /* ---- The graph ----------------------------------------------------------

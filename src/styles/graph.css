@@ -431,6 +431,98 @@
     min-width: calc(var(--space-unit) * 8);
   }
 
+  /* ---- The map screen on a phone -----------------------------------------
+   * One breakpoint, everything that has to change at it, in one place rather
+   * than scattered through the file. Below 40rem the map view is already
+   * unavailable and the list is what a phone gets, so what is left to fix is
+   * the furniture around it: a banner sized for a laptop, a control strip that
+   * wraps to four rows, and instrument-panel controls drawn at mouse sizes.
+   */
+  @media (max-width: 40rem) {
+    .roadmap {
+      gap: calc(var(--space-unit) * 5);
+    }
+
+    /* The recommendation is still the loudest thing here, but at laptop sizing
+       it was three hundred and fifty pixels of a phone screen and pushed the
+       roadmap itself entirely below the fold. */
+    .nextup {
+      padding: calc(var(--space-unit) * 4);
+    }
+
+    .nextup__mission {
+      font-size: var(--size-body);
+    }
+
+    .nextup__actions {
+      margin-top: calc(var(--space-unit) * 4);
+      gap: calc(var(--space-unit) * 2);
+    }
+
+    .nextup__open,
+    .nextup__done {
+      flex: 1 1 auto;
+      text-align: center;
+      padding-inline: calc(var(--space-unit) * 3);
+    }
+
+    /* The search field takes the row; the toggles get the next one and scroll
+       sideways if they need to, rather than wrapping into a four-line block. */
+    .controls {
+      gap: calc(var(--space-unit) * 3);
+    }
+
+    .controls__group--find {
+      flex: 1 0 100%;
+    }
+
+    .controls__search {
+      width: 100%;
+    }
+
+    .controls__input {
+      flex: 1;
+      width: auto;
+      max-width: none;
+      padding-block: calc(var(--space-unit) * 2);
+    }
+
+    .controls__toggle,
+    .controls__step,
+    .controls__zoom {
+      padding-block: calc(var(--space-unit) * 2);
+    }
+
+    .pathbar {
+      padding: calc(var(--space-unit) * 3);
+    }
+
+    .pathbar__row {
+      gap: calc(var(--space-unit) * 2) calc(var(--space-unit) * 4);
+    }
+
+    .pathbar__score {
+      min-width: 100%;
+    }
+
+    .stagelist {
+      gap: calc(var(--space-unit) * 6);
+    }
+
+    .stagelist__nodes {
+      gap: calc(var(--space-unit) * 2);
+    }
+
+    .qrow {
+      padding: calc(var(--space-unit) * 2);
+      gap: calc(var(--space-unit) * 2);
+    }
+
+    .legend {
+      gap: calc(var(--space-unit) * 2) calc(var(--space-unit) * 4);
+    }
+  }
+
   /* ---- Search results -----------------------------------------------------
    * Dimming the misses is not enough on its own: the matches are usually off
    * screen, and a map that quietly highlights something four stages down has not
@@ -1090,5 +1182,35 @@
 
   .qrow[data-focused='true'] .qrow__meta {
     color: var(--text-primary);
+  }
+
+  /* ---- Fingertip sizing ---------------------------------------------------
+   * Last in the file on purpose. base.css gives every button a `min-height` of
+   * one fingertip under a coarse pointer, which is the right blanket rule and
+   * the wrong answer for a control that is drawn as a square: `min-height`
+   * clamps the height whatever the layer order, so a 24px tick came out 24
+   * wide and 44 tall. These two rules have to come after the declarations they
+   * are correcting, which is why they are here rather than in the phone block
+   * above.
+   */
+  @media (pointer: coarse) {
+    /* Square, at fingertip size. It sits in a flow row, so there is room. */
+    .qrow__tick {
+      width: var(--touch-min);
+      height: var(--touch-min);
+    }
+
+    /* Square, at mouse size, and deliberately so: this one hangs off the corner
+       of a box on a fixed 28px grid, and growing it would push it into the card
+       beside it. The map is a desktop artefact; a touch tablet wide enough to
+       show it still has the whole card as an open target and a full "Mark done"
+       button inside the dialog. */
+    .qnode__tick {
+      min-height: 0;
+    }
+
+    .rail__chip {
+      padding-block: calc(var(--space-unit) * 2);
+    }
   }
 }

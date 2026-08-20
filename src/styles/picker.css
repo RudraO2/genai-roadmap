@@ -314,6 +314,79 @@
     filter: none;
   }
 
+  /* ---- Onboarding on a phone ---------------------------------------------
+   * Four full cards and three full level rows stack to nearly two thousand
+   * pixels here, which turns "two questions and a button" back into a scroll.
+   * The cards keep every word — the finish line is the whole basis for
+   * choosing — and lose the padding and the gaps instead. The level rows drop
+   * to a title-only row of three, with the explanation shown for the one that
+   * is chosen, because three paragraphs of advice about levels you did not
+   * pick is the least useful screenful in the app.
+   */
+  @media (max-width: 40rem) {
+    .picker {
+      gap: calc(var(--space-unit) * 6);
+    }
+
+    .path-list,
+    .level-list {
+      margin-top: calc(var(--space-unit) * 3);
+      gap: calc(var(--space-unit) * 3);
+    }
+
+    .path-card {
+      padding: calc(var(--space-unit) * 3);
+      gap: calc(var(--space-unit) * 1);
+    }
+
+    .path-card__goal,
+    .path-card__meta {
+      font-size: var(--size-micro);
+    }
+
+    .level-list {
+      grid-template-columns: repeat(3, 1fr);
+    }
+
+    .level-row {
+      padding: calc(var(--space-unit) * 3) calc(var(--space-unit) * 2);
+    }
+
+    .level-row__title {
+      font-size: var(--size-body);
+    }
+
+    /* The hint is inside its own button, so hiding it also shortens that
+       button's accessible name to the level word — which on a phone is the
+       better name anyway. It comes back, in place, for the level you pick. */
+    .level-row__hint {
+      display: none;
+    }
+
+    .level-row--selected .level-row__hint {
+      display: block;
+      font-size: var(--size-micro);
+    }
+
+    .picker__bar {
+      padding-block: calc(var(--space-unit) * 3);
+      gap: calc(var(--space-unit) * 2);
+    }
+
+    .picker__status {
+      font-size: var(--size-micro);
+    }
+
+    .picker__bar-actions {
+      width: 100%;
+    }
+
+    .picker__continue {
+      flex: 1;
+      padding-inline: calc(var(--space-unit) * 4);
+    }
+  }
+
   /* The masthead control that reopens this picker. Lives here because this is the
      only screen that can be reached from it. */
   .intake-change {
