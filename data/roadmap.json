@@ -1,0 +1,5160 @@
+{
+  "version": 2,
+  "generated": "2026-08-20",
+  "note": "Every link marked verified:true was fetched successfully while this file was written. Links marked verified:false could not be reached from the build environment (its egress policy allows github.com only), so they are restricted to stable site roots — never a deep path that could have been guessed wrong. Every node also carries search queries, which resolve to a live search page and can never rot.",
+  "paths": [
+    {
+      "id": "explorer",
+      "title": "AI Explorer",
+      "tagline": "Use AI well. No code required.",
+      "goal": "Run your real work through AI every day and know exactly when not to trust it.",
+      "for": "Anyone. Students, writers, analysts, founders, the curious.",
+      "stages": [
+        "orient",
+        "drive",
+        "trust",
+        "autopilot",
+        "frontier"
+      ]
+    },
+    {
+      "id": "engineer",
+      "title": "AI Engineer",
+      "tagline": "Build software on top of models.",
+      "goal": "Ship a retrieval-backed, tool-using, evaluated LLM app that other people actually use.",
+      "for": "Developers who can already write some code, or are willing to learn.",
+      "stages": [
+        "orient",
+        "drive",
+        "trust",
+        "setup",
+        "api",
+        "context",
+        "agentic",
+        "evals",
+        "ship",
+        "frontier"
+      ]
+    },
+    {
+      "id": "builder",
+      "title": "Model Builder",
+      "tagline": "Understand and train the models themselves.",
+      "goal": "Write a transformer from scratch, then fine-tune a real one on your own data.",
+      "for": "People who want the machine, not just the API in front of it.",
+      "stages": [
+        "orient",
+        "setup",
+        "api",
+        "dlcore",
+        "internals",
+        "train",
+        "evals",
+        "frontier"
+      ]
+    },
+    {
+      "id": "creator",
+      "title": "Creative Studio",
+      "tagline": "Images, video, voice.",
+      "goal": "Produce a finished piece with a pipeline you can repeat tomorrow.",
+      "for": "Designers, film-makers, musicians, marketers, hobbyists.",
+      "stages": [
+        "orient",
+        "drive",
+        "imagegen",
+        "motion",
+        "pipeline",
+        "frontier"
+      ]
+    }
+  ],
+  "stages": [
+    {
+      "id": "orient",
+      "title": "Orientation",
+      "kicker": "Know what you are looking at",
+      "summary": "Four ideas that make everything after this make sense. Half a day, and you stop being confused by the news."
+    },
+    {
+      "id": "drive",
+      "title": "Driving the tools",
+      "kicker": "Get real answers, not plausible ones",
+      "summary": "The difference between people who find AI useless and people who find it indispensable is almost entirely here."
+    },
+    {
+      "id": "trust",
+      "title": "Trust and verification",
+      "kicker": "Tell good output from confident nonsense",
+      "summary": "A habit, not a feature. Build it now, before you start shipping things other people depend on."
+    },
+    {
+      "id": "autopilot",
+      "title": "Automate without code",
+      "kicker": "Put the boring half of your job on rails",
+      "summary": "Visual builders got good. You can wire a working agent together in an afternoon and never open an editor."
+    },
+    {
+      "id": "setup",
+      "title": "Set up the workbench",
+      "kicker": "A machine you can actually build on",
+      "summary": "Boring, one-time, and the single biggest reason beginners stall. Do it properly once."
+    },
+    {
+      "id": "api",
+      "title": "Talk to models in code",
+      "kicker": "From chat box to program",
+      "summary": "The same model you have been typing at, now callable from a script that runs a thousand times."
+    },
+    {
+      "id": "context",
+      "title": "Give it your data",
+      "kicker": "Retrieval, chunking, embeddings, RAG",
+      "summary": "The most valuable skill in applied AI right now: getting the right context in front of the model at the right moment."
+    },
+    {
+      "id": "agentic",
+      "title": "Make it act",
+      "kicker": "Tools, loops, memory, MCP",
+      "summary": "An agent is a loop with tools and a stopping condition. Everything else is engineering discipline."
+    },
+    {
+      "id": "evals",
+      "title": "Prove it works",
+      "kicker": "Evals, tracing, guardrails",
+      "summary": "This is what separates a demo from a product. Nobody enjoys it. Everybody who ships does it."
+    },
+    {
+      "id": "ship",
+      "title": "Ship and keep it alive",
+      "kicker": "Deploy, watch, pay for it",
+      "summary": "Getting it in front of users, then surviving the week after."
+    },
+    {
+      "id": "dlcore",
+      "title": "Learn the machine",
+      "kicker": "From gradient descent to a working net",
+      "summary": "The foundations that make model papers readable instead of intimidating."
+    },
+    {
+      "id": "internals",
+      "title": "Open the box",
+      "kicker": "Build a transformer, end to end",
+      "summary": "You do not really know how an LLM works until you have written one and watched the loss fall."
+    },
+    {
+      "id": "train",
+      "title": "Make the model yours",
+      "kicker": "Fine-tuning and post-training",
+      "summary": "When prompting stops being enough, this is what comes next — and it is far cheaper than people assume."
+    },
+    {
+      "id": "imagegen",
+      "title": "Images",
+      "kicker": "Diffusion, prompts, control",
+      "summary": "From lucky one-offs to art direction you can steer and reproduce."
+    },
+    {
+      "id": "motion",
+      "title": "Video and voice",
+      "kicker": "Things that move and speak",
+      "summary": "The fastest-moving corner of the field. Learn the pieces, expect the tools to change."
+    },
+    {
+      "id": "pipeline",
+      "title": "Creator pipeline",
+      "kicker": "From experiment to finished work",
+      "summary": "Repeatability, rights, and shipping something with your name on it."
+    },
+    {
+      "id": "frontier",
+      "title": "Stay current",
+      "kicker": "A habit for a field that moves weekly",
+      "summary": "Skills rot here faster than anywhere else in software. This is how you stop that happening."
+    }
+  ],
+  "nodes": [
+    {
+      "id": "what-is-genai",
+      "stage": "orient",
+      "col": 1,
+      "row": 0,
+      "type": "core",
+      "level": "beginner",
+      "est": "90m",
+      "xp": 25,
+      "title": "What a model actually is",
+      "blurb": "A next-token predictor with no memory, no browser and no soul. Start here.",
+      "requires": [],
+      "mission": "Read the first three lessons of Microsoft's beginner course and write down, in your own words, what the model is doing when it answers you.",
+      "why": "Almost every frustration people have with AI — it lied, it forgot, it made up a citation — stops being surprising once you know it is predicting the next token from the text in front of it. Do this before anything else.",
+      "steps": [
+        "Open Generative AI for Beginners and do lessons 1-3. Skip the Azure setup for now.",
+        "Write a paragraph answering: where does the model's knowledge come from, and what does it not have access to?",
+        "List three things you assumed it could do that it cannot."
+      ],
+      "done_when": [
+        "You can explain 'next token prediction' to a friend without notes.",
+        "You know why it cannot tell you what it said to you yesterday."
+      ],
+      "links": [
+        {
+          "label": "Generative AI for Beginners — 21 lessons",
+          "url": "https://github.com/microsoft/generative-ai-for-beginners",
+          "kind": "course",
+          "stars": 118200,
+          "verified": true
+        },
+        {
+          "label": "ChatGPT",
+          "url": "https://chatgpt.com",
+          "kind": "playground",
+          "verified": false
+        },
+        {
+          "label": "Claude",
+          "url": "https://claude.ai",
+          "kind": "playground",
+          "verified": false
+        },
+        {
+          "label": "Gemini",
+          "url": "https://gemini.google.com",
+          "kind": "playground",
+          "verified": false
+        }
+      ],
+      "search": [
+        {
+          "on": "youtube",
+          "q": "how large language models work explained visually"
+        },
+        {
+          "on": "google",
+          "q": "next token prediction explained beginner"
+        }
+      ],
+      "tags": [
+        "fundamentals",
+        "llm"
+      ]
+    },
+    {
+      "id": "model-zoo",
+      "stage": "orient",
+      "col": 2,
+      "row": 0,
+      "type": "core",
+      "level": "beginner",
+      "est": "60m",
+      "xp": 25,
+      "title": "The model landscape",
+      "blurb": "Frontier vs open-weight, big vs small, text vs multimodal. Who makes what.",
+      "requires": [
+        "what-is-genai"
+      ],
+      "mission": "Build yourself a one-page cheat sheet of the models you might actually use, and what each one is good at.",
+      "why": "Picking the wrong model is the most common cause of a disappointing result. A small fast model is right for classification and wrong for architecture review, and knowing that saves you weeks.",
+      "steps": [
+        "Skim the Awesome-LLM list — read the section headings, not every entry.",
+        "Note, for each major lab, its current flagship and its cheap fast model.",
+        "Note which models have open weights you can download and run yourself.",
+        "Write one line per model: what you would send it."
+      ],
+      "done_when": [
+        "You can name a good default model for a cheap high-volume task and for a hard reasoning task.",
+        "You know what 'open weights' means and which families offer them."
+      ],
+      "links": [
+        {
+          "label": "Awesome-LLM — the canonical list",
+          "url": "https://github.com/Hannibal046/Awesome-LLM",
+          "kind": "list",
+          "stars": 27300,
+          "verified": true
+        },
+        {
+          "label": "Awesome Generative AI — products and services",
+          "url": "https://github.com/steven2358/awesome-generative-ai",
+          "kind": "list",
+          "stars": 12500,
+          "verified": true
+        }
+      ],
+      "search": [
+        {
+          "on": "google",
+          "q": "LLM leaderboard compare models 2026"
+        },
+        {
+          "on": "google",
+          "q": "open weight vs closed model difference"
+        }
+      ],
+      "tags": [
+        "fundamentals",
+        "models"
+      ]
+    },
+    {
+      "id": "pick-lane",
+      "stage": "orient",
+      "col": 3,
+      "row": 0,
+      "type": "side",
+      "level": "beginner",
+      "est": "30m",
+      "xp": 15,
+      "title": "Pick your lane, honestly",
+      "blurb": "Four very different jobs live under 'AI'. Choose one on purpose.",
+      "requires": [],
+      "mission": "Read the role breakdowns and commit to one path for the next three months.",
+      "why": "The most common failure mode is doing a bit of everything and finishing nothing. You can switch later; the foundations transfer.",
+      "steps": [
+        "Read the roadmap and interview sections of the Awesome Generative AI Guide.",
+        "Ask yourself which of these you want on a Saturday: shipping a product, training a model, making images, or getting your own work done faster.",
+        "Pick the path on this map that matches, and ignore the other three for now."
+      ],
+      "done_when": [
+        "You have chosen one path and can say why in a sentence."
+      ],
+      "links": [
+        {
+          "label": "Awesome Generative AI Guide — roadmaps, interviews, courses",
+          "url": "https://github.com/aishwaryanr/awesome-generative-ai-guide",
+          "kind": "list",
+          "stars": 28800,
+          "verified": true
+        }
+      ],
+      "search": [
+        {
+          "on": "google",
+          "q": "AI engineer vs ML engineer vs research scientist role difference"
+        }
+      ],
+      "tags": [
+        "career"
+      ]
+    },
+    {
+      "id": "tokens-context",
+      "stage": "orient",
+      "col": 1,
+      "row": 1,
+      "type": "core",
+      "level": "beginner",
+      "est": "45m",
+      "xp": 25,
+      "title": "Tokens, context and cost",
+      "blurb": "Why length is money, and why the model forgets the top of a long chat.",
+      "requires": [
+        "what-is-genai"
+      ],
+      "mission": "Tokenize your own writing, then work out what a 100-message conversation would cost you.",
+      "why": "Everything downstream — pricing, context limits, why a big document fails, why RAG exists — is a consequence of tokens. Fifteen minutes here pays for itself repeatedly.",
+      "steps": [
+        "Install tiktoken (or use any tokenizer playground) and tokenize three paragraphs of your own writing.",
+        "Count the tokens in a document you actually work with.",
+        "Look up the context window and the per-million-token price of the model you use most.",
+        "Multiply it out for a realistic day of use."
+      ],
+      "done_when": [
+        "You can estimate the token count of a document from its word count.",
+        "You know your main model's context window and its price per million tokens."
+      ],
+      "links": [
+        {
+          "label": "tiktoken — fast BPE tokenizer",
+          "url": "https://github.com/openai/tiktoken",
+          "kind": "repo",
+          "stars": 19000,
+          "verified": true
+        }
+      ],
+      "search": [
+        {
+          "on": "google",
+          "q": "tokenizer playground count tokens"
+        },
+        {
+          "on": "google",
+          "q": "LLM context window comparison pricing per million tokens"
+        }
+      ],
+      "tags": [
+        "fundamentals",
+        "cost"
+      ]
+    },
+    {
+      "id": "first-real-task",
+      "stage": "orient",
+      "col": 2,
+      "row": 1,
+      "type": "build",
+      "level": "beginner",
+      "est": "2h",
+      "xp": 50,
+      "title": "QUEST: hand it something real",
+      "blurb": "Take an actual task off your own list and run it through a model end to end.",
+      "requires": [
+        "what-is-genai",
+        "model-zoo"
+      ],
+      "mission": "Pick one genuinely annoying task you owe someone this week and complete it with a model, keeping every prompt you used.",
+      "why": "Tutorials teach you the shape of the tool. One real task teaches you where it breaks — which is the part you need.",
+      "steps": [
+        "Choose a task with a definite finish line: a summary, a plan, a script, a set of test cases, a translated document.",
+        "Do it in a single conversation. Do not start over when it goes wrong — correct it and watch what happens.",
+        "Save the transcript. Mark the exact turn where the answer got good.",
+        "Write down what you had to tell it that you assumed it would know."
+      ],
+      "done_when": [
+        "The task is genuinely finished, not half-finished.",
+        "You have a saved transcript with the turning point marked."
+      ],
+      "links": [
+        {
+          "label": "prompts.chat — the largest open prompt library",
+          "url": "https://github.com/f/prompts.chat",
+          "kind": "list",
+          "stars": 167600,
+          "verified": true
+        }
+      ],
+      "search": [
+        {
+          "on": "google",
+          "q": "best real world use cases for ChatGPT at work"
+        }
+      ],
+      "tags": [
+        "practice"
+      ]
+    },
+    {
+      "id": "chat-craft",
+      "stage": "drive",
+      "col": 1,
+      "row": 0,
+      "type": "core",
+      "level": "beginner",
+      "est": "3h",
+      "xp": 25,
+      "title": "Prompt patterns that work",
+      "blurb": "Role, context, examples, constraints, format. The five levers, and when to pull each.",
+      "requires": [
+        "what-is-genai"
+      ],
+      "mission": "Work through the Prompt Engineering Guide's core techniques and rewrite three of your own weak prompts using them.",
+      "why": "Most 'the AI is useless' complaints are a one-line prompt against a hard problem. The techniques here are not tricks — they are the difference between a coin flip and a reliable tool.",
+      "steps": [
+        "Read the Prompt Engineering Guide's basics, then zero-shot, few-shot and chain-of-thought.",
+        "Take a prompt of yours that gave a bad answer. Add: who the model is, what the context is, one worked example, and the output format you want.",
+        "Run both versions side by side and keep the diff.",
+        "Repeat with two more prompts until the improvement is obvious."
+      ],
+      "done_when": [
+        "You have three before-and-after prompt pairs where the after is clearly better.",
+        "You reach for examples and explicit formats without thinking about it."
+      ],
+      "links": [
+        {
+          "label": "Prompt Engineering Guide",
+          "url": "https://github.com/dair-ai/Prompt-Engineering-Guide",
+          "kind": "course",
+          "stars": 77600,
+          "verified": true
+        },
+        {
+          "label": "promptingguide.ai",
+          "url": "https://www.promptingguide.ai",
+          "kind": "docs",
+          "verified": false
+        }
+      ],
+      "search": [
+        {
+          "on": "google",
+          "q": "few shot prompting vs chain of thought examples"
+        },
+        {
+          "on": "youtube",
+          "q": "prompt engineering techniques tutorial"
+        }
+      ],
+      "tags": [
+        "prompting"
+      ]
+    },
+    {
+      "id": "prompt-tutorial",
+      "stage": "drive",
+      "col": 2,
+      "row": 0,
+      "type": "core",
+      "level": "beginner",
+      "est": "4h",
+      "xp": 25,
+      "title": "The interactive tutorial",
+      "blurb": "Nine chapters of graded exercises. The fastest way from 'I type things' to 'I can steer this'.",
+      "requires": [
+        "chat-craft"
+      ],
+      "mission": "Complete Anthropic's interactive prompt engineering tutorial, doing the exercises rather than reading the answers.",
+      "why": "Reading about prompting produces confidence; doing graded exercises produces skill. This is the single highest-return four hours on the beginner half of this map.",
+      "steps": [
+        "Open the interactive tutorial notebooks and work chapter by chapter.",
+        "Attempt every exercise before revealing the solution — the failures are the lesson.",
+        "Then skim the wider courses repo for the real-world prompting and tool-use modules.",
+        "Copy the two techniques that surprised you into your own notes."
+      ],
+      "done_when": [
+        "All nine chapters done, exercises attempted first.",
+        "You can name a case where a system prompt fixed something no amount of rewording did."
+      ],
+      "links": [
+        {
+          "label": "Interactive prompt engineering tutorial",
+          "url": "https://github.com/anthropics/prompt-eng-interactive-tutorial",
+          "kind": "course",
+          "stars": 37700,
+          "verified": true
+        },
+        {
+          "label": "Anthropic courses — API, prompting, evals, tool use",
+          "url": "https://github.com/anthropics/courses",
+          "kind": "course",
+          "stars": 22700,
+          "verified": true
+        },
+        {
+          "label": "Anthropic docs",
+          "url": "https://docs.anthropic.com",
+          "kind": "docs",
+          "verified": false
+        }
+      ],
+      "search": [
+        {
+          "on": "google",
+          "q": "anthropic prompt engineering interactive tutorial"
+        }
+      ],
+      "tags": [
+        "prompting",
+        "hands-on"
+      ]
+    },
+    {
+      "id": "prompt-library",
+      "stage": "drive",
+      "col": 0,
+      "row": 0,
+      "type": "build",
+      "level": "beginner",
+      "est": "2h",
+      "xp": 50,
+      "title": "QUEST: build your prompt library",
+      "blurb": "Stop retyping. Ten prompts you own, versioned, that do your recurring work.",
+      "requires": [
+        "chat-craft"
+      ],
+      "mission": "Write ten reusable prompts for tasks you do repeatedly, and keep them in a file you can actually find.",
+      "why": "Professionals do not improvise every time. A prompt library is the compounding asset of this whole stage — it turns a good session into a repeatable one.",
+      "steps": [
+        "List ten things you ask a model for more than once a month.",
+        "Browse prompts.chat for structures worth stealing.",
+        "Write each as a template with clearly marked slots for the parts that change.",
+        "Store them in a git repo, a notes app, or your tool's saved-prompt feature — somewhere you will look.",
+        "Use them for a week and edit the ones that disappoint you."
+      ],
+      "done_when": [
+        "Ten templates exist somewhere you can reach in five seconds.",
+        "At least three have been revised after real use."
+      ],
+      "links": [
+        {
+          "label": "prompts.chat — huge prompt library",
+          "url": "https://github.com/f/prompts.chat",
+          "kind": "list",
+          "stars": 167600,
+          "verified": true
+        },
+        {
+          "label": "Prompt Engineering — 22 hands-on notebooks",
+          "url": "https://github.com/NirDiamant/Prompt_Engineering",
+          "kind": "course",
+          "stars": 7800,
+          "verified": true
+        }
+      ],
+      "search": [
+        {
+          "on": "google",
+          "q": "reusable prompt template library best practice"
+        }
+      ],
+      "tags": [
+        "prompting",
+        "practice"
+      ]
+    },
+    {
+      "id": "structured-output",
+      "stage": "drive",
+      "col": 1,
+      "row": 1,
+      "type": "core",
+      "level": "intermediate",
+      "est": "2h",
+      "xp": 25,
+      "title": "Make it return JSON",
+      "blurb": "Prose is unparseable. Schemas turn a chat model into a component you can build on.",
+      "requires": [
+        "chat-craft"
+      ],
+      "mission": "Get a model to return the same valid JSON shape ten times in a row, and handle the time it does not.",
+      "why": "The moment you want software rather than conversation, you need output your code can trust. This is the hinge between using AI and building with it.",
+      "steps": [
+        "Define a schema for something small — a parsed invoice, a tagged support ticket, a set of flashcards.",
+        "Ask for it three ways: plain instruction, instruction plus example, and your provider's structured-output or JSON mode.",
+        "Run each ten times and count the failures.",
+        "Write the fallback: what your code does when the JSON is malformed."
+      ],
+      "done_when": [
+        "Ten consecutive valid responses against your schema.",
+        "A parse failure produces a handled error, not a crash."
+      ],
+      "links": [
+        {
+          "label": "Prompt Engineering notebooks",
+          "url": "https://github.com/NirDiamant/Prompt_Engineering",
+          "kind": "course",
+          "stars": 7800,
+          "verified": true
+        },
+        {
+          "label": "OpenAI Cookbook",
+          "url": "https://github.com/openai/openai-cookbook",
+          "kind": "repo",
+          "stars": 75400,
+          "verified": true
+        }
+      ],
+      "search": [
+        {
+          "on": "google",
+          "q": "structured outputs JSON schema LLM API"
+        },
+        {
+          "on": "github",
+          "q": "structured output pydantic llm"
+        }
+      ],
+      "tags": [
+        "prompting",
+        "engineering"
+      ]
+    },
+    {
+      "id": "context-engineering",
+      "stage": "drive",
+      "col": 2,
+      "row": 1,
+      "type": "core",
+      "level": "intermediate",
+      "est": "2h",
+      "xp": 25,
+      "title": "Context engineering",
+      "blurb": "The skill that replaced prompt engineering: choosing what goes in the window at all.",
+      "requires": [
+        "chat-craft",
+        "tokens-context"
+      ],
+      "mission": "Take a task that fails on a long document and make it succeed by changing what you put in the context, not how you word it.",
+      "why": "Beyond a certain size, wording stops mattering and selection starts. Everything in the RAG stage is this idea industrialised — meet it here first, by hand.",
+      "steps": [
+        "Find a task where a long input gives a vague answer.",
+        "Cut the input to only the relevant sections and rerun. Note the difference.",
+        "Try the same task with the relevant sections placed at the very end of the prompt.",
+        "Write down your rule for what earns a place in the context window."
+      ],
+      "done_when": [
+        "You have a case where less context beat more context.",
+        "You can say why position inside a long prompt changes the answer."
+      ],
+      "links": [
+        {
+          "label": "Prompt Engineering Guide",
+          "url": "https://github.com/dair-ai/Prompt-Engineering-Guide",
+          "kind": "course",
+          "stars": 77600,
+          "verified": true
+        }
+      ],
+      "search": [
+        {
+          "on": "google",
+          "q": "context engineering LLM lost in the middle"
+        }
+      ],
+      "tags": [
+        "prompting",
+        "context"
+      ]
+    },
+    {
+      "id": "local-models",
+      "stage": "drive",
+      "col": 3,
+      "row": 1,
+      "type": "side",
+      "level": "intermediate",
+      "est": "2h",
+      "xp": 15,
+      "title": "Run a model on your own machine",
+      "blurb": "Free, private, offline, and a genuinely different feeling once it is running.",
+      "requires": [
+        "model-zoo"
+      ],
+      "mission": "Install Ollama, pull a small open-weight model, and hold a conversation with no network connection.",
+      "why": "Local models change what you are willing to try: no bill, no rate limit, no data leaving the laptop. They also make model size viscerally real when the small one struggles.",
+      "steps": [
+        "Install Ollama and pull a small instruct model that fits your RAM.",
+        "Chat with it in the terminal, then turn your wifi off and chat again.",
+        "Install Open WebUI if you want a browser interface over it.",
+        "Give the same hard prompt to the local model and to a frontier model, and compare honestly."
+      ],
+      "done_when": [
+        "A model answers you with the network off.",
+        "You can state one task your local model is good enough for."
+      ],
+      "links": [
+        {
+          "label": "Ollama — run models locally",
+          "url": "https://github.com/ollama/ollama",
+          "kind": "tool",
+          "stars": 179000,
+          "verified": true
+        },
+        {
+          "label": "llama.cpp — inference in C/C++",
+          "url": "https://github.com/ggml-org/llama.cpp",
+          "kind": "repo",
+          "stars": 125000,
+          "verified": true
+        },
+        {
+          "label": "Open WebUI — self-hosted chat interface",
+          "url": "https://github.com/open-webui/open-webui",
+          "kind": "tool",
+          "stars": 149300,
+          "verified": true
+        },
+        {
+          "label": "ollama.com",
+          "url": "https://ollama.com",
+          "kind": "docs",
+          "verified": false
+        }
+      ],
+      "search": [
+        {
+          "on": "youtube",
+          "q": "run LLM locally ollama tutorial"
+        },
+        {
+          "on": "google",
+          "q": "best local LLM for 16GB RAM"
+        }
+      ],
+      "tags": [
+        "local",
+        "tools"
+      ]
+    },
+    {
+      "id": "hallucination",
+      "stage": "trust",
+      "col": 1,
+      "row": 0,
+      "type": "core",
+      "level": "beginner",
+      "est": "60m",
+      "xp": 25,
+      "title": "Why it makes things up",
+      "blurb": "Fabrication is not a bug being fixed. It is the same mechanism that makes it useful.",
+      "requires": [
+        "chat-craft"
+      ],
+      "mission": "Deliberately make a model produce a confident falsehood three different ways, and learn to recognise the shape of it.",
+      "why": "You cannot supervise a tool whose failure mode you have never seen. Induce it on purpose now, in a safe context, rather than discovering it in front of a client.",
+      "steps": [
+        "Ask for a citation on a niche topic and check whether the paper exists.",
+        "Ask about something that happened after the model's training cutoff.",
+        "Ask it to compare two things where one of them is invented.",
+        "Note what all three answers had in common in tone and specificity."
+      ],
+      "done_when": [
+        "You have three saved examples of confident wrong answers.",
+        "You can describe the tell that makes you check."
+      ],
+      "links": [
+        {
+          "label": "Generative AI for Beginners — responsible use lesson",
+          "url": "https://github.com/microsoft/generative-ai-for-beginners",
+          "kind": "course",
+          "stars": 118200,
+          "verified": true
+        }
+      ],
+      "search": [
+        {
+          "on": "google",
+          "q": "why do LLMs hallucinate explained"
+        }
+      ],
+      "tags": [
+        "safety",
+        "fundamentals"
+      ]
+    },
+    {
+      "id": "verify-loop",
+      "stage": "trust",
+      "col": 2,
+      "row": 0,
+      "type": "core",
+      "level": "beginner",
+      "est": "45m",
+      "xp": 25,
+      "title": "A checking routine you keep",
+      "blurb": "Three questions, every time, before output leaves your hands.",
+      "requires": [
+        "hallucination"
+      ],
+      "mission": "Write a short verification checklist and use it on everything you ship for one week.",
+      "why": "Trust cannot be a mood. A written routine survives deadline pressure, which is exactly when unverified output gets sent.",
+      "steps": [
+        "Draft three checks: are the facts sourced, are the numbers recomputed, would I sign my name to this?",
+        "Add a domain-specific fourth check for your own work.",
+        "Stick it where you will see it, and apply it for a week.",
+        "Adjust it after the first thing it catches."
+      ],
+      "done_when": [
+        "The checklist exists and has caught at least one real error.",
+        "You apply it without needing to look at it."
+      ],
+      "links": [
+        {
+          "label": "Awesome Generative AI Guide — evaluation resources",
+          "url": "https://github.com/aishwaryanr/awesome-generative-ai-guide",
+          "kind": "list",
+          "stars": 28800,
+          "verified": true
+        }
+      ],
+      "search": [
+        {
+          "on": "google",
+          "q": "how to fact check AI generated content workflow"
+        }
+      ],
+      "tags": [
+        "safety",
+        "habit"
+      ]
+    },
+    {
+      "id": "data-privacy",
+      "stage": "trust",
+      "col": 1,
+      "row": 1,
+      "type": "core",
+      "level": "beginner",
+      "est": "45m",
+      "xp": 25,
+      "title": "What not to paste in",
+      "blurb": "Client data, secrets, health records, anything under NDA. Know your own rules before you need them.",
+      "requires": [],
+      "mission": "Find out what your provider does with your inputs, and write your personal red line.",
+      "why": "This is the mistake with actual consequences — legal, professional, and hard to undo. Ten minutes of reading now.",
+      "steps": [
+        "Read the data-use and retention policy for the tool you use most, including whether the business tier differs.",
+        "List the categories of information you handle that must never go in.",
+        "Decide what you do instead for each: redact, run a local model, or do it by hand.",
+        "If you work somewhere with a policy, go and read it."
+      ],
+      "done_when": [
+        "You know whether your prompts can be used for training.",
+        "You have a written red line and an alternative for each item on it."
+      ],
+      "links": [
+        {
+          "label": "Ollama — the offline alternative",
+          "url": "https://github.com/ollama/ollama",
+          "kind": "tool",
+          "stars": 179000,
+          "verified": true
+        }
+      ],
+      "search": [
+        {
+          "on": "google",
+          "q": "does my AI provider train on my data enterprise policy"
+        },
+        {
+          "on": "google",
+          "q": "GDPR generative AI workplace guidance"
+        }
+      ],
+      "tags": [
+        "safety",
+        "policy"
+      ]
+    },
+    {
+      "id": "cost-latency",
+      "stage": "trust",
+      "col": 3,
+      "row": 0,
+      "type": "side",
+      "level": "intermediate",
+      "est": "60m",
+      "xp": 15,
+      "title": "What this actually costs",
+      "blurb": "Tokens in, tokens out, seconds waited. The three numbers that decide if an idea is viable.",
+      "requires": [
+        "tokens-context"
+      ],
+      "mission": "Cost out a real workload at three model tiers and find where the cheap model stops being good enough.",
+      "why": "Plenty of impressive prototypes are quietly uneconomic. Knowing the arithmetic early stops you building one.",
+      "steps": [
+        "Pick a task and estimate tokens in and out per run, and runs per day.",
+        "Price it against a frontier model, a mid model and a small model.",
+        "Run all three on ten real inputs and score the outputs yourself.",
+        "Find the cheapest tier that still passes."
+      ],
+      "done_when": [
+        "You have a monthly cost figure for a real workload.",
+        "You know which tier you would actually deploy and why."
+      ],
+      "links": [
+        {
+          "label": "LiteLLM — one interface, 100+ models",
+          "url": "https://github.com/BerriAI/litellm",
+          "kind": "tool",
+          "stars": 56800,
+          "verified": true
+        }
+      ],
+      "search": [
+        {
+          "on": "google",
+          "q": "LLM API pricing comparison cost per million tokens"
+        }
+      ],
+      "tags": [
+        "cost",
+        "engineering"
+      ]
+    },
+    {
+      "id": "no-code-agents",
+      "stage": "autopilot",
+      "col": 1,
+      "row": 0,
+      "type": "core",
+      "level": "beginner",
+      "est": "3h",
+      "xp": 25,
+      "title": "Wire your first automation",
+      "blurb": "Trigger, model, action. A working AI workflow with no editor open.",
+      "requires": [
+        "verify-loop"
+      ],
+      "mission": "Build one n8n workflow that reacts to something real — a new email, a form response, a file drop — and does something useful with a model in the middle.",
+      "why": "Automation is where AI stops being a place you visit and becomes something that runs whether you are there or not. Visual builders get you there in an afternoon.",
+      "steps": [
+        "Install n8n locally or use the hosted version.",
+        "Pick a trigger you can fire on demand while testing.",
+        "Add an AI step that classifies, summarises or drafts.",
+        "Send the result somewhere you will see it: a message, a doc, a spreadsheet row.",
+        "Run it ten times on real inputs and fix what breaks."
+      ],
+      "done_when": [
+        "The workflow runs without you touching it.",
+        "It has survived ten real inputs including at least one strange one."
+      ],
+      "links": [
+        {
+          "label": "n8n — fair-code workflow automation",
+          "url": "https://github.com/n8n-io/n8n",
+          "kind": "tool",
+          "stars": 201300,
+          "verified": true
+        },
+        {
+          "label": "n8n.io",
+          "url": "https://n8n.io",
+          "kind": "docs",
+          "verified": false
+        }
+      ],
+      "search": [
+        {
+          "on": "youtube",
+          "q": "n8n AI agent workflow tutorial beginner"
+        },
+        {
+          "on": "google",
+          "q": "n8n vs make vs zapier AI automation"
+        }
+      ],
+      "tags": [
+        "automation",
+        "no-code"
+      ]
+    },
+    {
+      "id": "workflow-design",
+      "stage": "autopilot",
+      "col": 2,
+      "row": 0,
+      "type": "core",
+      "level": "intermediate",
+      "est": "2h",
+      "xp": 25,
+      "title": "Automate the right thing",
+      "blurb": "Frequency times annoyance minus the cost of it going wrong.",
+      "requires": [
+        "no-code-agents"
+      ],
+      "mission": "Audit your week, score every repetitive task, and automate only the ones that clear the bar.",
+      "why": "Most abandoned automations were never worth building. Ten minutes of arithmetic beforehand is what separates a tool you keep from a weekend you lost.",
+      "steps": [
+        "List everything you did more than three times last week.",
+        "For each: how long it takes, how often, and what happens if it is done wrong.",
+        "Cross out anything where a wrong answer is expensive and unnoticeable — those need a human.",
+        "Rank what remains and build only the top two."
+      ],
+      "done_when": [
+        "A scored list exists.",
+        "You have deliberately rejected at least one automation as not worth it."
+      ],
+      "links": [
+        {
+          "label": "n8n workflow templates and docs",
+          "url": "https://github.com/n8n-io/n8n",
+          "kind": "tool",
+          "stars": 201300,
+          "verified": true
+        }
+      ],
+      "search": [
+        {
+          "on": "google",
+          "q": "which tasks are worth automating framework"
+        }
+      ],
+      "tags": [
+        "automation",
+        "judgement"
+      ]
+    },
+    {
+      "id": "chat-your-docs",
+      "stage": "autopilot",
+      "col": 1,
+      "row": 1,
+      "type": "build",
+      "level": "intermediate",
+      "est": "4h",
+      "xp": 50,
+      "title": "QUEST: chat with your own documents",
+      "blurb": "Upload a folder, ask questions, get answers with sources — without writing code.",
+      "requires": [
+        "no-code-agents"
+      ],
+      "mission": "Stand up Dify or Open WebUI, load a document set you actually care about, and get sourced answers out of it.",
+      "why": "This is retrieval — the single most useful pattern in applied AI — and you can have it working today. If you later take the engineer path, you will already know what it should feel like.",
+      "steps": [
+        "Install Dify (or Open WebUI with its document features).",
+        "Load 20-50 documents you know well enough to grade the answers.",
+        "Ask ten questions, including three you know are not answerable from the set.",
+        "Check that every answer cites a real source, and note what it does with the unanswerable three.",
+        "Tune chunk size or the prompt until the unanswerable ones get refused rather than invented."
+      ],
+      "done_when": [
+        "Ten questions answered with real citations.",
+        "The three unanswerable questions get an honest 'not in these documents'."
+      ],
+      "links": [
+        {
+          "label": "Dify — visual agent and RAG platform",
+          "url": "https://github.com/langgenius/dify",
+          "kind": "tool",
+          "stars": 153000,
+          "verified": true
+        },
+        {
+          "label": "Open WebUI",
+          "url": "https://github.com/open-webui/open-webui",
+          "kind": "tool",
+          "stars": 149300,
+          "verified": true
+        }
+      ],
+      "search": [
+        {
+          "on": "youtube",
+          "q": "dify RAG knowledge base tutorial"
+        }
+      ],
+      "tags": [
+        "rag",
+        "no-code"
+      ]
+    },
+    {
+      "id": "automation-guardrails",
+      "stage": "autopilot",
+      "col": 2,
+      "row": 1,
+      "type": "core",
+      "level": "intermediate",
+      "est": "2h",
+      "xp": 25,
+      "title": "Stop it doing damage",
+      "blurb": "Approval steps, spend caps, dry runs, and a log you can read on a bad morning.",
+      "requires": [
+        "workflow-design"
+      ],
+      "mission": "Add a human approval step, a rate limit and a log to the automation you built.",
+      "why": "An unattended loop with a model in it and write access is how a small mistake becomes two hundred small mistakes. Put the brakes in before you need them.",
+      "steps": [
+        "Add an approval or review step before anything irreversible — sending, posting, paying, deleting.",
+        "Cap how many times it can run per hour.",
+        "Log every run with its input and output somewhere you can search.",
+        "Deliberately feed it a bad input and confirm the brakes hold."
+      ],
+      "done_when": [
+        "Nothing irreversible happens without a human or a cap.",
+        "You have tested the failure path, not just the happy path."
+      ],
+      "links": [
+        {
+          "label": "n8n — error workflows and approvals",
+          "url": "https://github.com/n8n-io/n8n",
+          "kind": "tool",
+          "stars": 201300,
+          "verified": true
+        }
+      ],
+      "search": [
+        {
+          "on": "google",
+          "q": "human in the loop approval AI automation best practice"
+        }
+      ],
+      "tags": [
+        "automation",
+        "safety"
+      ]
+    },
+    {
+      "id": "ai-in-your-tools",
+      "stage": "autopilot",
+      "col": 3,
+      "row": 0,
+      "type": "side",
+      "level": "beginner",
+      "est": "60m",
+      "xp": 15,
+      "title": "AI where you already work",
+      "blurb": "The assistant inside your editor, sheet, inbox and design tool — mostly already paid for.",
+      "requires": [],
+      "mission": "Turn on and genuinely use the AI features in the two applications you spend the most time in.",
+      "why": "Context switching to a chat tab is friction, and friction is why good habits die. In-place assistants win on convenience even when the model is weaker.",
+      "steps": [
+        "List the two apps you live in.",
+        "Find their AI features and use each on a real task, not a demo.",
+        "Note where the built-in assistant beats the chat tab, and where it does not.",
+        "Keep the ones that won."
+      ],
+      "done_when": [
+        "Two in-app assistants used for real work and judged."
+      ],
+      "links": [
+        {
+          "label": "Awesome Generative AI — tools by category",
+          "url": "https://github.com/steven2358/awesome-generative-ai",
+          "kind": "list",
+          "stars": 12500,
+          "verified": true
+        }
+      ],
+      "search": [
+        {
+          "on": "google",
+          "q": "AI features in the apps I already use productivity"
+        }
+      ],
+      "tags": [
+        "tools",
+        "productivity"
+      ]
+    },
+    {
+      "id": "python-basics",
+      "stage": "setup",
+      "col": 1,
+      "row": 0,
+      "type": "core",
+      "level": "beginner",
+      "est": "1w",
+      "xp": 25,
+      "title": "Enough Python",
+      "blurb": "Functions, dicts, loops, files, requests. You do not need more than this to start.",
+      "requires": [],
+      "mission": "Get comfortable enough with Python to read someone else's script and change it without fear.",
+      "why": "Nearly everything in AI is a Python API call away. You are not becoming a software engineer here — you need reading fluency and the confidence to edit.",
+      "steps": [
+        "Work through the numpy and pandas chapters of the Python Data Science Handbook — they are free notebooks.",
+        "Write a script that reads a CSV, filters it, and writes a new one.",
+        "Write a script that calls any public HTTP API and prints a field from the JSON.",
+        "Read a random script from a repo you like and explain out loud what it does."
+      ],
+      "done_when": [
+        "You can write a 30-line script from scratch without copying.",
+        "An unfamiliar script is readable rather than intimidating."
+      ],
+      "links": [
+        {
+          "label": "Python Data Science Handbook — free notebooks",
+          "url": "https://github.com/jakevdp/PythonDataScienceHandbook",
+          "kind": "course",
+          "stars": 49600,
+          "verified": true
+        }
+      ],
+      "search": [
+        {
+          "on": "google",
+          "q": "python for beginners free course interactive"
+        },
+        {
+          "on": "youtube",
+          "q": "python crash course for data and AI"
+        }
+      ],
+      "tags": [
+        "python",
+        "foundation"
+      ]
+    },
+    {
+      "id": "env-tooling",
+      "stage": "setup",
+      "col": 2,
+      "row": 0,
+      "type": "core",
+      "level": "beginner",
+      "est": "2h",
+      "xp": 25,
+      "title": "Environments that do not fight you",
+      "blurb": "One tool, one lockfile, no more 'works on my machine'.",
+      "requires": [
+        "python-basics"
+      ],
+      "mission": "Install uv and set up a fresh project with a pinned, reproducible environment.",
+      "why": "Dependency hell has ended more AI learning attempts than hard maths ever has. Half an hour with a modern tool and it stops being a category of problem.",
+      "steps": [
+        "Install uv.",
+        "Create a project, add a couple of packages, and commit the lockfile.",
+        "Delete the virtual environment and rebuild it from the lockfile.",
+        "Learn the three commands you will use daily and write them down."
+      ],
+      "done_when": [
+        "A wiped environment rebuilds from the lockfile in seconds.",
+        "You never install packages globally again."
+      ],
+      "links": [
+        {
+          "label": "uv — fast Python package and project manager",
+          "url": "https://github.com/astral-sh/uv",
+          "kind": "tool",
+          "stars": 88900,
+          "verified": true
+        }
+      ],
+      "search": [
+        {
+          "on": "google",
+          "q": "uv python project manager tutorial"
+        }
+      ],
+      "tags": [
+        "tooling",
+        "foundation"
+      ]
+    },
+    {
+      "id": "git-github",
+      "stage": "setup",
+      "col": 1,
+      "row": 1,
+      "type": "core",
+      "level": "beginner",
+      "est": "3h",
+      "xp": 25,
+      "title": "Read the source",
+      "blurb": "Clone, branch, commit, PR — and the skill of navigating a repo you did not write.",
+      "requires": [],
+      "mission": "Clone a real AI repo, run its example, change something, and commit the change on a branch.",
+      "why": "The best AI documentation is the code of the repos on this map. Not being able to open them cuts you off from most of the field.",
+      "steps": [
+        "Clone one of the cookbook repos on this map.",
+        "Find and run its simplest example.",
+        "Read the README, then find where the README is lying or out of date.",
+        "Make a branch, change something small, commit it.",
+        "Learn to read a repo's issues — that is where the real state of a project lives."
+      ],
+      "done_when": [
+        "You cloned a repo and ran something from it.",
+        "You can find a function's definition in an unfamiliar codebase."
+      ],
+      "links": [
+        {
+          "label": "OpenAI Cookbook — a good repo to practise on",
+          "url": "https://github.com/openai/openai-cookbook",
+          "kind": "repo",
+          "stars": 75400,
+          "verified": true
+        },
+        {
+          "label": "Claude Cookbooks",
+          "url": "https://github.com/anthropics/claude-cookbooks",
+          "kind": "repo",
+          "stars": 51900,
+          "verified": true
+        }
+      ],
+      "search": [
+        {
+          "on": "youtube",
+          "q": "git and github crash course for beginners"
+        }
+      ],
+      "tags": [
+        "tooling",
+        "foundation"
+      ]
+    },
+    {
+      "id": "api-keys",
+      "stage": "setup",
+      "col": 2,
+      "row": 1,
+      "type": "core",
+      "level": "beginner",
+      "est": "60m",
+      "xp": 25,
+      "title": "Keys, secrets and spend limits",
+      "blurb": "Get a key, keep it out of git, and put a hard cap on the bill.",
+      "requires": [
+        "env-tooling"
+      ],
+      "mission": "Create an API key, load it from the environment, and set a spending limit before you write a single loop.",
+      "why": "Two classic beginner disasters: a key committed to a public repo, and a runaway loop that bills all weekend. Both are preventable in fifteen minutes.",
+      "steps": [
+        "Create a key on whichever provider you will start with.",
+        "Put it in a .env file and add .env to .gitignore. Verify with git status.",
+        "Load it from the environment in code — never as a literal.",
+        "Set a hard monthly spend cap and a usage alert in the provider console.",
+        "Learn how to revoke a key, before you need to."
+      ],
+      "done_when": [
+        "Code reads the key from the environment.",
+        "A spend cap and an alert are set.",
+        "git status never shows your key file."
+      ],
+      "links": [
+        {
+          "label": "OpenAI platform docs",
+          "url": "https://platform.openai.com/docs",
+          "kind": "docs",
+          "verified": false
+        },
+        {
+          "label": "Anthropic docs",
+          "url": "https://docs.anthropic.com",
+          "kind": "docs",
+          "verified": false
+        },
+        {
+          "label": "Google AI for developers",
+          "url": "https://ai.google.dev",
+          "kind": "docs",
+          "verified": false
+        }
+      ],
+      "search": [
+        {
+          "on": "google",
+          "q": "store API keys environment variables dotenv best practice"
+        },
+        {
+          "on": "google",
+          "q": "set spending limit OpenAI Anthropic API console"
+        }
+      ],
+      "tags": [
+        "tooling",
+        "safety"
+      ]
+    },
+    {
+      "id": "notebooks",
+      "stage": "setup",
+      "col": 3,
+      "row": 0,
+      "type": "side",
+      "level": "beginner",
+      "est": "60m",
+      "xp": 15,
+      "title": "Notebooks and free GPUs",
+      "blurb": "Where most AI tutorials live, and where you get a GPU for nothing.",
+      "requires": [
+        "python-basics"
+      ],
+      "mission": "Run a notebook from one of the courses on this map on a free hosted GPU.",
+      "why": "Half the material in this field ships as notebooks, and a free hosted GPU means you can do the training exercises without owning hardware.",
+      "steps": [
+        "Open a notebook from the LLM course or a cookbook in a hosted notebook service.",
+        "Switch the runtime to a GPU and confirm it is visible from code.",
+        "Run the notebook end to end.",
+        "Learn how to get files in and out of the session before it disconnects."
+      ],
+      "done_when": [
+        "A GPU notebook ran to completion.",
+        "You know how to save your work before the runtime dies."
+      ],
+      "links": [
+        {
+          "label": "LLM Course — notebooks and roadmap",
+          "url": "https://github.com/mlabonne/llm-course",
+          "kind": "course",
+          "stars": 81900,
+          "verified": true
+        },
+        {
+          "label": "Google Colab",
+          "url": "https://colab.research.google.com",
+          "kind": "playground",
+          "verified": false
+        },
+        {
+          "label": "Kaggle Learn",
+          "url": "https://www.kaggle.com/learn",
+          "kind": "course",
+          "verified": false
+        }
+      ],
+      "search": [
+        {
+          "on": "google",
+          "q": "free GPU notebook colab kaggle limits"
+        }
+      ],
+      "tags": [
+        "tooling"
+      ]
+    },
+    {
+      "id": "first-api-call",
+      "stage": "api",
+      "col": 1,
+      "row": 0,
+      "type": "core",
+      "level": "beginner",
+      "est": "2h",
+      "xp": 25,
+      "title": "Your first API call",
+      "blurb": "Twelve lines of Python and the chat box becomes a function you can call in a loop.",
+      "requires": [
+        "api-keys"
+      ],
+      "mission": "Call a model from a script, then run the same prompt over fifty rows of a spreadsheet.",
+      "why": "This is the hinge of the whole engineer path. Once a model is a function, it composes with everything else you know how to write.",
+      "steps": [
+        "Copy the simplest example from the cookbook for your provider and get it running.",
+        "Change the system prompt and the temperature and watch what moves.",
+        "Wrap it in a function that takes text and returns text.",
+        "Run it over fifty rows of real data, with a delay and a try/except so one failure does not kill the run.",
+        "Save every input and output to a file — you will want them for evals later."
+      ],
+      "done_when": [
+        "Fifty rows processed unattended.",
+        "A failed call is retried or logged, never fatal."
+      ],
+      "links": [
+        {
+          "label": "OpenAI Cookbook",
+          "url": "https://github.com/openai/openai-cookbook",
+          "kind": "repo",
+          "stars": 75400,
+          "verified": true
+        },
+        {
+          "label": "Claude Cookbooks",
+          "url": "https://github.com/anthropics/claude-cookbooks",
+          "kind": "repo",
+          "stars": 51900,
+          "verified": true
+        },
+        {
+          "label": "Gemini Cookbook",
+          "url": "https://github.com/google-gemini/cookbook",
+          "kind": "repo",
+          "stars": 17700,
+          "verified": true
+        }
+      ],
+      "search": [
+        {
+          "on": "youtube",
+          "q": "first LLM API call python tutorial"
+        },
+        {
+          "on": "github",
+          "q": "llm api quickstart example python"
+        }
+      ],
+      "tags": [
+        "engineering",
+        "api"
+      ]
+    },
+    {
+      "id": "tool-calling",
+      "stage": "api",
+      "col": 2,
+      "row": 0,
+      "type": "core",
+      "level": "intermediate",
+      "est": "3h",
+      "xp": 25,
+      "title": "Tool calling",
+      "blurb": "You describe a function, the model asks you to run it. This is the whole basis of agents.",
+      "requires": [
+        "first-api-call"
+      ],
+      "mission": "Give a model two tools it can call, and handle the round trip yourself without a framework.",
+      "why": "Every agent framework on this map is a wrapper around this loop. Write it by hand once and the frameworks become obvious instead of magical.",
+      "steps": [
+        "Define two real functions — a calculator and something that hits an API you control.",
+        "Describe them as tool schemas and pass them with your prompt.",
+        "When the model requests a call, execute it and feed the result back.",
+        "Handle the case where it asks for a tool that does not exist, or with bad arguments.",
+        "Watch what happens when it chains both tools in one turn."
+      ],
+      "done_when": [
+        "A model completes a task that needs both tools.",
+        "Bad arguments produce a handled error the model can recover from."
+      ],
+      "links": [
+        {
+          "label": "OpenAI Cookbook — function calling",
+          "url": "https://github.com/openai/openai-cookbook",
+          "kind": "repo",
+          "stars": 75400,
+          "verified": true
+        },
+        {
+          "label": "Anthropic courses — tool use",
+          "url": "https://github.com/anthropics/courses",
+          "kind": "course",
+          "stars": 22700,
+          "verified": true
+        }
+      ],
+      "search": [
+        {
+          "on": "google",
+          "q": "LLM function calling tool use tutorial"
+        }
+      ],
+      "tags": [
+        "engineering",
+        "agents"
+      ]
+    },
+    {
+      "id": "streaming-ui",
+      "stage": "api",
+      "col": 1,
+      "row": 1,
+      "type": "core",
+      "level": "intermediate",
+      "est": "3h",
+      "xp": 25,
+      "title": "Streaming and the feel of it",
+      "blurb": "Ten seconds of silence feels broken. The same ten seconds streaming feels fast.",
+      "requires": [
+        "first-api-call"
+      ],
+      "mission": "Stream a response token by token into a user interface, and handle a cancelled request.",
+      "why": "Perceived latency is a product feature, and streaming is most of it. It is also where beginners hit their first real async bug — worth meeting deliberately.",
+      "steps": [
+        "Switch your call to streaming mode and print tokens as they arrive.",
+        "Put it behind a minimal UI so text appears progressively.",
+        "Add a stop button that actually cancels the request.",
+        "Handle a mid-stream disconnection without corrupting what you have stored."
+      ],
+      "done_when": [
+        "Text appears as it is generated.",
+        "Cancelling mid-stream leaves your state consistent."
+      ],
+      "links": [
+        {
+          "label": "AI SDK — TypeScript toolkit for streaming AI UIs",
+          "url": "https://github.com/vercel/ai",
+          "kind": "repo",
+          "stars": 26300,
+          "verified": true
+        },
+        {
+          "label": "Gradio — Python UIs for models",
+          "url": "https://github.com/gradio-app/gradio",
+          "kind": "tool",
+          "stars": 43400,
+          "verified": true
+        }
+      ],
+      "search": [
+        {
+          "on": "google",
+          "q": "stream LLM response server sent events tutorial"
+        }
+      ],
+      "tags": [
+        "engineering",
+        "ui"
+      ]
+    },
+    {
+      "id": "ship-a-chat-app",
+      "stage": "api",
+      "col": 2,
+      "row": 1,
+      "type": "build",
+      "level": "intermediate",
+      "est": "1d",
+      "xp": 50,
+      "title": "QUEST: ship a chat app",
+      "blurb": "Your own interface, your own system prompt, one tool, a link you can send someone.",
+      "requires": [
+        "streaming-ui",
+        "tool-calling"
+      ],
+      "mission": "Build and deploy a small chat application with a specific purpose, and get one other person to use it.",
+      "why": "The first thing you deploy teaches you more than the previous month of tutorials. It is also the first thing you can show anyone.",
+      "steps": [
+        "Choose a narrow purpose — not 'a chatbot' but 'reviews my SQL' or 'plans my week'.",
+        "Build the UI with Streamlit or Gradio; both go from script to web app in minutes.",
+        "Give it a real system prompt and one tool.",
+        "Add conversation history and a way to start over.",
+        "Deploy it somewhere with a URL, and send that URL to one person.",
+        "Watch them use it without helping. Write down every place they got stuck."
+      ],
+      "done_when": [
+        "A stranger can use it from a link without instructions from you.",
+        "You have a written list of what confused them."
+      ],
+      "links": [
+        {
+          "label": "Streamlit — Python scripts to web apps",
+          "url": "https://github.com/streamlit/streamlit",
+          "kind": "tool",
+          "stars": 45600,
+          "verified": true
+        },
+        {
+          "label": "Gradio",
+          "url": "https://github.com/gradio-app/gradio",
+          "kind": "tool",
+          "stars": 43400,
+          "verified": true
+        },
+        {
+          "label": "Awesome LLM Apps — 100+ working examples",
+          "url": "https://github.com/Shubhamsaboo/awesome-llm-apps",
+          "kind": "list",
+          "stars": 133300,
+          "verified": true
+        }
+      ],
+      "search": [
+        {
+          "on": "youtube",
+          "q": "build and deploy streamlit LLM chat app"
+        }
+      ],
+      "tags": [
+        "project",
+        "engineering"
+      ]
+    },
+    {
+      "id": "provider-swap",
+      "stage": "api",
+      "col": 3,
+      "row": 0,
+      "type": "side",
+      "level": "intermediate",
+      "est": "2h",
+      "xp": 15,
+      "title": "Do not marry one provider",
+      "blurb": "One interface, many models. Swap on price, outage or quality without a rewrite.",
+      "requires": [
+        "first-api-call"
+      ],
+      "mission": "Route your existing code through LiteLLM and run the same prompt against three different providers.",
+      "why": "Prices move, models get deprecated, providers have outages. A one-line model swap is cheap insurance and makes honest comparison possible.",
+      "steps": [
+        "Install LiteLLM and point your existing call through it.",
+        "Run one prompt against a frontier model, a cheap model and a local one.",
+        "Compare cost, latency and quality on ten real inputs.",
+        "Add a fallback so an outage on the primary degrades instead of failing."
+      ],
+      "done_when": [
+        "Changing model is a config change.",
+        "A dead primary provider fails over automatically."
+      ],
+      "links": [
+        {
+          "label": "LiteLLM — unified LLM gateway",
+          "url": "https://github.com/BerriAI/litellm",
+          "kind": "tool",
+          "stars": 56800,
+          "verified": true
+        }
+      ],
+      "search": [
+        {
+          "on": "github",
+          "q": "litellm proxy fallback routing"
+        }
+      ],
+      "tags": [
+        "engineering",
+        "ops"
+      ]
+    },
+    {
+      "id": "multimodal",
+      "stage": "api",
+      "col": 3,
+      "row": 1,
+      "type": "side",
+      "level": "intermediate",
+      "est": "3h",
+      "xp": 15,
+      "title": "Images, audio and files in",
+      "blurb": "Screenshots, PDFs, recordings. Often the difference between a toy and a tool.",
+      "requires": [
+        "first-api-call"
+      ],
+      "mission": "Send an image and a PDF into a model and get structured data back out.",
+      "why": "Most real business input is not clean text — it is a scan, a screenshot, a voice note. Handling those directly removes an entire preprocessing stage.",
+      "steps": [
+        "Send a screenshot and ask for structured extraction of what is in it.",
+        "Send a multi-page PDF and extract a table as JSON.",
+        "Transcribe a voice memo with Whisper, then summarise the transcript.",
+        "Measure how the accuracy compares to the text-only pipeline you would otherwise have built."
+      ],
+      "done_when": [
+        "An image and a PDF both produce valid structured output.",
+        "Audio in, useful summary out."
+      ],
+      "links": [
+        {
+          "label": "Gemini Cookbook — multimodal examples",
+          "url": "https://github.com/google-gemini/cookbook",
+          "kind": "repo",
+          "stars": 17700,
+          "verified": true
+        },
+        {
+          "label": "Whisper — speech recognition",
+          "url": "https://github.com/openai/whisper",
+          "kind": "repo",
+          "stars": 107700,
+          "verified": true
+        }
+      ],
+      "search": [
+        {
+          "on": "google",
+          "q": "vision model extract table from PDF structured output"
+        }
+      ],
+      "tags": [
+        "engineering",
+        "multimodal"
+      ]
+    },
+    {
+      "id": "embeddings",
+      "stage": "context",
+      "col": 1,
+      "row": 0,
+      "type": "core",
+      "level": "intermediate",
+      "est": "3h",
+      "xp": 25,
+      "title": "Embeddings, concretely",
+      "blurb": "Text becomes a vector; close vectors mean similar meaning. That is the whole trick.",
+      "requires": [
+        "first-api-call"
+      ],
+      "mission": "Embed a few hundred of your own sentences and find the nearest neighbours of ten of them by hand.",
+      "why": "Retrieval feels like magic until you have looked at the numbers. An afternoon with cosine similarity turns RAG from a black box into arithmetic you can debug.",
+      "steps": [
+        "Install sentence-transformers and embed 200-500 sentences from your own data.",
+        "Write a nearest-neighbour search with plain cosine similarity — no vector database yet.",
+        "Look at the top five matches for ten queries and judge them yourself.",
+        "Find a case where the nearest vector is not the right answer, and work out why.",
+        "Compare a small local embedding model against a hosted one on the same queries."
+      ],
+      "done_when": [
+        "You have written similarity search yourself, without a library doing it for you.",
+        "You can name a query where embedding similarity fails."
+      ],
+      "links": [
+        {
+          "label": "Sentence Transformers — embeddings and reranking",
+          "url": "https://github.com/huggingface/sentence-transformers",
+          "kind": "repo",
+          "stars": 19000,
+          "verified": true
+        },
+        {
+          "label": "Hugging Face courses",
+          "url": "https://huggingface.co/learn",
+          "kind": "course",
+          "verified": false
+        }
+      ],
+      "search": [
+        {
+          "on": "google",
+          "q": "text embeddings cosine similarity explained"
+        },
+        {
+          "on": "google",
+          "q": "MTEB embedding model leaderboard"
+        }
+      ],
+      "tags": [
+        "rag",
+        "retrieval"
+      ]
+    },
+    {
+      "id": "chunking",
+      "stage": "context",
+      "col": 2,
+      "row": 0,
+      "type": "core",
+      "level": "intermediate",
+      "est": "3h",
+      "xp": 25,
+      "title": "Chunking, the unglamorous half",
+      "blurb": "Most bad RAG is bad chunking. Where you cut the document decides what can be found.",
+      "requires": [
+        "embeddings"
+      ],
+      "mission": "Chunk the same document four ways and measure which one answers your questions best.",
+      "why": "Teams spend weeks tuning prompts when their retrieval was doomed at the splitting step. This is the highest-leverage boring work in the field.",
+      "steps": [
+        "Take one document set and write ten questions you know the answers to.",
+        "Chunk it four ways: fixed size, fixed size with overlap, by heading, and by semantic boundary.",
+        "For each, check whether the chunk containing the answer is retrieved in the top five.",
+        "Keep metadata on every chunk — source, heading, page. You will need it for citations.",
+        "Pick a winner based on your numbers, not on taste."
+      ],
+      "done_when": [
+        "You have a retrieval hit-rate number for four strategies.",
+        "Every chunk carries enough metadata to cite it."
+      ],
+      "links": [
+        {
+          "label": "RAG Techniques — 42+ runnable notebooks",
+          "url": "https://github.com/NirDiamant/RAG_Techniques",
+          "kind": "course",
+          "stars": 29100,
+          "verified": true
+        }
+      ],
+      "search": [
+        {
+          "on": "google",
+          "q": "chunking strategies RAG comparison semantic vs fixed"
+        }
+      ],
+      "tags": [
+        "rag",
+        "retrieval"
+      ]
+    },
+    {
+      "id": "vector-store",
+      "stage": "context",
+      "col": 1,
+      "row": 1,
+      "type": "core",
+      "level": "intermediate",
+      "est": "3h",
+      "xp": 25,
+      "title": "Somewhere to put the vectors",
+      "blurb": "A dedicated database, or just Postgres. Fewer moving parts is usually right.",
+      "requires": [
+        "embeddings"
+      ],
+      "mission": "Load your embeddings into a real store, filter by metadata, and time the queries.",
+      "why": "Brute force stops working somewhere around a hundred thousand vectors. Knowing what an index actually buys you keeps you from adopting infrastructure you do not need.",
+      "steps": [
+        "Load your chunks into Chroma to see how little setup it takes.",
+        "Do the same with pgvector if you already run Postgres — one fewer service to operate.",
+        "Run a query filtered by metadata, not just by similarity.",
+        "Time the same query at 1k, 10k and 100k vectors.",
+        "Read enough about FAISS to know when an approximate index is the answer."
+      ],
+      "done_when": [
+        "Metadata-filtered similarity search works.",
+        "You can say at what scale you would need an approximate index."
+      ],
+      "links": [
+        {
+          "label": "Chroma — search infrastructure for AI",
+          "url": "https://github.com/chroma-core/chroma",
+          "kind": "tool",
+          "stars": 29100,
+          "verified": true
+        },
+        {
+          "label": "pgvector — vectors in Postgres",
+          "url": "https://github.com/pgvector/pgvector",
+          "kind": "tool",
+          "stars": 22700,
+          "verified": true
+        },
+        {
+          "label": "FAISS — similarity search at scale",
+          "url": "https://github.com/facebookresearch/faiss",
+          "kind": "repo",
+          "stars": 40800,
+          "verified": true
+        }
+      ],
+      "search": [
+        {
+          "on": "google",
+          "q": "vector database comparison chroma pgvector qdrant"
+        }
+      ],
+      "tags": [
+        "rag",
+        "infrastructure"
+      ]
+    },
+    {
+      "id": "rag-pipeline",
+      "stage": "context",
+      "col": 2,
+      "row": 1,
+      "type": "build",
+      "level": "intermediate",
+      "est": "1d",
+      "xp": 50,
+      "title": "QUEST: build the whole RAG loop",
+      "blurb": "Ingest, chunk, embed, retrieve, answer, cite. Every piece, wired by you.",
+      "requires": [
+        "chunking",
+        "vector-store"
+      ],
+      "mission": "Build an end-to-end question-answering system over documents you know well, with citations, that refuses to answer when it should.",
+      "why": "This is the reference pattern of applied AI. Once you have built it once, most product requirements you will meet are variations of it.",
+      "steps": [
+        "Ingest a real corpus — your notes, a codebase, a set of policies. At least fifty documents.",
+        "Wire the pipeline yourself first, then look at how LangChain or LlamaIndex would have done it.",
+        "Return citations with every answer, pointing at the actual chunk.",
+        "Add the refusal path: when the top match scores below a threshold, say you do not know.",
+        "Test with twenty questions, five of which are not answerable from the corpus."
+      ],
+      "done_when": [
+        "Every answer carries a citation you can click through and check.",
+        "All five unanswerable questions are refused rather than invented."
+      ],
+      "links": [
+        {
+          "label": "LangChain",
+          "url": "https://github.com/langchain-ai/langchain",
+          "kind": "repo",
+          "stars": 144600,
+          "verified": true
+        },
+        {
+          "label": "LlamaIndex",
+          "url": "https://github.com/run-llama/llama_index",
+          "kind": "repo",
+          "stars": 51800,
+          "verified": true
+        },
+        {
+          "label": "Haystack — production RAG pipelines",
+          "url": "https://github.com/deepset-ai/haystack",
+          "kind": "repo",
+          "stars": 26300,
+          "verified": true
+        },
+        {
+          "label": "RAG Techniques",
+          "url": "https://github.com/NirDiamant/RAG_Techniques",
+          "kind": "course",
+          "stars": 29100,
+          "verified": true
+        }
+      ],
+      "search": [
+        {
+          "on": "youtube",
+          "q": "build RAG from scratch python tutorial citations"
+        }
+      ],
+      "tags": [
+        "rag",
+        "project"
+      ]
+    },
+    {
+      "id": "rerank-hybrid",
+      "stage": "context",
+      "col": 1,
+      "row": 2,
+      "type": "core",
+      "level": "advanced",
+      "est": "4h",
+      "xp": 25,
+      "title": "Hybrid search and reranking",
+      "blurb": "Keywords still win for names and codes. A reranker fixes the order. Both are cheap.",
+      "requires": [
+        "rag-pipeline"
+      ],
+      "mission": "Add keyword search alongside your vectors, then rerank the merged results, and measure the gain.",
+      "why": "Pure vector search misses exact identifiers — part numbers, error codes, surnames. Hybrid plus reranking is usually the largest single quality jump available, for a day of work.",
+      "steps": [
+        "Add BM25 or your database's full-text search over the same chunks.",
+        "Merge the two result sets with reciprocal rank fusion.",
+        "Add a cross-encoder reranker over the merged top twenty.",
+        "Re-run the hit-rate measurement from your chunking work and compare.",
+        "Check the latency cost and decide whether it is worth it."
+      ],
+      "done_when": [
+        "Hybrid plus reranking beats vector-only on your own numbers.",
+        "You know the millisecond cost of the reranker."
+      ],
+      "links": [
+        {
+          "label": "RAG Techniques — reranking and fusion notebooks",
+          "url": "https://github.com/NirDiamant/RAG_Techniques",
+          "kind": "course",
+          "stars": 29100,
+          "verified": true
+        },
+        {
+          "label": "Sentence Transformers — cross-encoder rerankers",
+          "url": "https://github.com/huggingface/sentence-transformers",
+          "kind": "repo",
+          "stars": 19000,
+          "verified": true
+        }
+      ],
+      "search": [
+        {
+          "on": "google",
+          "q": "hybrid search BM25 vector reciprocal rank fusion reranker"
+        }
+      ],
+      "tags": [
+        "rag",
+        "quality"
+      ]
+    },
+    {
+      "id": "rag-eval",
+      "stage": "context",
+      "col": 2,
+      "row": 2,
+      "type": "core",
+      "level": "advanced",
+      "est": "4h",
+      "xp": 25,
+      "title": "Measure the retrieval, not the vibes",
+      "blurb": "Faithfulness, relevance, context precision. Numbers that tell you which change helped.",
+      "requires": [
+        "rag-pipeline"
+      ],
+      "mission": "Score your RAG system with Ragas and use the numbers to reject one change that felt like an improvement.",
+      "why": "Without measurement, RAG tuning is superstition. The discipline of rejecting a change that scored worse is the thing that compounds.",
+      "steps": [
+        "Build an evaluation set of thirty questions with known good answers.",
+        "Run Ragas and record faithfulness, answer relevance and context precision.",
+        "Make one change — a different chunk size, say — and re-score.",
+        "Keep or revert based on the numbers.",
+        "Wire the score run into a command you can execute in one line."
+      ],
+      "done_when": [
+        "You have a baseline score and one measured change.",
+        "At least one plausible-sounding change was rejected on the numbers."
+      ],
+      "links": [
+        {
+          "label": "Ragas — RAG evaluation toolkit",
+          "url": "https://github.com/explodinggradients/ragas",
+          "kind": "tool",
+          "stars": 15400,
+          "verified": true
+        },
+        {
+          "label": "DeepEval — LLM evaluation framework",
+          "url": "https://github.com/confident-ai/deepeval",
+          "kind": "tool",
+          "stars": 17700,
+          "verified": true
+        }
+      ],
+      "search": [
+        {
+          "on": "google",
+          "q": "ragas faithfulness context precision metrics explained"
+        }
+      ],
+      "tags": [
+        "rag",
+        "evals"
+      ]
+    },
+    {
+      "id": "agentic-rag",
+      "stage": "context",
+      "col": 3,
+      "row": 2,
+      "type": "side",
+      "level": "advanced",
+      "est": "4h",
+      "xp": 15,
+      "title": "Retrieval that decides for itself",
+      "blurb": "Let the model choose whether to search, what to search, and when to search again.",
+      "requires": [
+        "rag-pipeline"
+      ],
+      "mission": "Turn your fixed retrieval step into one the model invokes as a tool, with the option to search twice.",
+      "why": "A single retrieval pass cannot answer a question that needs two lookups. Making retrieval a tool is the bridge from RAG to agents.",
+      "steps": [
+        "Expose your retriever as a tool the model can call with its own query.",
+        "Allow up to three retrieval rounds before it must answer.",
+        "Add a step where it rewrites a failing query and tries again.",
+        "Compare against your fixed pipeline on multi-hop questions.",
+        "Cap the loop so a confused model cannot search forever."
+      ],
+      "done_when": [
+        "A two-hop question is answered correctly.",
+        "The loop cannot run away."
+      ],
+      "links": [
+        {
+          "label": "RAG Techniques — agentic retrieval",
+          "url": "https://github.com/NirDiamant/RAG_Techniques",
+          "kind": "course",
+          "stars": 29100,
+          "verified": true
+        },
+        {
+          "label": "LlamaIndex — agentic retrieval",
+          "url": "https://github.com/run-llama/llama_index",
+          "kind": "repo",
+          "stars": 51800,
+          "verified": true
+        }
+      ],
+      "search": [
+        {
+          "on": "google",
+          "q": "agentic RAG multi hop query rewriting"
+        }
+      ],
+      "tags": [
+        "rag",
+        "agents"
+      ]
+    },
+    {
+      "id": "agent-basics",
+      "stage": "agentic",
+      "col": 1,
+      "row": 0,
+      "type": "core",
+      "level": "intermediate",
+      "est": "1d",
+      "xp": 25,
+      "title": "What an agent actually is",
+      "blurb": "A loop, some tools, and a stopping condition. Deflate the word before you use it.",
+      "requires": [
+        "tool-calling"
+      ],
+      "mission": "Work through the first units of a real agents course and write the loop yourself in under a hundred lines.",
+      "why": "The word 'agent' has been marketed into meaninglessness. Writing the loop by hand gives you an accurate mental model and immunity to the hype.",
+      "steps": [
+        "Do the opening units of the AI Agents for Beginners course.",
+        "Write your own loop: call model, if tool requested run it, append result, repeat until done.",
+        "Add a maximum iteration count and a stop condition.",
+        "Give it a task that genuinely needs three steps and watch every turn.",
+        "Then read how a framework structures the same loop."
+      ],
+      "done_when": [
+        "Your hand-written agent completes a three-step task.",
+        "You can explain why a loop with no iteration cap is dangerous."
+      ],
+      "links": [
+        {
+          "label": "AI Agents for Beginners — 18 lessons",
+          "url": "https://github.com/microsoft/ai-agents-for-beginners",
+          "kind": "course",
+          "stars": 72800,
+          "verified": true
+        },
+        {
+          "label": "Hugging Face Agents Course",
+          "url": "https://github.com/huggingface/agents-course",
+          "kind": "course",
+          "stars": 31200,
+          "verified": true
+        }
+      ],
+      "search": [
+        {
+          "on": "google",
+          "q": "building effective agents patterns"
+        },
+        {
+          "on": "youtube",
+          "q": "AI agent loop explained from scratch"
+        }
+      ],
+      "tags": [
+        "agents"
+      ]
+    },
+    {
+      "id": "tools-and-schemas",
+      "stage": "agentic",
+      "col": 2,
+      "row": 0,
+      "type": "core",
+      "level": "intermediate",
+      "est": "4h",
+      "xp": 25,
+      "title": "Designing tools a model can use",
+      "blurb": "Bad tool descriptions cause more agent failures than bad models do.",
+      "requires": [
+        "agent-basics"
+      ],
+      "mission": "Write five tools with descriptions good enough that the model picks the right one every time.",
+      "why": "Tool descriptions are prompts. Vague names, overlapping responsibilities and silent failures are the top three causes of agents that flail.",
+      "steps": [
+        "Write five tools with narrow, non-overlapping jobs.",
+        "Describe each one as if for a new colleague: what it does, when to use it, what it returns, what it costs.",
+        "Make every failure return a message the model can act on, never a raw stack trace.",
+        "Test with twenty prompts and count the wrong tool choices.",
+        "Rewrite the descriptions of anything it picked wrong and measure again."
+      ],
+      "done_when": [
+        "Twenty prompts, correct tool chosen every time.",
+        "Every error path returns something the model can recover from."
+      ],
+      "links": [
+        {
+          "label": "OpenAI Agents SDK",
+          "url": "https://github.com/openai/openai-agents-python",
+          "kind": "repo",
+          "stars": 28800,
+          "verified": true
+        },
+        {
+          "label": "Anthropic courses — tool use",
+          "url": "https://github.com/anthropics/courses",
+          "kind": "course",
+          "stars": 22700,
+          "verified": true
+        }
+      ],
+      "search": [
+        {
+          "on": "google",
+          "q": "how to write good tool descriptions for LLM agents"
+        }
+      ],
+      "tags": [
+        "agents",
+        "design"
+      ]
+    },
+    {
+      "id": "mcp",
+      "stage": "agentic",
+      "col": 3,
+      "row": 0,
+      "type": "core",
+      "level": "intermediate",
+      "est": "1d",
+      "xp": 25,
+      "title": "MCP: tools as an ecosystem",
+      "blurb": "One protocol so any model can use any tool. Write a server once, use it everywhere.",
+      "requires": [
+        "tools-and-schemas"
+      ],
+      "mission": "Run an existing MCP server, then write your own that exposes something only you have.",
+      "why": "MCP turned tool integration from an N-times-M problem into a plug. Writing one server teaches you more about agent architecture than any framework tour.",
+      "steps": [
+        "Work through the MCP for Beginners curriculum.",
+        "Run a reference server from the official servers repo and connect a client to it.",
+        "Write your own server exposing something local — your notes, a database, an internal API.",
+        "Connect it to a client and use it in a real task.",
+        "Think carefully about what you are granting access to before you connect anything sensitive."
+      ],
+      "done_when": [
+        "Your own MCP server is used by a model to do real work.",
+        "You can explain what a server exposes and what a client may do with it."
+      ],
+      "links": [
+        {
+          "label": "MCP servers — reference implementations",
+          "url": "https://github.com/modelcontextprotocol/servers",
+          "kind": "repo",
+          "stars": 89700,
+          "verified": true
+        },
+        {
+          "label": "MCP for Beginners — full curriculum",
+          "url": "https://github.com/microsoft/mcp-for-beginners",
+          "kind": "course",
+          "stars": 17000,
+          "verified": true
+        }
+      ],
+      "search": [
+        {
+          "on": "google",
+          "q": "model context protocol build your own server tutorial"
+        }
+      ],
+      "tags": [
+        "agents",
+        "mcp"
+      ]
+    },
+    {
+      "id": "agent-loops",
+      "stage": "agentic",
+      "col": 1,
+      "row": 1,
+      "type": "core",
+      "level": "advanced",
+      "est": "1d",
+      "xp": 25,
+      "title": "Graphs, state and control",
+      "blurb": "When the loop needs branches, retries, pauses and a human in the middle.",
+      "requires": [
+        "tools-and-schemas"
+      ],
+      "mission": "Rebuild your agent as an explicit state graph with a checkpoint and a human approval step.",
+      "why": "A while-loop is fine until you need to resume after a crash, branch on a condition, or wait a day for approval. That is when explicit state stops being ceremony.",
+      "steps": [
+        "Model your agent as nodes and edges in LangGraph.",
+        "Add a conditional branch that takes a different route on failure.",
+        "Add persistence so a killed process resumes rather than restarts.",
+        "Add an interrupt where a human approves before an irreversible action.",
+        "Kill the process mid-run and prove it resumes correctly."
+      ],
+      "done_when": [
+        "A crashed run resumes from its checkpoint.",
+        "An irreversible action waits for approval."
+      ],
+      "links": [
+        {
+          "label": "LangGraph — stateful agent orchestration",
+          "url": "https://github.com/langchain-ai/langgraph",
+          "kind": "repo",
+          "stars": 40100,
+          "verified": true
+        },
+        {
+          "label": "Google ADK — agent development kit",
+          "url": "https://github.com/google/adk-python",
+          "kind": "repo",
+          "stars": 21200,
+          "verified": true
+        }
+      ],
+      "search": [
+        {
+          "on": "google",
+          "q": "langgraph checkpointing human in the loop tutorial"
+        }
+      ],
+      "tags": [
+        "agents",
+        "architecture"
+      ]
+    },
+    {
+      "id": "agent-memory",
+      "stage": "agentic",
+      "col": 2,
+      "row": 1,
+      "type": "core",
+      "level": "advanced",
+      "est": "4h",
+      "xp": 25,
+      "title": "Memory that is not just a long prompt",
+      "blurb": "Short-term scratchpad, long-term store, and knowing what deserves to be remembered.",
+      "requires": [
+        "agent-loops"
+      ],
+      "mission": "Give an agent memory across sessions, and a policy for what it writes down.",
+      "why": "Stuffing the whole history into the context is expensive, slow and eventually impossible. Deciding what to persist is a design decision, not a library choice.",
+      "steps": [
+        "Add a working scratchpad the agent keeps within a run.",
+        "Add a store that survives between runs — retrieval over past conversations.",
+        "Write an explicit policy for what gets written: facts about the user, decisions made, nothing else.",
+        "Add summarisation so a long history compresses rather than truncates.",
+        "Test that it remembers something from three sessions ago, and that it has not remembered noise."
+      ],
+      "done_when": [
+        "The agent recalls a fact from an earlier session.",
+        "Memory growth is bounded and you can say how."
+      ],
+      "links": [
+        {
+          "label": "LangGraph — memory and persistence",
+          "url": "https://github.com/langchain-ai/langgraph",
+          "kind": "repo",
+          "stars": 40100,
+          "verified": true
+        },
+        {
+          "label": "GenAI Agents — 50+ agent tutorials",
+          "url": "https://github.com/NirDiamant/GenAI_Agents",
+          "kind": "course",
+          "stars": 23900,
+          "verified": true
+        }
+      ],
+      "search": [
+        {
+          "on": "google",
+          "q": "agent memory architecture short term long term LLM"
+        }
+      ],
+      "tags": [
+        "agents",
+        "memory"
+      ]
+    },
+    {
+      "id": "multi-agent",
+      "stage": "agentic",
+      "col": 3,
+      "row": 1,
+      "type": "side",
+      "level": "advanced",
+      "est": "1d",
+      "xp": 15,
+      "title": "More than one agent",
+      "blurb": "Sometimes a team of specialists beats one generalist. Often it just costs five times more.",
+      "requires": [
+        "agent-loops"
+      ],
+      "mission": "Build a small multi-agent system, then prove whether it actually beat a single well-prompted agent.",
+      "why": "Multi-agent architectures are fashionable and frequently unnecessary. Running the comparison yourself is how you develop the judgement to know which case you are in.",
+      "steps": [
+        "Build a two or three agent team with CrewAI or AutoGen — for example researcher, writer, critic.",
+        "Build the same task as one agent with a good prompt and the same tools.",
+        "Compare quality, cost and latency across twenty runs.",
+        "Note where coordination overhead ate the benefit.",
+        "Write your own rule for when you would reach for multiple agents."
+      ],
+      "done_when": [
+        "You have a measured comparison, not an opinion.",
+        "You can state the condition under which the team wins."
+      ],
+      "links": [
+        {
+          "label": "CrewAI — role-playing agent teams",
+          "url": "https://github.com/crewAIInc/crewAI",
+          "kind": "repo",
+          "stars": 57400,
+          "verified": true
+        },
+        {
+          "label": "AutoGen — multi-agent framework",
+          "url": "https://github.com/microsoft/autogen",
+          "kind": "repo",
+          "stars": 60500,
+          "verified": true
+        }
+      ],
+      "search": [
+        {
+          "on": "google",
+          "q": "when is multi agent worth it vs single agent cost"
+        }
+      ],
+      "tags": [
+        "agents",
+        "architecture"
+      ]
+    },
+    {
+      "id": "browser-agents",
+      "stage": "agentic",
+      "col": 0,
+      "row": 1,
+      "type": "side",
+      "level": "advanced",
+      "est": "4h",
+      "xp": 15,
+      "title": "Agents that use a browser",
+      "blurb": "Clicking, typing, scraping. Impressive, brittle, and worth understanding the limits of.",
+      "requires": [
+        "agent-loops"
+      ],
+      "mission": "Run a browser agent on a real task and document exactly where it falls over.",
+      "why": "Browser automation is the most demoed and least reliable corner of agents. Finding the failure boundary yourself is worth more than any demo video.",
+      "steps": [
+        "Install browser-use and run it against a site you are permitted to automate.",
+        "Give it a multi-step task: search, filter, extract, summarise.",
+        "Record where it fails — popups, logins, dynamic content, ambiguous buttons.",
+        "Add a deterministic fallback for the fragile step.",
+        "Respect robots.txt and terms of service; automate your own accounts and sites, not other people's."
+      ],
+      "done_when": [
+        "One real task completed end to end.",
+        "You have a written list of its failure modes."
+      ],
+      "links": [
+        {
+          "label": "browser-use — AI browser automation",
+          "url": "https://github.com/browser-use/browser-use",
+          "kind": "repo",
+          "stars": 110000,
+          "verified": true
+        }
+      ],
+      "search": [
+        {
+          "on": "google",
+          "q": "browser agent reliability limitations computer use"
+        }
+      ],
+      "tags": [
+        "agents",
+        "automation"
+      ]
+    },
+    {
+      "id": "ship-an-agent",
+      "stage": "agentic",
+      "col": 2,
+      "row": 2,
+      "type": "boss",
+      "level": "advanced",
+      "est": "1w",
+      "xp": 75,
+      "title": "BOSS: ship an agent people use",
+      "blurb": "Tools, memory, MCP, guardrails, a UI, and a week of surviving real users.",
+      "requires": [
+        "agent-memory",
+        "mcp"
+      ],
+      "mission": "Deploy an agent that does something genuinely useful for someone other than you, and keep it running for a week.",
+      "why": "Everything in this stage was preparation for this. An agent that survives a week of real use has taught you things no tutorial contains.",
+      "steps": [
+        "Choose a task with a clear finish line and a tolerant failure mode.",
+        "Wire it up: three or four tools, memory, an iteration cap, a spend cap.",
+        "Add tracing so you can see every step of every run afterwards.",
+        "Put a human approval step in front of anything irreversible.",
+        "Give it to two people and watch the traces daily for a week.",
+        "Fix the top three failures you observe — not the ones you imagined."
+      ],
+      "done_when": [
+        "Two people used it for a week without you intervening.",
+        "You fixed three failures you found in traces rather than in your head."
+      ],
+      "links": [
+        {
+          "label": "GenAI Agents — reference implementations",
+          "url": "https://github.com/NirDiamant/GenAI_Agents",
+          "kind": "course",
+          "stars": 23900,
+          "verified": true
+        },
+        {
+          "label": "Awesome LLM Apps — 100+ agents to learn from",
+          "url": "https://github.com/Shubhamsaboo/awesome-llm-apps",
+          "kind": "list",
+          "stars": 133300,
+          "verified": true
+        },
+        {
+          "label": "AI Engineering Hub — production projects",
+          "url": "https://github.com/patchy631/ai-engineering-hub",
+          "kind": "list",
+          "stars": 37000,
+          "verified": true
+        }
+      ],
+      "search": [
+        {
+          "on": "google",
+          "q": "production AI agent lessons learned postmortem"
+        }
+      ],
+      "tags": [
+        "agents",
+        "project"
+      ]
+    },
+    {
+      "id": "why-evals",
+      "stage": "evals",
+      "col": 1,
+      "row": 0,
+      "type": "core",
+      "level": "intermediate",
+      "est": "2h",
+      "xp": 25,
+      "title": "Why demos lie",
+      "blurb": "It worked five times. That is not evidence. Here is what evidence looks like.",
+      "requires": [
+        "first-api-call"
+      ],
+      "mission": "Take something you built that 'works' and find its failure rate on fifty real inputs.",
+      "why": "Every team that ships AI has this moment: the thing that felt reliable turns out to be seventy percent reliable. Better to find that number yourself, early.",
+      "steps": [
+        "Collect fifty real inputs — not ones you invented while testing.",
+        "Run your system over all of them and read every output.",
+        "Mark each pass or fail against a written definition of pass.",
+        "Compute the percentage. Sit with it.",
+        "Group the failures into three or four kinds — that grouping is your work queue."
+      ],
+      "done_when": [
+        "You have a failure rate on fifty real inputs.",
+        "Failures are grouped by cause, not listed one by one."
+      ],
+      "links": [
+        {
+          "label": "OpenAI Evals — framework and benchmark registry",
+          "url": "https://github.com/openai/evals",
+          "kind": "repo",
+          "stars": 19200,
+          "verified": true
+        },
+        {
+          "label": "Awesome Generative AI Guide — evals chapters",
+          "url": "https://github.com/aishwaryanr/awesome-generative-ai-guide",
+          "kind": "list",
+          "stars": 28800,
+          "verified": true
+        }
+      ],
+      "search": [
+        {
+          "on": "google",
+          "q": "LLM evals why you need them error analysis"
+        }
+      ],
+      "tags": [
+        "evals"
+      ]
+    },
+    {
+      "id": "build-eval-set",
+      "stage": "evals",
+      "col": 2,
+      "row": 0,
+      "type": "core",
+      "level": "intermediate",
+      "est": "4h",
+      "xp": 25,
+      "title": "Build the test set",
+      "blurb": "Fifty cases, expected behaviour written down, runnable in one command.",
+      "requires": [
+        "why-evals"
+      ],
+      "mission": "Turn your failure analysis into an automated eval suite that runs in a single command.",
+      "why": "An eval suite is what lets you change a prompt without fear. It is the AI equivalent of a test suite, and it pays back the first time a 'harmless' change breaks something.",
+      "steps": [
+        "Write fifty cases: input, expected behaviour, and how to check it.",
+        "Use exact assertions where you can — contains, matches, valid JSON, correct number.",
+        "Set up promptfoo so the whole suite runs from the command line.",
+        "Record a baseline pass rate.",
+        "Run it against two different models and compare like for like."
+      ],
+      "done_when": [
+        "One command prints a pass rate.",
+        "You have compared two models on identical cases."
+      ],
+      "links": [
+        {
+          "label": "promptfoo — test and compare LLM outputs",
+          "url": "https://github.com/promptfoo/promptfoo",
+          "kind": "tool",
+          "stars": 24400,
+          "verified": true
+        },
+        {
+          "label": "DeepEval",
+          "url": "https://github.com/confident-ai/deepeval",
+          "kind": "tool",
+          "stars": 17700,
+          "verified": true
+        }
+      ],
+      "search": [
+        {
+          "on": "google",
+          "q": "promptfoo eval config tutorial assertions"
+        }
+      ],
+      "tags": [
+        "evals",
+        "testing"
+      ]
+    },
+    {
+      "id": "llm-as-judge",
+      "stage": "evals",
+      "col": 1,
+      "row": 1,
+      "type": "core",
+      "level": "advanced",
+      "est": "4h",
+      "xp": 25,
+      "title": "Using a model as the grader",
+      "blurb": "For things you cannot assert. Powerful, biased, and only trustworthy once calibrated.",
+      "requires": [
+        "build-eval-set"
+      ],
+      "mission": "Build an LLM judge for a subjective quality, then check the judge against your own labels.",
+      "why": "Most of what matters — tone, helpfulness, faithfulness — cannot be checked with an assertion. A judge scales that, but an uncalibrated judge is worse than no judge.",
+      "steps": [
+        "Define one quality precisely, with a rubric and worked examples of each score.",
+        "Write the judge prompt and run it over your eval set.",
+        "Label thirty of the same outputs yourself, blind.",
+        "Measure agreement between you and the judge.",
+        "Fix the rubric until agreement is high enough to rely on — then keep spot-checking."
+      ],
+      "done_when": [
+        "You have an agreement number between the judge and your own labels.",
+        "You know which cases the judge systematically gets wrong."
+      ],
+      "links": [
+        {
+          "label": "DeepEval — research-backed metrics",
+          "url": "https://github.com/confident-ai/deepeval",
+          "kind": "tool",
+          "stars": 17700,
+          "verified": true
+        },
+        {
+          "label": "Ragas",
+          "url": "https://github.com/explodinggradients/ragas",
+          "kind": "tool",
+          "stars": 15400,
+          "verified": true
+        }
+      ],
+      "search": [
+        {
+          "on": "google",
+          "q": "LLM as a judge calibration bias position bias"
+        }
+      ],
+      "tags": [
+        "evals"
+      ]
+    },
+    {
+      "id": "tracing",
+      "stage": "evals",
+      "col": 2,
+      "row": 1,
+      "type": "core",
+      "level": "intermediate",
+      "est": "3h",
+      "xp": 25,
+      "title": "See inside a run",
+      "blurb": "Every prompt, every tool call, every token, every millisecond, searchable after the fact.",
+      "requires": [
+        "why-evals"
+      ],
+      "mission": "Instrument your app with tracing and use a trace to diagnose one real failure.",
+      "why": "Without traces, debugging an LLM app is guesswork with a reproduction cost of ten seconds a try. With traces, it is reading. This is the highest-value hour in the stage.",
+      "steps": [
+        "Add Langfuse or Phoenix to your application.",
+        "Confirm you can see prompts, completions, tool calls, latency and cost per run.",
+        "Find a failed run in the trace view and follow it step by step.",
+        "Tag runs by version so you can compare before and after a change.",
+        "Set up an alert or a saved view for the failure mode you care most about."
+      ],
+      "done_when": [
+        "You diagnosed a real failure from a trace rather than by re-running it.",
+        "Cost per run is visible without arithmetic."
+      ],
+      "links": [
+        {
+          "label": "Langfuse — LLM observability",
+          "url": "https://github.com/langfuse/langfuse",
+          "kind": "tool",
+          "stars": 33500,
+          "verified": true
+        },
+        {
+          "label": "Phoenix — tracing, evals, experiments",
+          "url": "https://github.com/Arize-ai/phoenix",
+          "kind": "tool",
+          "stars": 11100,
+          "verified": true
+        }
+      ],
+      "search": [
+        {
+          "on": "google",
+          "q": "LLM tracing observability langfuse setup"
+        }
+      ],
+      "tags": [
+        "evals",
+        "ops"
+      ]
+    },
+    {
+      "id": "guardrails",
+      "stage": "evals",
+      "col": 1,
+      "row": 2,
+      "type": "core",
+      "level": "advanced",
+      "est": "4h",
+      "xp": 25,
+      "title": "Guardrails and prompt injection",
+      "blurb": "If your agent reads untrusted text, that text is trying to give it instructions.",
+      "requires": [
+        "llm-as-judge"
+      ],
+      "mission": "Add input and output validation to your app, then try to break it with a prompt injection.",
+      "why": "Any system that puts retrieved documents, emails or web pages into a prompt has an injection surface. This is the security topic of applied AI and it is genuinely unsolved — mitigation is the job.",
+      "steps": [
+        "Read the OWASP Top 10 for LLM applications end to end.",
+        "Add output validation: schema checks, refusal detection, PII screening.",
+        "Add input handling that keeps untrusted content clearly separated from instructions.",
+        "Write five injection attempts against your own app and see which land.",
+        "Constrain what the tools can do, so a successful injection still cannot do damage."
+      ],
+      "done_when": [
+        "Five injection attempts are documented with what happened.",
+        "Tool permissions are narrow enough that injection is not catastrophic."
+      ],
+      "links": [
+        {
+          "label": "Guardrails — validation for LLM I/O",
+          "url": "https://github.com/guardrails-ai/guardrails",
+          "kind": "tool",
+          "stars": 7300,
+          "verified": true
+        }
+      ],
+      "search": [
+        {
+          "on": "google",
+          "q": "OWASP top 10 for large language model applications"
+        },
+        {
+          "on": "google",
+          "q": "prompt injection defence indirect injection mitigation"
+        }
+      ],
+      "tags": [
+        "security",
+        "evals"
+      ]
+    },
+    {
+      "id": "red-team",
+      "stage": "evals",
+      "col": 3,
+      "row": 2,
+      "type": "side",
+      "level": "advanced",
+      "est": "4h",
+      "xp": 15,
+      "title": "Attack your own system",
+      "blurb": "Automated probing for jailbreaks, leaks and injection, before someone else does it.",
+      "requires": [
+        "guardrails"
+      ],
+      "mission": "Run garak against your own application and fix the worst thing it finds.",
+      "why": "Manual red-teaming finds what you thought of. A scanner finds the categories you did not. Only ever point it at systems you own.",
+      "steps": [
+        "Install garak and point it at your own model or application.",
+        "Run the probes relevant to your use case.",
+        "Read the report and rank findings by real-world impact, not by score.",
+        "Fix the worst one and re-run to confirm.",
+        "Add a red-team pass to your release routine."
+      ],
+      "done_when": [
+        "A scan report exists and one finding is fixed and verified.",
+        "Scanning is part of your release checklist."
+      ],
+      "links": [
+        {
+          "label": "garak — LLM vulnerability scanner",
+          "url": "https://github.com/NVIDIA/garak",
+          "kind": "tool",
+          "stars": 8900,
+          "verified": true
+        },
+        {
+          "label": "promptfoo — includes red teaming",
+          "url": "https://github.com/promptfoo/promptfoo",
+          "kind": "tool",
+          "stars": 24400,
+          "verified": true
+        }
+      ],
+      "search": [
+        {
+          "on": "google",
+          "q": "LLM red teaming methodology jailbreak testing"
+        }
+      ],
+      "tags": [
+        "security"
+      ]
+    },
+    {
+      "id": "benchmarks",
+      "stage": "evals",
+      "col": 3,
+      "row": 0,
+      "type": "side",
+      "level": "advanced",
+      "est": "3h",
+      "xp": 15,
+      "title": "Read benchmarks sceptically",
+      "blurb": "Public scores are marketing until you know what was measured and what leaked.",
+      "requires": [
+        "why-evals"
+      ],
+      "mission": "Run a standard benchmark yourself and compare your number to the published one.",
+      "why": "Model choice driven by leaderboard position is how teams end up with an expensive model that is worse at their actual task. Running one benchmark yourself permanently changes how you read them.",
+      "steps": [
+        "Install the LM Evaluation Harness and run one small benchmark on a small model.",
+        "Compare your result with the published number and account for the difference.",
+        "Read that benchmark's methodology, including how it prompts.",
+        "Look up what contamination means and why it inflates scores.",
+        "Write one paragraph on what that benchmark does and does not predict for your use case."
+      ],
+      "done_when": [
+        "You have reproduced a benchmark number yourself.",
+        "You can name what a headline score fails to capture."
+      ],
+      "links": [
+        {
+          "label": "LM Evaluation Harness — 60+ benchmarks",
+          "url": "https://github.com/EleutherAI/lm-evaluation-harness",
+          "kind": "tool",
+          "stars": 13700,
+          "verified": true
+        }
+      ],
+      "search": [
+        {
+          "on": "google",
+          "q": "LLM benchmark contamination criticism explained"
+        },
+        {
+          "on": "google",
+          "q": "chatbot arena leaderboard how it works"
+        }
+      ],
+      "tags": [
+        "evals",
+        "research"
+      ]
+    },
+    {
+      "id": "caching-cost",
+      "stage": "ship",
+      "col": 1,
+      "row": 0,
+      "type": "core",
+      "level": "intermediate",
+      "est": "3h",
+      "xp": 25,
+      "title": "Make it cheap",
+      "blurb": "Prompt caching, smaller models for easy cases, and not calling the model at all.",
+      "requires": [
+        "tracing"
+      ],
+      "mission": "Cut the cost per request of something you built by at least half, without losing quality on your eval set.",
+      "why": "Cost is the constraint that kills otherwise good AI products. The techniques are unglamorous and reliably deliver large wins.",
+      "steps": [
+        "Measure the current cost per request from your traces.",
+        "Turn on prompt caching for the stable part of your prompt.",
+        "Route easy cases to a smaller model and keep the big one for hard ones.",
+        "Cache identical requests outright — the cheapest call is the one you skip.",
+        "Re-run your eval suite and confirm quality held."
+      ],
+      "done_when": [
+        "Cost per request is halved or better.",
+        "The eval pass rate did not drop."
+      ],
+      "links": [
+        {
+          "label": "LiteLLM — caching, routing, budgets",
+          "url": "https://github.com/BerriAI/litellm",
+          "kind": "tool",
+          "stars": 56800,
+          "verified": true
+        }
+      ],
+      "search": [
+        {
+          "on": "google",
+          "q": "prompt caching cost reduction LLM production"
+        },
+        {
+          "on": "google",
+          "q": "model routing cheap model fallback strategy"
+        }
+      ],
+      "tags": [
+        "ops",
+        "cost"
+      ]
+    },
+    {
+      "id": "deploy-app",
+      "stage": "ship",
+      "col": 2,
+      "row": 0,
+      "type": "build",
+      "level": "intermediate",
+      "est": "1d",
+      "xp": 50,
+      "title": "QUEST: put it on the internet",
+      "blurb": "A URL, secrets kept server-side, rate limits, and a way to roll back.",
+      "requires": [
+        "ship-a-chat-app"
+      ],
+      "mission": "Deploy your app properly — no keys in the browser, limits in place, and a rollback you have tested.",
+      "why": "'It runs on my laptop' is where most projects die. Deploying once turns a portfolio of screenshots into a portfolio of links.",
+      "steps": [
+        "Move every secret server-side. A key in client-side code is a public key.",
+        "Add per-user rate limiting and a global spend cap.",
+        "Deploy to any host you like and confirm it works from another network.",
+        "Add a health check and an error page that does not leak internals.",
+        "Deploy a deliberately broken version and practise rolling back."
+      ],
+      "done_when": [
+        "A public URL works from a device you have never used.",
+        "You have rolled back once, on purpose."
+      ],
+      "links": [
+        {
+          "label": "Streamlit",
+          "url": "https://github.com/streamlit/streamlit",
+          "kind": "tool",
+          "stars": 45600,
+          "verified": true
+        },
+        {
+          "label": "Gradio",
+          "url": "https://github.com/gradio-app/gradio",
+          "kind": "tool",
+          "stars": 43400,
+          "verified": true
+        },
+        {
+          "label": "AI SDK — for TypeScript deployments",
+          "url": "https://github.com/vercel/ai",
+          "kind": "repo",
+          "stars": 26300,
+          "verified": true
+        }
+      ],
+      "search": [
+        {
+          "on": "google",
+          "q": "deploy LLM app securely API key server side rate limit"
+        }
+      ],
+      "tags": [
+        "ops",
+        "project"
+      ]
+    },
+    {
+      "id": "monitoring",
+      "stage": "ship",
+      "col": 1,
+      "row": 1,
+      "type": "core",
+      "level": "advanced",
+      "est": "3h",
+      "xp": 25,
+      "title": "Know before your users tell you",
+      "blurb": "Quality drifts silently. Models get deprecated. Watch the numbers that matter.",
+      "requires": [
+        "tracing"
+      ],
+      "mission": "Set up a dashboard and one alert that would have caught your last production surprise.",
+      "why": "LLM applications degrade quietly — a provider changes a default, your data shifts, a prompt edit lands. Nothing crashes; the answers just get worse.",
+      "steps": [
+        "Track per-day: request volume, error rate, p95 latency, cost, and refusal rate.",
+        "Run a small slice of your eval set against production traffic on a schedule.",
+        "Alert on the metric that would have caught your last surprise.",
+        "Capture user feedback — even a thumbs up and down is signal.",
+        "Subscribe to your provider's deprecation notices."
+      ],
+      "done_when": [
+        "A dashboard shows quality, not just uptime.",
+        "One alert is wired to a real threshold."
+      ],
+      "links": [
+        {
+          "label": "Langfuse — production LLM monitoring",
+          "url": "https://github.com/langfuse/langfuse",
+          "kind": "tool",
+          "stars": 33500,
+          "verified": true
+        },
+        {
+          "label": "Phoenix",
+          "url": "https://github.com/Arize-ai/phoenix",
+          "kind": "tool",
+          "stars": 11100,
+          "verified": true
+        }
+      ],
+      "search": [
+        {
+          "on": "google",
+          "q": "monitoring LLM applications in production metrics drift"
+        }
+      ],
+      "tags": [
+        "ops"
+      ]
+    },
+    {
+      "id": "security-prod",
+      "stage": "ship",
+      "col": 2,
+      "row": 1,
+      "type": "core",
+      "level": "advanced",
+      "est": "4h",
+      "xp": 25,
+      "title": "Security for real users",
+      "blurb": "Least privilege for tools, PII handling, audit logs, and an incident plan.",
+      "requires": [
+        "guardrails",
+        "deploy-app"
+      ],
+      "mission": "Threat-model your deployed app and close the biggest gap you find.",
+      "why": "The moment other people's data enters your system, the stakes change. An hour of threat modelling now is cheaper than any incident.",
+      "steps": [
+        "List what an attacker could reach through your app: tools, data, credentials, spend.",
+        "Give every tool the narrowest permissions that still work.",
+        "Decide what you log, and make sure it is not full of personal data.",
+        "Write the incident plan: how you find out, how you turn it off, who you tell.",
+        "Close the biggest gap you found and note the rest."
+      ],
+      "done_when": [
+        "A written threat model exists.",
+        "A kill switch exists and you have tested it."
+      ],
+      "links": [
+        {
+          "label": "Guardrails",
+          "url": "https://github.com/guardrails-ai/guardrails",
+          "kind": "tool",
+          "stars": 7300,
+          "verified": true
+        },
+        {
+          "label": "garak — scan before you ship",
+          "url": "https://github.com/NVIDIA/garak",
+          "kind": "tool",
+          "stars": 8900,
+          "verified": true
+        }
+      ],
+      "search": [
+        {
+          "on": "google",
+          "q": "OWASP LLM top 10 mitigation checklist production"
+        }
+      ],
+      "tags": [
+        "security",
+        "ops"
+      ]
+    },
+    {
+      "id": "serving",
+      "stage": "ship",
+      "col": 3,
+      "row": 0,
+      "type": "side",
+      "level": "advanced",
+      "est": "1d",
+      "xp": 15,
+      "title": "Serve your own model",
+      "blurb": "When the API bill, the latency or the privacy rules say the model has to be yours.",
+      "requires": [
+        "deploy-app"
+      ],
+      "mission": "Serve an open-weight model behind an OpenAI-compatible endpoint and load-test it.",
+      "why": "At sufficient volume, self-hosting is dramatically cheaper — and for regulated data it is sometimes the only option. Knowing the real throughput numbers keeps that decision honest.",
+      "steps": [
+        "Serve a small open-weight model with vLLM on a GPU.",
+        "Expose an OpenAI-compatible endpoint and point your existing client at it.",
+        "Load test: measure tokens per second at one, ten and fifty concurrent users.",
+        "Compute cost per million tokens including the idle GPU.",
+        "Compare honestly against the API price you are paying now."
+      ],
+      "done_when": [
+        "Your app runs unchanged against your own endpoint.",
+        "You have a break-even volume where self-hosting wins."
+      ],
+      "links": [
+        {
+          "label": "vLLM — fast LLM inference and serving",
+          "url": "https://github.com/vllm-project/vllm",
+          "kind": "repo",
+          "stars": 89500,
+          "verified": true
+        },
+        {
+          "label": "llama.cpp — CPU and small-GPU inference",
+          "url": "https://github.com/ggml-org/llama.cpp",
+          "kind": "repo",
+          "stars": 125000,
+          "verified": true
+        }
+      ],
+      "search": [
+        {
+          "on": "google",
+          "q": "vllm throughput benchmark self hosting cost vs API"
+        }
+      ],
+      "tags": [
+        "ops",
+        "infrastructure"
+      ]
+    },
+    {
+      "id": "portfolio-piece",
+      "stage": "ship",
+      "col": 2,
+      "row": 2,
+      "type": "boss",
+      "level": "intermediate",
+      "est": "1w",
+      "xp": 75,
+      "title": "BOSS: the thing you show people",
+      "blurb": "One project, deployed, evaluated, documented, with the failures written down honestly.",
+      "requires": [
+        "deploy-app",
+        "monitoring"
+      ],
+      "mission": "Take your best project to a standard you would put in front of an employer or a customer.",
+      "why": "In this field a working link and an honest write-up outrank any certificate. This is the artefact the whole engineer path exists to produce.",
+      "steps": [
+        "Choose the project with the clearest story and cut everything peripheral.",
+        "Write a README that opens with the problem and a screenshot, not the stack.",
+        "Publish your eval numbers, including the cases it fails.",
+        "Document one architectural decision and the alternative you rejected.",
+        "Record a two-minute walkthrough.",
+        "Ask two people to try it and fix whatever confused both of them."
+      ],
+      "done_when": [
+        "A public link, a README with numbers, and a two-minute video exist.",
+        "The known-failure section is written and honest."
+      ],
+      "links": [
+        {
+          "label": "AI Engineering Hub — 93+ project references",
+          "url": "https://github.com/patchy631/ai-engineering-hub",
+          "kind": "list",
+          "stars": 37000,
+          "verified": true
+        },
+        {
+          "label": "Awesome LLM Apps",
+          "url": "https://github.com/Shubhamsaboo/awesome-llm-apps",
+          "kind": "list",
+          "stars": 133300,
+          "verified": true
+        }
+      ],
+      "search": [
+        {
+          "on": "google",
+          "q": "AI engineer portfolio project what employers look for"
+        }
+      ],
+      "tags": [
+        "project",
+        "career"
+      ]
+    },
+    {
+      "id": "classic-ml",
+      "stage": "dlcore",
+      "col": 1,
+      "row": 0,
+      "type": "core",
+      "level": "beginner",
+      "est": "3w",
+      "xp": 25,
+      "title": "Classical machine learning first",
+      "blurb": "Regression, classification, overfitting, validation. Skip it and deep learning stays superstition.",
+      "requires": [
+        "python-basics"
+      ],
+      "mission": "Work through a classical ML curriculum and train models on three different datasets yourself.",
+      "why": "Train/test splits, overfitting, class imbalance and baselines are not deep learning topics — they are ML topics, and they explain most of what goes wrong later.",
+      "steps": [
+        "Work through ML for Beginners — it is a full 12-week curriculum with quizzes.",
+        "Train a regression, a classification and a clustering model with scikit-learn.",
+        "Deliberately overfit a model and watch validation loss diverge from training loss.",
+        "Always compute the dumbest possible baseline first and beat it.",
+        "Learn which metric fits which problem, and why accuracy lies on imbalanced data."
+      ],
+      "done_when": [
+        "Three models trained and evaluated by you.",
+        "You can explain overfitting from a curve you produced yourself."
+      ],
+      "links": [
+        {
+          "label": "ML for Beginners — 12 weeks, 26 lessons",
+          "url": "https://github.com/microsoft/ML-For-Beginners",
+          "kind": "course",
+          "stars": 89600,
+          "verified": true
+        },
+        {
+          "label": "scikit-learn",
+          "url": "https://github.com/scikit-learn/scikit-learn",
+          "kind": "repo",
+          "stars": 67000,
+          "verified": true
+        }
+      ],
+      "search": [
+        {
+          "on": "google",
+          "q": "machine learning fundamentals train test split overfitting"
+        }
+      ],
+      "tags": [
+        "ml",
+        "foundation"
+      ]
+    },
+    {
+      "id": "math-for-ml",
+      "stage": "dlcore",
+      "col": 2,
+      "row": 0,
+      "type": "core",
+      "level": "intermediate",
+      "est": "4w",
+      "xp": 25,
+      "title": "The maths you actually need",
+      "blurb": "Vectors, matrices, derivatives, probability. Less than you fear, more than none.",
+      "requires": [],
+      "mission": "Get comfortable enough with linear algebra and calculus to read the equations in a model paper without skipping them.",
+      "why": "You do not need a degree. You do need to know what a matrix multiply does, what a gradient is, and why a softmax is a softmax — otherwise papers stay closed to you forever.",
+      "steps": [
+        "Work the maths appendix of Dive into Deep Learning — it is aimed exactly at this.",
+        "Make sure you can do by hand: dot product, matrix multiply, chain rule, expectation.",
+        "Watch a visual series on linear algebra and neural networks to build intuition alongside the notation.",
+        "Read one paper's equations and try to say what each symbol is."
+      ],
+      "done_when": [
+        "You can differentiate a simple composed function by hand.",
+        "A paper's equations are readable, if slowly."
+      ],
+      "links": [
+        {
+          "label": "Dive into Deep Learning — free interactive textbook",
+          "url": "https://github.com/d2l-ai/d2l-en",
+          "kind": "course",
+          "stars": 29400,
+          "verified": true
+        },
+        {
+          "label": "d2l.ai",
+          "url": "https://d2l.ai",
+          "kind": "docs",
+          "verified": false
+        }
+      ],
+      "search": [
+        {
+          "on": "youtube",
+          "q": "essence of linear algebra series"
+        },
+        {
+          "on": "youtube",
+          "q": "neural networks backpropagation visual explanation"
+        }
+      ],
+      "tags": [
+        "maths",
+        "foundation"
+      ]
+    },
+    {
+      "id": "neural-nets",
+      "stage": "dlcore",
+      "col": 1,
+      "row": 1,
+      "type": "core",
+      "level": "intermediate",
+      "est": "3w",
+      "xp": 25,
+      "title": "Build a neural net from scratch",
+      "blurb": "Backpropagation by hand, in Python, until it stops being a word and becomes a thing.",
+      "requires": [
+        "classic-ml"
+      ],
+      "mission": "Follow Neural Networks: Zero to Hero and implement autograd and a small net yourself, typing every line.",
+      "why": "This is the single most recommended course in the field for a reason. After it, PyTorch stops being magic and becomes a convenience.",
+      "steps": [
+        "Watch and code along with the micrograd lecture — build the autograd engine yourself.",
+        "Do not copy-paste. Type it, break it, fix it.",
+        "Continue through the makemore lectures into language modelling.",
+        "Train something on your own text file and watch the loss fall.",
+        "Explain the backward pass out loud without notes."
+      ],
+      "done_when": [
+        "Your own autograd engine trains a small network.",
+        "You can explain the backward pass from memory."
+      ],
+      "links": [
+        {
+          "label": "Neural Networks: Zero to Hero",
+          "url": "https://github.com/karpathy/nn-zero-to-hero",
+          "kind": "course",
+          "stars": 24000,
+          "verified": true
+        }
+      ],
+      "search": [
+        {
+          "on": "youtube",
+          "q": "karpathy micrograd building neural networks from scratch"
+        }
+      ],
+      "tags": [
+        "deep-learning",
+        "foundation"
+      ]
+    },
+    {
+      "id": "pytorch",
+      "stage": "dlcore",
+      "col": 2,
+      "row": 1,
+      "type": "core",
+      "level": "intermediate",
+      "est": "2w",
+      "xp": 25,
+      "title": "PyTorch for real",
+      "blurb": "Tensors, modules, dataloaders, the training loop, and reading a stack trace at 2am.",
+      "requires": [
+        "neural-nets"
+      ],
+      "mission": "Write a full training loop from scratch and train a model on a dataset nobody prepared for you.",
+      "why": "PyTorch is the language the field is written in. Being fluent means every paper's reference implementation is readable.",
+      "steps": [
+        "Work through the official beginner tutorials, typing rather than copying.",
+        "Write the loop yourself: forward, loss, backward, step, zero_grad — and know what each does.",
+        "Build a Dataset and DataLoader for data you assembled yourself.",
+        "Add checkpointing, a learning-rate schedule and a validation loop.",
+        "Learn to read shape-mismatch errors quickly. You will read thousands."
+      ],
+      "done_when": [
+        "A model trains from your own loop on your own data.",
+        "A shape error takes you seconds, not an hour."
+      ],
+      "links": [
+        {
+          "label": "PyTorch",
+          "url": "https://github.com/pytorch/pytorch",
+          "kind": "repo",
+          "stars": 102500,
+          "verified": true
+        },
+        {
+          "label": "pytorch.org",
+          "url": "https://pytorch.org",
+          "kind": "docs",
+          "verified": false
+        }
+      ],
+      "search": [
+        {
+          "on": "google",
+          "q": "pytorch training loop tutorial dataloader checkpoint"
+        }
+      ],
+      "tags": [
+        "deep-learning",
+        "tooling"
+      ]
+    },
+    {
+      "id": "fastai-course",
+      "stage": "dlcore",
+      "col": 3,
+      "row": 1,
+      "type": "side",
+      "level": "intermediate",
+      "est": "6w",
+      "xp": 15,
+      "title": "The top-down route",
+      "blurb": "Train a working model in lesson one, learn why it works later. Suits some brains far better.",
+      "requires": [
+        "neural-nets"
+      ],
+      "mission": "Work through the fastai book, training a real model in the first session.",
+      "why": "The bottom-up route bores some people into quitting. If maths-first is grinding you down, this order gets you results early and fills in theory afterwards.",
+      "steps": [
+        "Run the fastbook notebooks and train an image classifier in the first sitting.",
+        "Deploy it somewhere, however crudely — the course insists on this and it is right.",
+        "Continue into the tabular and NLP chapters.",
+        "Go back and connect each convenience to the underlying PyTorch."
+      ],
+      "done_when": [
+        "A trained model you deployed exists.",
+        "You can map fastai's abstractions onto raw PyTorch."
+      ],
+      "links": [
+        {
+          "label": "fastbook — the fast.ai book as notebooks",
+          "url": "https://github.com/fastai/fastbook",
+          "kind": "course",
+          "stars": 25200,
+          "verified": true
+        }
+      ],
+      "search": [
+        {
+          "on": "google",
+          "q": "fast.ai practical deep learning for coders course"
+        }
+      ],
+      "tags": [
+        "deep-learning",
+        "course"
+      ]
+    },
+    {
+      "id": "ai-foundations",
+      "stage": "dlcore",
+      "col": 3,
+      "row": 0,
+      "type": "side",
+      "level": "beginner",
+      "est": "4w",
+      "xp": 15,
+      "title": "The wider AI curriculum",
+      "blurb": "Vision, NLP before transformers, symbolic AI, ethics. Context for where all this came from.",
+      "requires": [],
+      "mission": "Work through the AI for Beginners curriculum to fill in the field around language models.",
+      "why": "Generative AI is one branch of a large tree. Knowing the rest makes you better at recognising when a language model is the wrong tool entirely.",
+      "steps": [
+        "Work through AI for Beginners, especially the vision and pre-transformer NLP sections.",
+        "Do the labs; the quizzes are a decent self-check.",
+        "Note the problems where a small classical model still beats an LLM.",
+        "Read the ethics module properly rather than skimming it."
+      ],
+      "done_when": [
+        "You can name three problems where an LLM is the wrong choice.",
+        "The pre-2017 history of NLP is no longer a blank."
+      ],
+      "links": [
+        {
+          "label": "AI for Beginners — 12 weeks",
+          "url": "https://github.com/microsoft/AI-For-Beginners",
+          "kind": "course",
+          "stars": 65800,
+          "verified": true
+        }
+      ],
+      "search": [
+        {
+          "on": "google",
+          "q": "history of NLP before transformers RNN LSTM"
+        }
+      ],
+      "tags": [
+        "foundation",
+        "course"
+      ]
+    },
+    {
+      "id": "transformer-arch",
+      "stage": "internals",
+      "col": 1,
+      "row": 0,
+      "type": "core",
+      "level": "advanced",
+      "est": "2w",
+      "xp": 25,
+      "title": "The transformer, properly",
+      "blurb": "Attention, heads, residuals, layer norm, position. Draw it from memory or you do not know it.",
+      "requires": [
+        "pytorch"
+      ],
+      "mission": "Read Attention Is All You Need alongside a from-scratch implementation, and draw the block from memory.",
+      "why": "Every model on this map is a variation on this architecture. Understanding it once makes each new paper an increment rather than a fresh mystery.",
+      "steps": [
+        "Read the original paper. Do not worry about understanding it all on the first pass.",
+        "Read the first chapters of LLMs from Scratch while re-reading the paper.",
+        "Implement single-head attention yourself, then extend it to multi-head.",
+        "Draw the full block from memory — every arrow, every norm.",
+        "Explain why the residual connections and the scaling factor are there."
+      ],
+      "done_when": [
+        "You drew the block from memory and it was right.",
+        "Your own attention implementation matches a reference on the same input."
+      ],
+      "links": [
+        {
+          "label": "LLMs from Scratch — build a GPT in PyTorch",
+          "url": "https://github.com/rasbt/LLMs-from-scratch",
+          "kind": "course",
+          "stars": 103100,
+          "verified": true
+        },
+        {
+          "label": "Dive into Deep Learning — attention chapters",
+          "url": "https://github.com/d2l-ai/d2l-en",
+          "kind": "course",
+          "stars": 29400,
+          "verified": true
+        }
+      ],
+      "search": [
+        {
+          "on": "google",
+          "q": "attention is all you need paper explained annotated"
+        },
+        {
+          "on": "youtube",
+          "q": "transformer architecture visual explanation attention"
+        }
+      ],
+      "tags": [
+        "architecture",
+        "theory"
+      ]
+    },
+    {
+      "id": "tokenizers-deep",
+      "stage": "internals",
+      "col": 2,
+      "row": 0,
+      "type": "core",
+      "level": "advanced",
+      "est": "1w",
+      "xp": 25,
+      "title": "Tokenizers, from the bottom",
+      "blurb": "Byte-pair encoding by hand. The source of a surprising share of model weirdness.",
+      "requires": [
+        "transformer-arch"
+      ],
+      "mission": "Implement byte-pair encoding yourself and explain three model failures caused by tokenization.",
+      "why": "Why can it not count letters, why is it worse in some languages, why do numbers break arithmetic — the answer to all three is tokenization.",
+      "steps": [
+        "Watch the tokenizer lecture in Zero to Hero and build a BPE tokenizer yourself.",
+        "Compare your tokenizer against tiktoken on the same text.",
+        "Measure how many tokens the same paragraph takes in English versus another language.",
+        "Find three model failures that trace back to token boundaries."
+      ],
+      "done_when": [
+        "Your BPE implementation round-trips text correctly.",
+        "You can explain the letter-counting failure precisely."
+      ],
+      "links": [
+        {
+          "label": "Zero to Hero — tokenizer lecture",
+          "url": "https://github.com/karpathy/nn-zero-to-hero",
+          "kind": "course",
+          "stars": 24000,
+          "verified": true
+        },
+        {
+          "label": "tiktoken",
+          "url": "https://github.com/openai/tiktoken",
+          "kind": "repo",
+          "stars": 19000,
+          "verified": true
+        }
+      ],
+      "search": [
+        {
+          "on": "google",
+          "q": "byte pair encoding tokenizer explained implementation"
+        }
+      ],
+      "tags": [
+        "tokenization",
+        "theory"
+      ]
+    },
+    {
+      "id": "attention-variants",
+      "stage": "internals",
+      "col": 3,
+      "row": 0,
+      "type": "side",
+      "level": "advanced",
+      "est": "1w",
+      "xp": 15,
+      "title": "How modern models differ",
+      "blurb": "Rotary embeddings, grouped-query attention, mixture of experts, sliding windows.",
+      "requires": [
+        "transformer-arch"
+      ],
+      "mission": "Read three current model implementations in the transformers library and list what each changed from the original.",
+      "why": "The 2017 architecture is not what ships today. Reading real implementations is how you learn the deltas that actually matter.",
+      "steps": [
+        "Open three modern architectures in the transformers library source.",
+        "For each, note the attention variant, the position encoding and the normalisation choice.",
+        "Find where they use grouped-query attention and work out what it saves.",
+        "Read a mixture-of-experts implementation and understand the routing.",
+        "Write a one-page comparison table."
+      ],
+      "done_when": [
+        "You have a comparison table of three real architectures.",
+        "You can explain what rotary embeddings buy over learned positions."
+      ],
+      "links": [
+        {
+          "label": "transformers — reference implementations",
+          "url": "https://github.com/huggingface/transformers",
+          "kind": "repo",
+          "stars": 164300,
+          "verified": true
+        }
+      ],
+      "search": [
+        {
+          "on": "google",
+          "q": "rotary embeddings grouped query attention mixture of experts explained"
+        }
+      ],
+      "tags": [
+        "architecture",
+        "research"
+      ]
+    },
+    {
+      "id": "build-gpt",
+      "stage": "internals",
+      "col": 1,
+      "row": 1,
+      "type": "build",
+      "level": "advanced",
+      "est": "1w",
+      "xp": 50,
+      "title": "QUEST: train your own GPT",
+      "blurb": "A few hundred lines, one GPU, and text that starts as noise and ends as English.",
+      "requires": [
+        "transformer-arch"
+      ],
+      "mission": "Train a small GPT from scratch on a dataset you chose, and watch it learn.",
+      "why": "The moment sampled text turns from noise into something grammatical is the moment the whole field clicks. Nothing else produces that.",
+      "steps": [
+        "Start from nanoGPT or minGPT and get the smallest example training.",
+        "Swap in your own text corpus — your writing, a book, a codebase.",
+        "Sample from checkpoints as training proceeds and keep the outputs.",
+        "Change one hyperparameter at a time and watch the loss curve respond.",
+        "Read every line of the training script until nothing in it is mysterious."
+      ],
+      "done_when": [
+        "Your model produces vaguely coherent text in your corpus's style.",
+        "You can explain every line of the training script."
+      ],
+      "links": [
+        {
+          "label": "nanoGPT",
+          "url": "https://github.com/karpathy/nanoGPT",
+          "kind": "repo",
+          "stars": 62200,
+          "verified": true
+        },
+        {
+          "label": "minGPT — ~300 readable lines",
+          "url": "https://github.com/karpathy/minGPT",
+          "kind": "repo",
+          "stars": 24800,
+          "verified": true
+        }
+      ],
+      "search": [
+        {
+          "on": "youtube",
+          "q": "let's build GPT from scratch karpathy"
+        }
+      ],
+      "tags": [
+        "training",
+        "project"
+      ]
+    },
+    {
+      "id": "llms-from-scratch",
+      "stage": "internals",
+      "col": 2,
+      "row": 1,
+      "type": "boss",
+      "level": "advanced",
+      "est": "8w",
+      "xp": 75,
+      "title": "BOSS: the whole book",
+      "blurb": "Tokenizer, attention, architecture, pretraining, fine-tuning — every chapter, coded.",
+      "requires": [
+        "build-gpt",
+        "tokenizers-deep"
+      ],
+      "mission": "Work through LLMs from Scratch end to end, implementing every chapter rather than reading it.",
+      "why": "This is the most complete path from 'I use LLMs' to 'I understand LLMs' that exists in public. Finishing it puts you ahead of most people who claim the title.",
+      "steps": [
+        "Do the chapters in order. Type the code; do not run the provided notebooks passively.",
+        "Complete the exercises at the end of each chapter.",
+        "Load real pretrained weights into your own implementation and confirm the outputs match.",
+        "Finish the instruction fine-tuning chapter with your own dataset.",
+        "Write a summary of each chapter in your own words as you go."
+      ],
+      "done_when": [
+        "Every chapter implemented, exercises included.",
+        "Your implementation reproduces a reference model's output on the same input."
+      ],
+      "links": [
+        {
+          "label": "LLMs from Scratch",
+          "url": "https://github.com/rasbt/LLMs-from-scratch",
+          "kind": "course",
+          "stars": 103100,
+          "verified": true
+        }
+      ],
+      "search": [
+        {
+          "on": "google",
+          "q": "build a large language model from scratch book review"
+        }
+      ],
+      "tags": [
+        "training",
+        "theory"
+      ]
+    },
+    {
+      "id": "train-nanochat",
+      "stage": "internals",
+      "col": 2,
+      "row": 2,
+      "type": "build",
+      "level": "advanced",
+      "est": "2w",
+      "xp": 50,
+      "title": "QUEST: the full pipeline, small",
+      "blurb": "Tokenize, pretrain, fine-tune, evaluate, serve — the whole ChatGPT pipeline on one node.",
+      "requires": [
+        "llms-from-scratch"
+      ],
+      "mission": "Run nanochat end to end and produce a chat model you can talk to.",
+      "why": "Every stage of a real training pipeline, at a scale one person can afford. This is the closest you get to the real thing without a cluster.",
+      "steps": [
+        "Read the nanochat repo's walkthrough before running anything.",
+        "Run the full pipeline: tokenizer, pretraining, mid-training, fine-tuning, evaluation.",
+        "Talk to the resulting model and note exactly how it is limited.",
+        "Change one stage — more data, different mixture — and compare the eval numbers.",
+        "Write up what each stage contributed to the final behaviour."
+      ],
+      "done_when": [
+        "You have a chat model you trained yourself, end to end.",
+        "You can say what each pipeline stage added."
+      ],
+      "links": [
+        {
+          "label": "nanochat — full LLM pipeline on one node",
+          "url": "https://github.com/karpathy/nanochat",
+          "kind": "repo",
+          "stars": 57300,
+          "verified": true
+        }
+      ],
+      "search": [
+        {
+          "on": "google",
+          "q": "nanochat training pipeline walkthrough cost"
+        }
+      ],
+      "tags": [
+        "training",
+        "project"
+      ]
+    },
+    {
+      "id": "when-to-finetune",
+      "stage": "train",
+      "col": 1,
+      "row": 0,
+      "type": "core",
+      "level": "intermediate",
+      "est": "3h",
+      "xp": 25,
+      "title": "Decide: prompt, retrieve or fine-tune",
+      "blurb": "Fine-tuning teaches behaviour, not facts. Getting this backwards wastes weeks.",
+      "requires": [
+        "first-api-call"
+      ],
+      "mission": "Write the decision rule for your own problem, and prove prompting and retrieval are genuinely insufficient before you train anything.",
+      "why": "The most common expensive mistake in applied AI is fine-tuning to add knowledge, which is what retrieval is for. Fine-tuning is for format, tone and behaviour.",
+      "steps": [
+        "Read the fine-tuning section of the LLM course.",
+        "Write down what you want: new knowledge, or a different way of behaving?",
+        "If it is knowledge, build retrieval instead and stop here.",
+        "If it is behaviour, first prove a strong prompt with examples cannot do it.",
+        "Estimate the cost of data collection, training and serving before committing."
+      ],
+      "done_when": [
+        "You have a written decision with the alternative you ruled out and why.",
+        "You can state the one-line difference between what RAG fixes and what fine-tuning fixes."
+      ],
+      "links": [
+        {
+          "label": "LLM Course — fine-tuning roadmap",
+          "url": "https://github.com/mlabonne/llm-course",
+          "kind": "course",
+          "stars": 81900,
+          "verified": true
+        }
+      ],
+      "search": [
+        {
+          "on": "google",
+          "q": "when to fine tune vs RAG vs prompt engineering decision"
+        }
+      ],
+      "tags": [
+        "training",
+        "judgement"
+      ]
+    },
+    {
+      "id": "datasets",
+      "stage": "train",
+      "col": 2,
+      "row": 0,
+      "type": "core",
+      "level": "advanced",
+      "est": "2w",
+      "xp": 25,
+      "title": "The dataset is the work",
+      "blurb": "A thousand excellent examples beat a hundred thousand mediocre ones. This is where the time goes.",
+      "requires": [
+        "when-to-finetune"
+      ],
+      "mission": "Build a small, clean instruction dataset for your task and inspect every single example.",
+      "why": "Model quality tracks data quality far more than it tracks hyperparameters. Everyone learns this the expensive way; you can learn it now.",
+      "steps": [
+        "Define the exact input-output format you want the model to learn.",
+        "Collect or write 500-1000 examples in that format.",
+        "Read every one. Delete the bad ones. Fix the salvageable ones.",
+        "Check for duplicates, and hold out a test set before you touch anything else.",
+        "Look for the accidental patterns your model will learn instead of the task."
+      ],
+      "done_when": [
+        "Every example has been read by you.",
+        "A held-out test set exists and has never been trained on."
+      ],
+      "links": [
+        {
+          "label": "smol-course — alignment with small models",
+          "url": "https://github.com/huggingface/smol-course",
+          "kind": "course",
+          "stars": 6700,
+          "verified": true
+        },
+        {
+          "label": "LLM Course — dataset chapters",
+          "url": "https://github.com/mlabonne/llm-course",
+          "kind": "course",
+          "stars": 81900,
+          "verified": true
+        }
+      ],
+      "search": [
+        {
+          "on": "google",
+          "q": "instruction tuning dataset quality curation guide"
+        }
+      ],
+      "tags": [
+        "training",
+        "data"
+      ]
+    },
+    {
+      "id": "lora-qlora",
+      "stage": "train",
+      "col": 1,
+      "row": 1,
+      "type": "core",
+      "level": "advanced",
+      "est": "1w",
+      "xp": 25,
+      "title": "LoRA and friends",
+      "blurb": "Train one percent of the parameters, get most of the benefit, on hardware you can rent by the hour.",
+      "requires": [
+        "datasets"
+      ],
+      "mission": "Fine-tune a small open model with LoRA and beat the base model on your own eval set.",
+      "why": "Parameter-efficient fine-tuning is what put training within reach of individuals. A useful adapter can cost less than lunch.",
+      "steps": [
+        "Read enough about LoRA to know what rank and alpha do.",
+        "Fine-tune a small model on your dataset with PEFT or Unsloth.",
+        "Evaluate against the base model on your held-out set — no eval, no conclusion.",
+        "Sweep rank and learning rate and watch what actually moves the number.",
+        "Merge the adapter and test that the merged model behaves identically."
+      ],
+      "done_when": [
+        "Your fine-tuned model beats the base model on a held-out set.",
+        "You can explain what LoRA rank controls."
+      ],
+      "links": [
+        {
+          "label": "PEFT — parameter-efficient fine-tuning",
+          "url": "https://github.com/huggingface/peft",
+          "kind": "repo",
+          "stars": 21600,
+          "verified": true
+        },
+        {
+          "label": "Unsloth — fast, low-memory fine-tuning",
+          "url": "https://github.com/unslothai/unsloth",
+          "kind": "tool",
+          "stars": 74000,
+          "verified": true
+        }
+      ],
+      "search": [
+        {
+          "on": "google",
+          "q": "LoRA QLoRA fine tuning explained rank alpha"
+        },
+        {
+          "on": "youtube",
+          "q": "fine tune llama with unsloth colab tutorial"
+        }
+      ],
+      "tags": [
+        "training"
+      ]
+    },
+    {
+      "id": "post-training",
+      "stage": "train",
+      "col": 2,
+      "row": 1,
+      "type": "core",
+      "level": "advanced",
+      "est": "2w",
+      "xp": 25,
+      "title": "Post-training and preferences",
+      "blurb": "SFT, then DPO or GRPO. How a raw model becomes something worth talking to.",
+      "requires": [
+        "lora-qlora"
+      ],
+      "mission": "Run supervised fine-tuning followed by a preference-optimisation stage, and measure what each contributed.",
+      "why": "The gap between a pretrained model and a helpful assistant is post-training. Doing both stages once makes every alignment discussion concrete.",
+      "steps": [
+        "Run supervised fine-tuning with TRL and evaluate.",
+        "Build a small preference dataset — pairs of better and worse responses.",
+        "Run DPO or GRPO on top and evaluate again.",
+        "Compare all three checkpoints on the same eval set.",
+        "Look for the classic failure: an aligned model that got safer and duller."
+      ],
+      "done_when": [
+        "Three checkpoints compared on identical evals.",
+        "You can name what preference optimisation improved and what it cost."
+      ],
+      "links": [
+        {
+          "label": "TRL — post-training with RL",
+          "url": "https://github.com/huggingface/trl",
+          "kind": "repo",
+          "stars": 19100,
+          "verified": true
+        },
+        {
+          "label": "smol-course",
+          "url": "https://github.com/huggingface/smol-course",
+          "kind": "course",
+          "stars": 6700,
+          "verified": true
+        }
+      ],
+      "search": [
+        {
+          "on": "google",
+          "q": "SFT DPO GRPO post training explained difference"
+        }
+      ],
+      "tags": [
+        "training",
+        "alignment"
+      ]
+    },
+    {
+      "id": "finetune-run",
+      "stage": "train",
+      "col": 2,
+      "row": 2,
+      "type": "build",
+      "level": "advanced",
+      "est": "1w",
+      "xp": 50,
+      "title": "QUEST: a model that is yours",
+      "blurb": "Your data, your adapter, your evals, published so someone else can use it.",
+      "requires": [
+        "lora-qlora"
+      ],
+      "mission": "Fine-tune a model for a task you actually have, evaluate it honestly, and publish it with a model card.",
+      "why": "A published model with real evals is a strong signal of competence, and the discipline of writing the card forces you to be honest about limitations.",
+      "steps": [
+        "Pick a narrow task where you can judge output quality yourself.",
+        "Train with Unsloth or Axolotl — both handle the fiddly parts.",
+        "Evaluate against the base model and at least one prompting-only baseline.",
+        "Publish the adapter with a model card: data, method, results, and known failures.",
+        "Have someone else run it and confirm your instructions are sufficient."
+      ],
+      "done_when": [
+        "A published adapter with an honest model card.",
+        "Someone else reproduced your result from your instructions."
+      ],
+      "links": [
+        {
+          "label": "Unsloth",
+          "url": "https://github.com/unslothai/unsloth",
+          "kind": "tool",
+          "stars": 74000,
+          "verified": true
+        },
+        {
+          "label": "Axolotl — fine-tuning framework",
+          "url": "https://github.com/axolotl-ai-cloud/axolotl",
+          "kind": "tool",
+          "stars": 12400,
+          "verified": true
+        }
+      ],
+      "search": [
+        {
+          "on": "google",
+          "q": "publish fine tuned model card best practice"
+        }
+      ],
+      "tags": [
+        "training",
+        "project"
+      ]
+    },
+    {
+      "id": "serve-your-model",
+      "stage": "train",
+      "col": 3,
+      "row": 2,
+      "type": "side",
+      "level": "advanced",
+      "est": "3d",
+      "xp": 15,
+      "title": "Quantize and serve it",
+      "blurb": "Four-bit weights, a laptop, and a model that answers in real time.",
+      "requires": [
+        "finetune-run"
+      ],
+      "mission": "Quantize your fine-tuned model, serve it, and measure what the compression cost you.",
+      "why": "A model that only runs on rented hardware is a research artefact. Quantization is what makes it a thing people can actually use.",
+      "steps": [
+        "Export your merged model to a quantized format.",
+        "Run it with llama.cpp or Ollama on ordinary hardware.",
+        "Re-run your eval set on the quantized version and measure the quality drop.",
+        "Compare 8-bit and 4-bit and decide which is acceptable.",
+        "Measure tokens per second on the hardware you actually own."
+      ],
+      "done_when": [
+        "Your model runs on a laptop.",
+        "You have the exact quality cost of quantization on your own evals."
+      ],
+      "links": [
+        {
+          "label": "llama.cpp — quantized inference",
+          "url": "https://github.com/ggml-org/llama.cpp",
+          "kind": "repo",
+          "stars": 125000,
+          "verified": true
+        },
+        {
+          "label": "Ollama — package and run it",
+          "url": "https://github.com/ollama/ollama",
+          "kind": "tool",
+          "stars": 179000,
+          "verified": true
+        }
+      ],
+      "search": [
+        {
+          "on": "google",
+          "q": "GGUF quantization quality loss 4bit vs 8bit"
+        }
+      ],
+      "tags": [
+        "training",
+        "deployment"
+      ]
+    },
+    {
+      "id": "image-models",
+      "stage": "imagegen",
+      "col": 1,
+      "row": 0,
+      "type": "core",
+      "level": "beginner",
+      "est": "2h",
+      "xp": 25,
+      "title": "How image models work",
+      "blurb": "Start with noise, remove a little at a time, steered by your words. That is diffusion.",
+      "requires": [
+        "what-is-genai"
+      ],
+      "mission": "Understand the denoising loop well enough to know what steps, guidance and seed actually do to your image.",
+      "why": "Every slider in every image tool maps to something in this loop. Knowing the loop turns slider-roulette into direction.",
+      "steps": [
+        "Read what diffusion is doing: noise in, iterative denoising, text conditioning.",
+        "Generate the same prompt with the same seed at 10, 25 and 50 steps and compare.",
+        "Change guidance scale across a range and see where it starts to burn.",
+        "Fix the seed and change one word, then change the seed and keep the words.",
+        "Learn the difference between the families: SD, SDXL and the newer flow-matching models."
+      ],
+      "done_when": [
+        "You can predict what raising guidance will do before you press go.",
+        "You use fixed seeds when comparing prompts."
+      ],
+      "links": [
+        {
+          "label": "Stability AI generative models",
+          "url": "https://github.com/Stability-AI/generative-models",
+          "kind": "repo",
+          "stars": 27300,
+          "verified": true
+        },
+        {
+          "label": "FLUX — inference for FLUX.1 models",
+          "url": "https://github.com/black-forest-labs/flux",
+          "kind": "repo",
+          "stars": 25900,
+          "verified": true
+        }
+      ],
+      "search": [
+        {
+          "on": "youtube",
+          "q": "how stable diffusion works explained visually"
+        },
+        {
+          "on": "google",
+          "q": "cfg scale steps seed explained image generation"
+        }
+      ],
+      "tags": [
+        "image",
+        "fundamentals"
+      ]
+    },
+    {
+      "id": "image-prompting",
+      "stage": "imagegen",
+      "col": 2,
+      "row": 0,
+      "type": "core",
+      "level": "beginner",
+      "est": "1w",
+      "xp": 25,
+      "title": "Prompting for images",
+      "blurb": "Subject, composition, lighting, lens, medium. Photography vocabulary beats adjectives.",
+      "requires": [
+        "image-models"
+      ],
+      "mission": "Produce twenty images of one subject where you controlled the difference each time, and keep a prompt log.",
+      "why": "Anyone can get a lucky image. Being able to get the image you intended is a skill, and it is mostly vocabulary plus disciplined iteration.",
+      "steps": [
+        "Install Fooocus if you want to start generating without configuring anything.",
+        "Pick one subject and generate twenty variations, changing exactly one thing each time.",
+        "Use real vocabulary: focal length, time of day, film stock, art movement, materials.",
+        "Learn negative prompts and what they are actually good for.",
+        "Keep a log of prompt, seed and result. This becomes your personal reference."
+      ],
+      "done_when": [
+        "Twenty logged images with a controlled variable each time.",
+        "You can hit a specific composition on purpose."
+      ],
+      "links": [
+        {
+          "label": "Fooocus — generate without fiddling",
+          "url": "https://github.com/lllyasviel/Fooocus",
+          "kind": "tool",
+          "stars": 52400,
+          "verified": true
+        },
+        {
+          "label": "Stable Diffusion web UI",
+          "url": "https://github.com/AUTOMATIC1111/stable-diffusion-webui",
+          "kind": "tool",
+          "stars": 164600,
+          "verified": true
+        }
+      ],
+      "search": [
+        {
+          "on": "google",
+          "q": "image prompt guide composition lighting camera terms"
+        }
+      ],
+      "tags": [
+        "image",
+        "prompting"
+      ]
+    },
+    {
+      "id": "comfy-workflows",
+      "stage": "imagegen",
+      "col": 1,
+      "row": 1,
+      "type": "core",
+      "level": "intermediate",
+      "est": "1w",
+      "xp": 25,
+      "title": "Node graphs and repeatability",
+      "blurb": "ComfyUI turns one-off generations into a pipeline you can rerun, share and version.",
+      "requires": [
+        "image-prompting"
+      ],
+      "mission": "Build a ComfyUI workflow you can rerun on new inputs and hand to someone else.",
+      "why": "The difference between a hobby and a practice is repeatability. A saved graph is an asset; a lucky prompt is an anecdote.",
+      "steps": [
+        "Install ComfyUI and rebuild a basic text-to-image graph from scratch rather than loading a preset.",
+        "Add upscaling and a face or detail refinement pass.",
+        "Parameterise it so the subject can change without rewiring.",
+        "Batch it over ten inputs.",
+        "Export the workflow and have someone else run it on their machine."
+      ],
+      "done_when": [
+        "A parameterised workflow runs as a batch.",
+        "Someone else ran your exported graph successfully."
+      ],
+      "links": [
+        {
+          "label": "ComfyUI — node-based generation engine",
+          "url": "https://github.com/comfyanonymous/ComfyUI",
+          "kind": "tool",
+          "stars": 128600,
+          "verified": true
+        }
+      ],
+      "search": [
+        {
+          "on": "youtube",
+          "q": "comfyui workflow tutorial beginner nodes"
+        }
+      ],
+      "tags": [
+        "image",
+        "pipeline"
+      ]
+    },
+    {
+      "id": "control-consistency",
+      "stage": "imagegen",
+      "col": 2,
+      "row": 1,
+      "type": "core",
+      "level": "advanced",
+      "est": "2w",
+      "xp": 25,
+      "title": "Control and consistency",
+      "blurb": "Same character, same style, twelve frames. This is where commercial work lives.",
+      "requires": [
+        "comfy-workflows"
+      ],
+      "mission": "Produce a set of twelve images with a consistent character or style, using control rather than luck.",
+      "why": "Clients do not want one good image, they want twelve that match. Consistency is the hard problem and the marketable skill.",
+      "steps": [
+        "Learn structural control: pose, depth and edge conditioning.",
+        "Learn style and subject control: LoRAs, reference images, IP adapters.",
+        "Produce twelve images with one consistent character in different poses.",
+        "Fix the failures with inpainting rather than regenerating from scratch.",
+        "Document the exact recipe so you can repeat it in a month."
+      ],
+      "done_when": [
+        "Twelve images a stranger would agree show the same character.",
+        "A written recipe reproduces the look."
+      ],
+      "links": [
+        {
+          "label": "ComfyUI — control workflows",
+          "url": "https://github.com/comfyanonymous/ComfyUI",
+          "kind": "tool",
+          "stars": 128600,
+          "verified": true
+        },
+        {
+          "label": "Stable Diffusion web UI — extensions ecosystem",
+          "url": "https://github.com/AUTOMATIC1111/stable-diffusion-webui",
+          "kind": "tool",
+          "stars": 164600,
+          "verified": true
+        }
+      ],
+      "search": [
+        {
+          "on": "google",
+          "q": "controlnet ip adapter character consistency workflow"
+        }
+      ],
+      "tags": [
+        "image",
+        "advanced"
+      ]
+    },
+    {
+      "id": "diffusers-code",
+      "stage": "imagegen",
+      "col": 3,
+      "row": 1,
+      "type": "side",
+      "level": "intermediate",
+      "est": "1w",
+      "xp": 15,
+      "title": "Image generation in code",
+      "blurb": "When the UI runs out, twenty lines of Python takes over.",
+      "requires": [
+        "comfy-workflows"
+      ],
+      "mission": "Generate images from a Python script and build something a UI cannot do.",
+      "why": "Scripting unlocks the things graphs are bad at: sweeping a parameter over a hundred values, generating from a database, wiring generation into an app.",
+      "steps": [
+        "Run a text-to-image pipeline with diffusers in a notebook.",
+        "Script a sweep across a parameter and contact-sheet the results.",
+        "Generate from a data source — a spreadsheet of products, a list of scenes.",
+        "Try image-to-image and inpainting from code.",
+        "Wrap it in a small Gradio interface so others can use it."
+      ],
+      "done_when": [
+        "A script produces a batch you could not have made by hand.",
+        "Someone else can run it behind a simple UI."
+      ],
+      "links": [
+        {
+          "label": "diffusers — diffusion models in PyTorch",
+          "url": "https://github.com/huggingface/diffusers",
+          "kind": "repo",
+          "stars": 34300,
+          "verified": true
+        },
+        {
+          "label": "Gradio",
+          "url": "https://github.com/gradio-app/gradio",
+          "kind": "tool",
+          "stars": 43400,
+          "verified": true
+        }
+      ],
+      "search": [
+        {
+          "on": "google",
+          "q": "diffusers pipeline python image to image inpainting example"
+        }
+      ],
+      "tags": [
+        "image",
+        "code"
+      ]
+    },
+    {
+      "id": "speech-to-text",
+      "stage": "motion",
+      "col": 2,
+      "row": 0,
+      "type": "core",
+      "level": "beginner",
+      "est": "3h",
+      "xp": 25,
+      "title": "Transcribe everything",
+      "blurb": "Whisper turns any audio into text, locally, for free. Quietly one of the most useful tools here.",
+      "requires": [
+        "what-is-genai"
+      ],
+      "mission": "Transcribe an hour of your own audio and build something on top of the transcript.",
+      "why": "Meetings, interviews, lectures, voice notes — all of it becomes searchable text. This is the single most immediately useful thing in the creator stage.",
+      "steps": [
+        "Run Whisper locally on a recording of your own.",
+        "Compare model sizes for accuracy against speed on your accent and audio quality.",
+        "Get timestamps out, and turn them into subtitles.",
+        "Feed the transcript to a language model for a summary and action items.",
+        "Script the whole chain so one command takes a file and returns notes."
+      ],
+      "done_when": [
+        "One command turns audio into a useful summary.",
+        "You know which model size is your default."
+      ],
+      "links": [
+        {
+          "label": "Whisper",
+          "url": "https://github.com/openai/whisper",
+          "kind": "repo",
+          "stars": 107700,
+          "verified": true
+        }
+      ],
+      "search": [
+        {
+          "on": "youtube",
+          "q": "whisper transcription local setup tutorial"
+        },
+        {
+          "on": "google",
+          "q": "whisper model size accuracy speed comparison"
+        }
+      ],
+      "tags": [
+        "audio",
+        "tools"
+      ]
+    },
+    {
+      "id": "video-gen",
+      "stage": "motion",
+      "col": 1,
+      "row": 0,
+      "type": "core",
+      "level": "intermediate",
+      "est": "1w",
+      "xp": 25,
+      "title": "Video generation, honestly",
+      "blurb": "Short clips, expensive, inconsistent — and improving faster than anything else here.",
+      "requires": [
+        "image-prompting"
+      ],
+      "mission": "Produce a ten-second sequence and document exactly where the current tools break.",
+      "why": "Video is the most hyped and least predictable corner of generative AI. Working out its real limits yourself is worth more than any demo reel.",
+      "steps": [
+        "Generate several short clips from text and from a starting image.",
+        "Try to get two consecutive clips to match in character and lighting.",
+        "Note the failure modes: morphing hands, drifting faces, physics that gives up.",
+        "Combine generated clips with real footage and see which parts survive the cut.",
+        "Write down what is genuinely usable today and what is still a demo."
+      ],
+      "done_when": [
+        "A ten-second sequence exists that you would show someone.",
+        "You have a written list of current limitations."
+      ],
+      "links": [
+        {
+          "label": "Stability AI generative models — video",
+          "url": "https://github.com/Stability-AI/generative-models",
+          "kind": "repo",
+          "stars": 27300,
+          "verified": true
+        },
+        {
+          "label": "ComfyUI — video workflows",
+          "url": "https://github.com/comfyanonymous/ComfyUI",
+          "kind": "tool",
+          "stars": 128600,
+          "verified": true
+        }
+      ],
+      "search": [
+        {
+          "on": "google",
+          "q": "AI video generation tools comparison consistency limits"
+        }
+      ],
+      "tags": [
+        "video"
+      ]
+    },
+    {
+      "id": "voice-cloning",
+      "stage": "motion",
+      "col": 2,
+      "row": 1,
+      "type": "side",
+      "level": "intermediate",
+      "est": "1w",
+      "xp": 15,
+      "title": "Synthetic voice, used responsibly",
+      "blurb": "Narration and dubbing from text. Powerful, and easy to misuse — get consent.",
+      "requires": [
+        "speech-to-text"
+      ],
+      "mission": "Generate narration with a text-to-speech model, using only a voice you have the right to use.",
+      "why": "Voice is the fastest way to make written work accessible. It is also the technology most open to abuse, so the ethical line matters more here than anywhere else on this map.",
+      "steps": [
+        "Run a text-to-speech model and generate narration for something you wrote.",
+        "Work on delivery: punctuation, pacing, emphasis, pauses.",
+        "Only clone a voice with the explicit consent of the person it belongs to — your own counts.",
+        "Compare a local model against a hosted service on quality and cost.",
+        "Label synthetic audio as synthetic wherever you publish it."
+      ],
+      "done_when": [
+        "A narrated piece exists that is pleasant to listen to.",
+        "Consent and labelling are both handled."
+      ],
+      "links": [
+        {
+          "label": "F5-TTS — flow-matching text to speech",
+          "url": "https://github.com/SWivid/F5-TTS",
+          "kind": "repo",
+          "stars": 15100,
+          "verified": true
+        }
+      ],
+      "search": [
+        {
+          "on": "google",
+          "q": "text to speech open source quality comparison"
+        },
+        {
+          "on": "google",
+          "q": "voice cloning consent law disclosure rules"
+        }
+      ],
+      "tags": [
+        "audio",
+        "ethics"
+      ]
+    },
+    {
+      "id": "edit-pipeline",
+      "stage": "motion",
+      "col": 1,
+      "row": 1,
+      "type": "build",
+      "level": "intermediate",
+      "est": "1w",
+      "xp": 50,
+      "title": "QUEST: cut a real piece",
+      "blurb": "Script, visuals, voice, edit. A finished ninety seconds beats a folder of clips.",
+      "requires": [
+        "video-gen",
+        "speech-to-text"
+      ],
+      "mission": "Produce one finished short piece that uses generated material and survives being watched by someone else.",
+      "why": "Generation is the easy part. Editing, pacing and finishing are what make it a piece of work rather than a technology demo.",
+      "steps": [
+        "Write the script first. Generated visuals do not rescue a bad script.",
+        "Generate or gather the visuals you need, and cut the ones that do not serve the script.",
+        "Add narration and check the pacing against the visuals.",
+        "Edit it properly. Then cut another twenty percent.",
+        "Show it to someone without explaining anything, and watch their face."
+      ],
+      "done_when": [
+        "A finished piece of 60-120 seconds exists.",
+        "Someone watched it without needing your commentary."
+      ],
+      "links": [
+        {
+          "label": "Whisper — for subtitles and timing",
+          "url": "https://github.com/openai/whisper",
+          "kind": "repo",
+          "stars": 107700,
+          "verified": true
+        },
+        {
+          "label": "ComfyUI",
+          "url": "https://github.com/comfyanonymous/ComfyUI",
+          "kind": "tool",
+          "stars": 128600,
+          "verified": true
+        }
+      ],
+      "search": [
+        {
+          "on": "google",
+          "q": "AI short film workflow script to edit"
+        }
+      ],
+      "tags": [
+        "video",
+        "project"
+      ]
+    },
+    {
+      "id": "asset-pipeline",
+      "stage": "pipeline",
+      "col": 1,
+      "row": 0,
+      "type": "core",
+      "level": "intermediate",
+      "est": "1w",
+      "xp": 25,
+      "title": "A pipeline, not a pile",
+      "blurb": "Naming, versioning, seeds recorded, prompts stored. Findable in six months.",
+      "requires": [
+        "comfy-workflows"
+      ],
+      "mission": "Set up a project structure that lets you find and rerun any past generation.",
+      "why": "Generative work produces thousands of files fast. Without a system, your best result becomes unfindable and unreproducible within a fortnight.",
+      "steps": [
+        "Define a folder and naming convention: project, date, version, variant.",
+        "Store the prompt, seed and workflow next to every keeper.",
+        "Keep a single 'selects' folder that only contains work you would show.",
+        "Back it up somewhere that is not your laptop.",
+        "Test it: pick an old image and reproduce it exactly."
+      ],
+      "done_when": [
+        "You reproduced an old result from your own records.",
+        "The convention survived a week of real use."
+      ],
+      "links": [
+        {
+          "label": "ComfyUI — workflows are saved with the image",
+          "url": "https://github.com/comfyanonymous/ComfyUI",
+          "kind": "tool",
+          "stars": 128600,
+          "verified": true
+        }
+      ],
+      "search": [
+        {
+          "on": "google",
+          "q": "creative asset management naming convention versioning"
+        }
+      ],
+      "tags": [
+        "pipeline",
+        "craft"
+      ]
+    },
+    {
+      "id": "rights-and-credit",
+      "stage": "pipeline",
+      "col": 2,
+      "row": 0,
+      "type": "core",
+      "level": "beginner",
+      "est": "3h",
+      "xp": 25,
+      "title": "Rights, licences and credit",
+      "blurb": "Model licences, training data disputes, client contracts, and what you must disclose.",
+      "requires": [],
+      "mission": "Establish what you are actually allowed to do commercially with the models and assets you use.",
+      "why": "Commercial work with unclear rights is a liability you carry, not the tool vendor. Half a day of reading protects everything you build afterwards.",
+      "steps": [
+        "Read the licence of every model you use commercially — several restrict it.",
+        "Check what your platform's terms say about ownership of outputs.",
+        "Find out what your client or employer requires you to disclose.",
+        "Decide your own line on style imitation of living artists, and write it down.",
+        "Keep provenance records for commercial work: what was generated, with what, from what."
+      ],
+      "done_when": [
+        "You know the commercial status of every model you use.",
+        "A written disclosure policy exists for your work."
+      ],
+      "links": [
+        {
+          "label": "Stability AI — licence terms in repo",
+          "url": "https://github.com/Stability-AI/generative-models",
+          "kind": "repo",
+          "stars": 27300,
+          "verified": true
+        },
+        {
+          "label": "FLUX — licence terms in repo",
+          "url": "https://github.com/black-forest-labs/flux",
+          "kind": "repo",
+          "stars": 25900,
+          "verified": true
+        }
+      ],
+      "search": [
+        {
+          "on": "google",
+          "q": "AI generated image copyright commercial use rules"
+        },
+        {
+          "on": "google",
+          "q": "stable diffusion flux model licence commercial"
+        }
+      ],
+      "tags": [
+        "legal",
+        "ethics"
+      ]
+    },
+    {
+      "id": "ship-a-piece",
+      "stage": "pipeline",
+      "col": 2,
+      "row": 1,
+      "type": "boss",
+      "level": "intermediate",
+      "est": "2w",
+      "xp": 75,
+      "title": "BOSS: publish the work",
+      "blurb": "Finished, credited, published, with the process written up. Not a folder of experiments.",
+      "requires": [
+        "asset-pipeline",
+        "rights-and-credit"
+      ],
+      "mission": "Publish one finished piece of work with a written account of how it was made.",
+      "why": "The process write-up is often more valuable to other people than the piece — and it is what turns a hobby into a reputation.",
+      "steps": [
+        "Choose your strongest work and finish it to a standard you would defend.",
+        "Write up the process: what worked, what failed, and the actual prompts and settings.",
+        "Credit your tools and models properly, and disclose what was generated.",
+        "Publish it somewhere public.",
+        "Ask two people whose taste you trust for honest criticism, and act on one piece of it."
+      ],
+      "done_when": [
+        "The work and the write-up are both public.",
+        "You acted on at least one piece of criticism."
+      ],
+      "links": [
+        {
+          "label": "Awesome Generative AI — where the community publishes",
+          "url": "https://github.com/steven2358/awesome-generative-ai",
+          "kind": "list",
+          "stars": 12500,
+          "verified": true
+        }
+      ],
+      "search": [
+        {
+          "on": "google",
+          "q": "how to write a creative process case study"
+        }
+      ],
+      "tags": [
+        "project",
+        "craft"
+      ]
+    },
+    {
+      "id": "follow-releases",
+      "stage": "frontier",
+      "col": 1,
+      "row": 0,
+      "type": "core",
+      "level": "intermediate",
+      "est": "60m",
+      "xp": 25,
+      "title": "A five-a-week habit",
+      "blurb": "Not everything. Five sources, twenty minutes, once a week, forever.",
+      "requires": [],
+      "mission": "Set up a small, sustainable information routine and run it for a month.",
+      "why": "The failure modes are equal and opposite: reading everything and burning out, or reading nothing and waking up two years behind. A small fixed routine beats both.",
+      "steps": [
+        "Pick five sources maximum. Watch the awesome-lists on this map — they are curated for you.",
+        "Star the repos you rely on and watch their releases rather than reading news about them.",
+        "Book twenty minutes a week in your calendar. Treat it as real.",
+        "Keep one note file of things worth trying, and try one of them a month.",
+        "Cull a source whenever you add one."
+      ],
+      "done_when": [
+        "The routine survived four weeks.",
+        "You tried one new thing because of it."
+      ],
+      "links": [
+        {
+          "label": "Awesome Generative AI Guide — updated regularly",
+          "url": "https://github.com/aishwaryanr/awesome-generative-ai-guide",
+          "kind": "list",
+          "stars": 28800,
+          "verified": true
+        },
+        {
+          "label": "Awesome Generative AI",
+          "url": "https://github.com/steven2358/awesome-generative-ai",
+          "kind": "list",
+          "stars": 12500,
+          "verified": true
+        },
+        {
+          "label": "Awesome-LLM",
+          "url": "https://github.com/Hannibal046/Awesome-LLM",
+          "kind": "list",
+          "stars": 27300,
+          "verified": true
+        }
+      ],
+      "search": [
+        {
+          "on": "google",
+          "q": "best AI newsletters worth reading weekly"
+        }
+      ],
+      "tags": [
+        "habit"
+      ]
+    },
+    {
+      "id": "read-papers",
+      "stage": "frontier",
+      "col": 2,
+      "row": 0,
+      "type": "core",
+      "level": "advanced",
+      "est": "2w",
+      "xp": 25,
+      "title": "Read papers without drowning",
+      "blurb": "Abstract, figures, results, then decide. Most papers deserve four minutes, not four hours.",
+      "requires": [],
+      "mission": "Read ten papers with a triage method, and take one all the way to a working implementation.",
+      "why": "Papers are where the field actually happens, months before the blog posts. Triage is what makes them sustainable rather than overwhelming.",
+      "steps": [
+        "Learn a three-pass method: abstract and figures, then results, then full read only if it earned it.",
+        "Pick ten recent papers in one narrow area and triage all ten.",
+        "Take the best one and reimplement its core idea, however crudely.",
+        "Compare your result with the paper's claim and account for the difference.",
+        "Write a paragraph on each of the ten so you remember what you read."
+      ],
+      "done_when": [
+        "Ten papers triaged and noted.",
+        "One idea implemented and compared against its claim."
+      ],
+      "links": [
+        {
+          "label": "Awesome-LLM — papers and milestones",
+          "url": "https://github.com/Hannibal046/Awesome-LLM",
+          "kind": "list",
+          "stars": 27300,
+          "verified": true
+        },
+        {
+          "label": "arxiv.org",
+          "url": "https://arxiv.org",
+          "kind": "docs",
+          "verified": false
+        }
+      ],
+      "search": [
+        {
+          "on": "google",
+          "q": "how to read a machine learning paper three pass method"
+        },
+        {
+          "on": "google",
+          "q": "trending AI papers this week"
+        }
+      ],
+      "tags": [
+        "research",
+        "habit"
+      ]
+    },
+    {
+      "id": "build-in-public",
+      "stage": "frontier",
+      "col": 3,
+      "row": 0,
+      "type": "side",
+      "level": "beginner",
+      "est": "ongoing",
+      "xp": 15,
+      "title": "Work where people can see it",
+      "blurb": "A repo, a thread, a short write-up. Opportunities find visible work.",
+      "requires": [],
+      "mission": "Publish something small every fortnight for three months.",
+      "why": "In a field with no settled credentials, public work is the credential. It also forces the clarity that comes from explaining yourself.",
+      "steps": [
+        "Pick one channel and only one — a repo, a blog, or a feed.",
+        "Publish something every two weeks, however small: a script, a comparison, a failure.",
+        "Write up failures too. They are more useful to others than successes.",
+        "Reply to people who engage; that is where the opportunities come from.",
+        "Keep going for three months before judging whether it works."
+      ],
+      "done_when": [
+        "Six posts in three months.",
+        "At least one useful conversation started because of it."
+      ],
+      "links": [
+        {
+          "label": "Awesome LLM Apps — a good place to be listed",
+          "url": "https://github.com/Shubhamsaboo/awesome-llm-apps",
+          "kind": "list",
+          "stars": 133300,
+          "verified": true
+        }
+      ],
+      "search": [
+        {
+          "on": "google",
+          "q": "building in public developer portfolio advice"
+        }
+      ],
+      "tags": [
+        "career",
+        "habit"
+      ]
+    },
+    {
+      "id": "open-source-contrib",
+      "stage": "frontier",
+      "col": 1,
+      "row": 1,
+      "type": "build",
+      "level": "intermediate",
+      "est": "2w",
+      "xp": 50,
+      "title": "QUEST: land a pull request",
+      "blurb": "Fix a doc, a bug, an example. The fastest way into the field's actual conversation.",
+      "requires": [
+        "follow-releases"
+      ],
+      "mission": "Get a pull request merged into a project you actually use.",
+      "why": "It teaches you how real AI code is structured, puts your name in a place people look, and is far more achievable than it sounds — most projects are desperate for documentation fixes.",
+      "steps": [
+        "Pick a repo from this map that you have actually used.",
+        "Read its contributing guide and find issues labelled good first issue.",
+        "Start with documentation or a broken example — these are genuinely valuable and get merged.",
+        "Write a small, focused change with a clear description of why.",
+        "Respond to review comments quickly and without ego."
+      ],
+      "done_when": [
+        "A pull request is merged.",
+        "You know how to navigate a large unfamiliar codebase."
+      ],
+      "links": [
+        {
+          "label": "LangChain — active, welcoming to first PRs",
+          "url": "https://github.com/langchain-ai/langchain",
+          "kind": "repo",
+          "stars": 144600,
+          "verified": true
+        },
+        {
+          "label": "transformers",
+          "url": "https://github.com/huggingface/transformers",
+          "kind": "repo",
+          "stars": 164300,
+          "verified": true
+        },
+        {
+          "label": "Awesome-LLM — many lists take contributions",
+          "url": "https://github.com/Hannibal046/Awesome-LLM",
+          "kind": "list",
+          "stars": 27300,
+          "verified": true
+        }
+      ],
+      "search": [
+        {
+          "on": "github",
+          "q": "good first issue label llm"
+        }
+      ],
+      "tags": [
+        "career",
+        "project"
+      ]
+    },
+    {
+      "id": "teach-it",
+      "stage": "frontier",
+      "col": 2,
+      "row": 1,
+      "type": "boss",
+      "level": "intermediate",
+      "est": "2w",
+      "xp": 75,
+      "title": "BOSS: teach it to someone else",
+      "blurb": "The last mile of learning. You do not know it until someone else knows it because of you.",
+      "requires": [],
+      "mission": "Teach one topic from this map to someone who does not know it, and fix what your explanation reveals.",
+      "why": "Teaching exposes every gap you have papered over. It is also how you find out which parts of what you learned actually mattered.",
+      "steps": [
+        "Choose a topic you believe you understand well.",
+        "Prepare a 20-minute explanation with a live demonstration.",
+        "Teach it to a real person and let them ask anything.",
+        "Note every question you could not answer cleanly.",
+        "Go back and fill those gaps, then write the explanation up publicly."
+      ],
+      "done_when": [
+        "Someone learned something from you and can now do it.",
+        "You closed the gaps their questions found."
+      ],
+      "links": [
+        {
+          "label": "Generative AI for Beginners — a model for teaching this",
+          "url": "https://github.com/microsoft/generative-ai-for-beginners",
+          "kind": "course",
+          "stars": 118200,
+          "verified": true
+        }
+      ],
+      "search": [
+        {
+          "on": "google",
+          "q": "feynman technique learning by teaching"
+        }
+      ],
+      "tags": [
+        "habit",
+        "mastery"
+      ]
+    }
+  ]
+}

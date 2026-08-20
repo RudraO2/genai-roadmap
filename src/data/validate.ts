@@ -1,70 +1,36 @@
 /**
- * The registry validator.
+ * The registry validator. One implementation, run in two places: at module load in
+ * the browser (`roadmap.ts`) and from the command line in `npm run build`
+ * (`scripts/validate-data.ts`), so a file that would break the app cannot reach a
+ * deploy.
  *
- * Pure and total: it takes two `unknown` values, never throws, imports no JSON, and
- * imports nothing from `registry.ts`. Phase A enforced a set of invariants while
- * generating `data/*.json`; this file re-derives every one of them from the data so
- * a later hand edit cannot break them silently.
+ * Errors block. Warnings are printed and do not.
  *
- * Issue codes are stable and greppable. Later specs and the build gate match on them.
+ * The rules that matter are the graph ones. A roadmap whose edges point at missing
+ * nodes, or forward in time, or in a circle, is worse than no roadmap: it will
+ * cheerfully tell a beginner to do things in an impossible order.
  */
 
-import {
-  CURVE_IDS,
-  KINDS,
-  LEVELS,
-  MAX_BLURB_LENGTH,
-  SIDES,
-  STATUSES,
-  TRACK_IDS,
-  ZONES,
-} from '../constants.ts'
-import type { Act, Branch, Node, PlacedNode, Track, TrackId } from '../types.ts'
-import { readingOrder } from './order.ts'
+import { LEVELS, LINK_KINDS, MAX_BLURB_LENGTH, NODE_TYPES, SEARCH_ENGINES } from '../constants.ts'
+import type { RoadmapFile, RoadmapNode } from '../types.ts'
 
 export type Severity = 'error' | 'warning'
 
 export interface Issue {
-  /** Stable, greppable, e.g. `DANGLING_REQUIRE`. */
   code: string
   severity: Severity
-  /** Where in the data, e.g. `nodes[12].requires[0]`. */
   path: string
   message: string
 }
 
 export interface ValidationResult {
-  /** False iff at least one issue has severity `error`. */
   ok: boolean
   issues: Issue[]
   errors: Issue[]
   warnings: Issue[]
 }
 
-const DATE_RE = /^\d{4}-\d{2}-\d{2}$/
-
-function isObject(value: unknown): value is Record<string, unknown> {
-  return typeof value === 'object' && value !== null && !Array.isArray(value)
-}
-
-function isDate(value: unknown): boolean {
-  if (typeof value !== 'string' || !DATE_RE.test(value)) return false
-  const parsed = new Date(`${value}T00:00:00Z`)
-  return !Number.isNaN(parsed.getTime()) && parsed.toISOString().slice(0, 10) === value
-}
-
-function isHttpUrl(value: unknown): boolean {
-  if (typeof value !== 'string' || value.length === 0) return false
-  try {
-    const { protocol } = new URL(value)
-    return protocol === 'http:' || protocol === 'https:'
-  } catch {
-    return false
-  }
-}
-
-/** Collects issues so no single check has to thread an array through by hand. */
-class Report {
+class Collector {
   readonly issues: Issue[] = []
 
   error(code: string, path: string, message: string): void {
@@ -74,640 +40,240 @@ class Report {
   warn(code: string, path: string, message: string): void {
     this.issues.push({ code, severity: 'warning', path, message })
   }
-
-  result(): ValidationResult {
-    const errors = this.issues.filter((i) => i.severity === 'error')
-    const warnings = this.issues.filter((i) => i.severity === 'warning')
-    return { ok: errors.length === 0, issues: this.issues, errors, warnings }
-  }
 }
 
-// ---------------------------------------------------------------------------
-// Shape checks. Each returns the value narrowed, or null when it had to give up.
-// ---------------------------------------------------------------------------
+const isString = (v: unknown): v is string => typeof v === 'string' && v.length > 0
+const isStringArray = (v: unknown): v is string[] => Array.isArray(v) && v.every(isString)
+const isInt = (v: unknown): v is number => typeof v === 'number' && Number.isInteger(v)
 
-function checkString(r: Report, value: unknown, path: string, code = 'BAD_NODE_FIELD'): boolean {
-  if (typeof value !== 'string' || value.trim().length === 0) {
-    r.error(code, path, `expected a non-empty string, got ${describe(value)}`)
-    return false
-  }
-  return true
+/** Path depth of a URL, used to bound what an unverified link is allowed to be. */
+function pathDepth(url: string): number {
+  const withoutScheme = url.replace(/^https?:\/\//, '')
+  const slash = withoutScheme.indexOf('/')
+  if (slash < 0) return 0
+  return withoutScheme
+    .slice(slash + 1)
+    .split(/[?#]/)[0]!
+    .split('/')
+    .filter((segment) => segment.length > 0).length
 }
 
-function checkEnum<T extends string>(
-  r: Report,
-  value: unknown,
-  members: readonly T[],
-  path: string,
-): boolean {
-  if (typeof value !== 'string' || !(members as readonly string[]).includes(value)) {
-    r.error('BAD_ENUM', path, `expected one of ${members.join(' | ')}, got ${describe(value)}`)
-    return false
-  }
-  return true
-}
-
-function describe(value: unknown): string {
-  if (value === null) return 'null'
-  if (value === undefined) return 'undefined'
-  if (Array.isArray(value)) return `an array of ${value.length}`
-  if (typeof value === 'string') return JSON.stringify(value)
-  return `${typeof value} ${String(value)}`
-}
-
-function checkNode(r: Report, raw: unknown, path: string): Node | null {
-  if (!isObject(raw)) {
-    r.error('BAD_NODE_FIELD', path, `expected an object, got ${describe(raw)}`)
-    return null
+function checkNode(node: RoadmapNode, at: string, ids: ReadonlySet<string>, c: Collector): void {
+  for (const field of ['id', 'title', 'blurb', 'stage', 'est', 'mission', 'why'] as const) {
+    if (!isString(node[field])) c.error('BAD_FIELD', `${at}.${field}`, `must be a non-empty string`)
   }
 
-  let ok = true
-  ok = checkString(r, raw['id'], `${path}.id`) && ok
-  ok = checkString(r, raw['title'], `${path}.title`) && ok
-  ok = checkString(r, raw['blurb'], `${path}.blurb`) && ok
-  ok = checkEnum(r, raw['level'], LEVELS, `${path}.level`) && ok
-  ok = checkEnum(r, raw['status'], STATUSES, `${path}.status`) && ok
-  ok = checkEnum(r, raw['zone'], ZONES, `${path}.zone`) && ok
+  if (!LEVELS.includes(node.level)) c.error('BAD_LEVEL', `${at}.level`, `unknown level "${node.level}"`)
+  if (!NODE_TYPES.includes(node.type)) c.error('BAD_TYPE', `${at}.type`, `unknown type "${node.type}"`)
+  if (!isInt(node.xp) || node.xp <= 0) c.error('BAD_XP', `${at}.xp`, 'xp must be a positive integer')
+  if (!isInt(node.col) || node.col < 0) c.error('BAD_COL', `${at}.col`, 'col must be a non-negative integer')
+  if (!isInt(node.row) || node.row < 0) c.error('BAD_ROW', `${at}.row`, 'row must be a non-negative integer')
 
-  if (!Array.isArray(raw['tracks'])) {
-    r.error('BAD_NODE_FIELD', `${path}.tracks`, `expected an array, got ${describe(raw['tracks'])}`)
-    ok = false
+  if (isString(node.blurb) && node.blurb.length > MAX_BLURB_LENGTH) {
+    c.warn('LONG_BLURB', `${at}.blurb`, `${node.blurb.length} chars, over ${MAX_BLURB_LENGTH}`)
+  }
+
+  if (!isStringArray(node.requires)) {
+    c.error('BAD_REQUIRES', `${at}.requires`, 'must be an array of node ids')
   } else {
-    raw['tracks'].forEach((t, i) => {
-      if (!checkEnum(r, t, TRACK_IDS, `${path}.tracks[${i}]`)) ok = false
-    })
+    for (const id of node.requires) {
+      if (!ids.has(id)) c.error('DANGLING_EDGE', `${at}.requires`, `no such node "${id}"`)
+      if (id === node.id) c.error('SELF_EDGE', `${at}.requires`, 'a node cannot require itself')
+    }
   }
 
-  if (!Array.isArray(raw['requires'])) {
-    r.error(
-      'BAD_NODE_FIELD',
-      `${path}.requires`,
-      `expected an array, got ${describe(raw['requires'])}`,
-    )
-    ok = false
+  // A step list is the whole point of a node. Without it this is a bookmark.
+  if (!isStringArray(node.steps) || node.steps.length < 2) {
+    c.error('NO_STEPS', `${at}.steps`, 'at least two concrete steps are required')
+  }
+  if (!isStringArray(node.done_when) || node.done_when.length < 1) {
+    c.error('NO_DONE_WHEN', `${at}.done_when`, 'at least one observable finish condition is required')
+  }
+  if (!isStringArray(node.tags)) c.error('BAD_TAGS', `${at}.tags`, 'must be an array of strings')
+
+  if (!Array.isArray(node.links) || node.links.length === 0) {
+    c.error('NO_LINKS', `${at}.links`, 'every node must point somewhere')
   } else {
-    raw['requires'].forEach((req, i) => {
-      if (!checkString(r, req, `${path}.requires[${i}]`)) ok = false
+    node.links.forEach((link, i) => {
+      const where = `${at}.links[${i}]`
+      if (!isString(link.label)) c.error('BAD_FIELD', `${where}.label`, 'must be a non-empty string')
+      if (!isString(link.url) || !/^https:\/\//.test(link.url)) {
+        c.error('BAD_URL', `${where}.url`, 'must be an https URL')
+      }
+      if (!LINK_KINDS.includes(link.kind)) c.error('BAD_KIND', `${where}.kind`, `unknown kind "${link.kind}"`)
+      if (typeof link.verified !== 'boolean') {
+        c.error('BAD_VERIFIED', `${where}.verified`, 'must be a boolean')
+      }
+      // A link nobody could reach when the registry was written is allowed only as
+      // a stable site root. Anything deeper is a guess, and a guessed deep link is
+      // exactly the 404 this rule exists to prevent.
+      if (link.verified === false && isString(link.url) && pathDepth(link.url) > 2) {
+        c.error('UNVERIFIED_DEEP_LINK', `${where}.url`, 'unverified links must be site roots')
+      }
+      if (link.stars !== undefined && !isInt(link.stars)) {
+        c.error('BAD_STARS', `${where}.stars`, 'stars must be an integer when present')
+      }
     })
   }
 
-  if (!Array.isArray(raw['links'])) {
-    r.error('BAD_NODE_FIELD', `${path}.links`, `expected an array, got ${describe(raw['links'])}`)
-    ok = false
+  if (!Array.isArray(node.search) || node.search.length === 0) {
+    c.error('NO_SEARCH', `${at}.search`, 'every node needs at least one search query')
   } else {
-    raw['links'].forEach((link, i) => {
-      const lp = `${path}.links[${i}]`
-      if (!isObject(link)) {
-        r.error('BAD_NODE_FIELD', lp, `expected an object, got ${describe(link)}`)
-        ok = false
-        return
-      }
-      if (!checkString(r, link['label'], `${lp}.label`)) ok = false
-      if (!checkEnum(r, link['kind'], KINDS, `${lp}.kind`)) ok = false
-      if (!isHttpUrl(link['url'])) {
-        r.error('BAD_URL', `${lp}.url`, `expected an http(s) URL, got ${describe(link['url'])}`)
-        ok = false
-      }
+    node.search.forEach((query, i) => {
+      const where = `${at}.search[${i}]`
+      if (!SEARCH_ENGINES.includes(query.on)) c.error('BAD_ENGINE', `${where}.on`, `unknown engine "${query.on}"`)
+      if (!isString(query.q)) c.error('BAD_FIELD', `${where}.q`, 'must be a non-empty string')
     })
   }
-
-  if (raw['repo'] !== null && typeof raw['repo'] !== 'string') {
-    r.error('BAD_NODE_FIELD', `${path}.repo`, `expected a string or null, got ${describe(raw['repo'])}`)
-    ok = false
-  }
-  if (raw['stars'] !== null && !(typeof raw['stars'] === 'number' && Number.isFinite(raw['stars']))) {
-    r.error(
-      'BAD_NODE_FIELD',
-      `${path}.stars`,
-      `expected a finite number or null, got ${describe(raw['stars'])}`,
-    )
-    ok = false
-  }
-  if (raw['note'] !== undefined && typeof raw['note'] !== 'string') {
-    r.error('BAD_NODE_FIELD', `${path}.note`, `expected a string when present, got ${describe(raw['note'])}`)
-    ok = false
-  }
-  if (raw['successor'] !== undefined && typeof raw['successor'] !== 'string') {
-    r.error(
-      'BAD_NODE_FIELD',
-      `${path}.successor`,
-      `expected a node id string when present, got ${describe(raw['successor'])}`,
-    )
-    ok = false
-  }
-
-  if (raw['last_commit'] !== null && !isDate(raw['last_commit'])) {
-    r.error(
-      'BAD_DATE',
-      `${path}.last_commit`,
-      `expected yyyy-mm-dd or null, got ${describe(raw['last_commit'])}`,
-    )
-    ok = false
-  }
-  for (const field of ['first_indexed', 'verified_at'] as const) {
-    if (!isDate(raw[field])) {
-      r.error('BAD_DATE', `${path}.${field}`, `expected yyyy-mm-dd, got ${describe(raw[field])}`)
-      ok = false
-    }
-  }
-
-  return ok ? (raw as unknown as Node) : null
 }
-
-function checkPlacedNodes(r: Report, raw: unknown, path: string): PlacedNode[] {
-  if (!Array.isArray(raw)) {
-    r.error('BAD_NODE_FIELD', path, `expected an array, got ${describe(raw)}`)
-    return []
-  }
-  const out: PlacedNode[] = []
-  raw.forEach((entry, i) => {
-    const ep = `${path}[${i}]`
-    if (!isObject(entry)) {
-      r.error('BAD_NODE_FIELD', ep, `expected an object, got ${describe(entry)}`)
-      return
-    }
-    let ok = checkString(r, entry['id'], `${ep}.id`)
-    if (!checkEnum(r, entry['side'], SIDES, `${ep}.side`)) ok = false
-    const t = entry['t']
-    if (typeof t !== 'number' || !Number.isFinite(t) || t < 0 || t > 1) {
-      r.error('BAD_T', `${ep}.t`, `expected a finite number in [0, 1], got ${describe(t)}`)
-      ok = false
-    }
-    if (ok) out.push(entry as unknown as PlacedNode)
-  })
-  return out
-}
-
-function checkPathD(r: Report, raw: unknown, path: string): string {
-  if (typeof raw !== 'string' || !/^\s*M/.test(raw)) {
-    r.error('BAD_PATH_D', path, `expected an SVG path starting with M, got ${describe(raw)}`)
-    return ''
-  }
-  return raw
-}
-
-function checkAct(r: Report, raw: unknown, path: string): Act | null {
-  if (!isObject(raw)) {
-    r.error('BAD_NODE_FIELD', path, `expected an object, got ${describe(raw)}`)
-    return null
-  }
-  let ok = checkString(r, raw['id'], `${path}.id`)
-  if (!checkString(r, raw['title'], `${path}.title`)) ok = false
-  if (typeof raw['subtitle'] !== 'string') {
-    r.error('BAD_NODE_FIELD', `${path}.subtitle`, `expected a string, got ${describe(raw['subtitle'])}`)
-    ok = false
-  }
-  if (!checkString(r, raw['viewBox'], `${path}.viewBox`)) ok = false
-  if (!checkEnum(r, raw['curve'], CURVE_IDS, `${path}.curve`)) ok = false
-  if (checkPathD(r, raw['path'], `${path}.path`) === '') ok = false
-
-  const nodes = checkPlacedNodes(r, raw['nodes'], `${path}.nodes`)
-  // Only an act that is well-formed but empty is worth a warning; a malformed
-  // `nodes` value has already been reported as an error by checkPlacedNodes.
-  if (Array.isArray(raw['nodes']) && nodes.length === 0) {
-    r.warn('EMPTY_ACT', `${path}.nodes`, 'act places no nodes')
-  }
-  for (let i = 1; i < nodes.length; i += 1) {
-    const prev = nodes[i - 1]
-    const cur = nodes[i]
-    if (prev && cur && cur.t < prev.t) {
-      r.error('ACT_T_UNSORTED', `${path}.nodes[${i}]`, `t ${cur.t} follows ${prev.t}; expected ascending`)
-      ok = false
-      break
-    }
-  }
-
-  return ok ? (raw as unknown as Act) : null
-}
-
-function checkBranch(r: Report, raw: unknown, path: string): Branch | null {
-  if (!isObject(raw)) {
-    r.error('BAD_NODE_FIELD', path, `expected an object, got ${describe(raw)}`)
-    return null
-  }
-  let ok = checkString(r, raw['id'], `${path}.id`)
-  if (!checkString(r, raw['title'], `${path}.title`)) ok = false
-  if (!checkString(r, raw['anchor'], `${path}.anchor`)) ok = false
-  if (!checkString(r, raw['act'], `${path}.act`)) ok = false
-  if (!checkString(r, raw['viewBox'], `${path}.viewBox`)) ok = false
-  if (checkPathD(r, raw['path'], `${path}.path`) === '') ok = false
-  checkPlacedNodes(r, raw['nodes'], `${path}.nodes`)
-  return ok ? (raw as unknown as Branch) : null
-}
-
-// ---------------------------------------------------------------------------
-// Integrity checks over the whole registry.
-// ---------------------------------------------------------------------------
-
-function checkNodeIntegrity(r: Report, nodes: Node[], byId: Map<string, Node>): void {
-  nodes.forEach((node, i) => {
-    const path = `nodes[${i}]`
-
-    if (node.blurb.length > MAX_BLURB_LENGTH) {
-      r.error(
-        'BLURB_TOO_LONG',
-        `${path}.blurb`,
-        `${node.blurb.length} characters; the limit is ${MAX_BLURB_LENGTH}`,
-      )
-    }
-    if (node.links.length === 0) {
-      r.error('NO_LINKS', `${path}.links`, `node "${node.id}" points nowhere`)
-    }
-    if (node.tracks.length === 0) {
-      r.error('ORPHAN_NODE', `${path}.tracks`, `node "${node.id}" claims no tracks`)
-    }
-    if (node.last_commit === null) {
-      if (node.status !== 'emerging') {
-        r.error(
-          'DATELESS_NOT_EMERGING',
-          `${path}.status`,
-          `node "${node.id}" has no last_commit so its status must be "emerging", not "${node.status}"`,
-        )
-      }
-      if (node.note === undefined || node.note.trim().length === 0) {
-        r.error(
-          'DATELESS_NO_NOTE',
-          `${path}.note`,
-          `node "${node.id}" has no last_commit and must carry a note saying why`,
-        )
-      }
-    }
-
-    // Section 6 keeps a demoted node visible with its successor linked. The link
-    // is a node id, so it has to resolve here rather than at render time — a
-    // dangling one would print a dead end on a card that is already a dead end.
-    if (node.successor !== undefined) {
-      const sp = `${path}.successor`
-      if (node.successor === node.id) {
-        r.error('SELF_SUCCESSOR', sp, `node "${node.id}" succeeds itself`)
-      } else if (!byId.has(node.successor)) {
-        r.error(
-          'UNKNOWN_SUCCESSOR',
-          sp,
-          `node "${node.id}" names unknown successor "${node.successor}"`,
-        )
-      }
-    }
-
-    node.requires.forEach((req, j) => {
-      const rp = `${path}.requires[${j}]`
-      if (req === node.id) {
-        r.error('SELF_REQUIRE', rp, `node "${node.id}" requires itself`)
-        return
-      }
-      const parent = byId.get(req)
-      if (!parent) {
-        r.error('DANGLING_REQUIRE', rp, `node "${node.id}" requires unknown node "${req}"`)
-        return
-      }
-      if (node.zone === 'main' && parent.zone === 'frontier') {
-        r.error(
-          'MAIN_REQUIRES_FRONTIER',
-          rp,
-          `main-zone node "${node.id}" requires frontier node "${req}"`,
-        )
-      }
-    })
-  })
-
-  checkRequireCycles(r, nodes, byId)
-}
-
-/** Iterative depth-first search so a deep graph cannot blow the stack. */
-function checkRequireCycles(r: Report, nodes: Node[], byId: Map<string, Node>): void {
-  const WHITE = 0
-  const GREY = 1
-  const BLACK = 2
-  const colour = new Map<string, number>(nodes.map((n) => [n.id, WHITE]))
-  const reported = new Set<string>()
-
-  for (const start of nodes) {
-    if (colour.get(start.id) !== WHITE) continue
-    const stack: Array<{ id: string; next: number }> = [{ id: start.id, next: 0 }]
-    colour.set(start.id, GREY)
-
-    while (stack.length > 0) {
-      const frame = stack[stack.length - 1]
-      if (!frame) break
-      const node = byId.get(frame.id)
-      const requires = node ? node.requires : []
-
-      if (frame.next >= requires.length) {
-        colour.set(frame.id, BLACK)
-        stack.pop()
-        continue
-      }
-
-      const next = requires[frame.next]
-      frame.next += 1
-      if (next === undefined || !byId.has(next)) continue // already reported as DANGLING_REQUIRE
-
-      const state = colour.get(next)
-      if (state === GREY) {
-        const key = [...stack.map((f) => f.id), next].join(' -> ')
-        if (!reported.has(next)) {
-          reported.add(next)
-          r.error('REQUIRE_CYCLE', `nodes[id=${next}].requires`, `requires cycle: ${key}`)
-        }
-      } else if (state === WHITE) {
-        colour.set(next, GREY)
-        stack.push({ id: next, next: 0 })
-      }
-    }
-  }
-}
-
-function checkTrackIntegrity(
-  r: Report,
-  trackId: TrackId,
-  track: Track,
-  byId: Map<string, Node>,
-  allNodes: Node[],
-  foundations: string[],
-): void {
-  const path = `tracks.${trackId}`
-
-  if (track.id !== trackId) {
-    r.error('TRACK_KEY_MISMATCH', `${path}.id`, `track keyed "${trackId}" declares id "${track.id}"`)
-  }
-
-  const actIds = new Set(track.acts.map((a) => a.id))
-  const placedInActs = new Set<string>()
-  const seen = new Set<string>()
-  const duplicates: string[] = []
-
-  const visit = (id: string, where: string): void => {
-    const node = byId.get(id)
-    if (!node) {
-      r.error('UNKNOWN_PLACED_NODE', where, `"${id}" is not in the node registry`)
-      return
-    }
-    if (!node.tracks.includes(trackId)) {
-      r.error(
-        'PLACED_OFF_TRACK',
-        where,
-        `"${id}" is placed on track "${trackId}" but its tracks are [${node.tracks.join(', ')}]`,
-      )
-    }
-    if (seen.has(id)) duplicates.push(id)
-    seen.add(id)
-  }
-
-  track.acts.forEach((act, ai) => {
-    act.nodes.forEach((placed, ni) => {
-      placedInActs.add(placed.id)
-      visit(placed.id, `${path}.acts[${ai}].nodes[${ni}]`)
-      const node = byId.get(placed.id)
-      if (node && node.zone === 'frontier') {
-        r.warn(
-          'FRONTIER_ON_MAIN_PATH',
-          `${path}.acts[${ai}].nodes[${ni}]`,
-          `frontier node "${placed.id}" sits on the main path instead of a branch`,
-        )
-      }
-    })
-  })
-
-  track.branches.forEach((branch, bi) => {
-    const bp = `${path}.branches[${bi}]`
-    if (!byId.has(branch.anchor)) {
-      r.error('UNKNOWN_ANCHOR', `${bp}.anchor`, `"${branch.anchor}" is not in the node registry`)
-    } else if (!placedInActs.has(branch.anchor)) {
-      r.error(
-        'ANCHOR_NOT_ON_TRACK',
-        `${bp}.anchor`,
-        `anchor "${branch.anchor}" is not placed in any act of track "${trackId}"`,
-      )
-    }
-    if (!actIds.has(branch.act)) {
-      r.error('UNKNOWN_BRANCH_ACT', `${bp}.act`, `"${branch.act}" is not an act of track "${trackId}"`)
-    }
-    // A spur with nothing on it is not information, and the map does not draw
-    // one (spec 09). A warning rather than an error: the data is usable, it is
-    // just pointless, and it must not disappear without being said.
-    if (branch.nodes.length === 0) {
-      r.warn('EMPTY_BRANCH', `${bp}.nodes`, `branch "${branch.id}" places no nodes`)
-    }
-    branch.nodes.forEach((placed, ni) => {
-      visit(placed.id, `${bp}.nodes[${ni}]`)
-      const node = byId.get(placed.id)
-      if (node && node.zone !== 'frontier') {
-        r.error(
-          'BRANCH_NODE_NOT_FRONTIER',
-          `${bp}.nodes[${ni}]`,
-          `"${placed.id}" is zone "${node.zone}"; only frontier nodes belong on a branch`,
-        )
-      }
-    })
-  })
-
-  for (const id of new Set(duplicates)) {
-    r.error('DUPLICATE_PLACEMENT', path, `"${id}" is placed more than once on track "${trackId}"`)
-  }
-
-  for (const node of allNodes) {
-    if (node.tracks.includes(trackId) && !seen.has(node.id)) {
-      r.error(
-        'UNPLACED_NODE',
-        `${path}`,
-        `node "${node.id}" claims track "${trackId}" but is placed nowhere on it`,
-      )
-    }
-  }
-
-  const order = readingOrder(track)
-  const position = new Map<string, number>()
-  order.forEach((id, i) => {
-    if (!position.has(id)) position.set(id, i)
-  })
-  order.forEach((id, i) => {
-    const node = byId.get(id)
-    if (!node) return
-    for (const req of node.requires) {
-      if (!byId.has(req)) continue // already reported as DANGLING_REQUIRE
-      const at = position.get(req)
-      if (at === undefined) {
-        r.error(
-          'PREREQ_OFF_TRACK',
-          `${path}`,
-          `"${id}" requires "${req}", which is not on track "${trackId}" at all`,
-        )
-      } else if (at >= i) {
-        r.error(
-          'PREREQ_AFTER',
-          `${path}`,
-          `"${id}" is at position ${i} on track "${trackId}" but requires "${req}" at position ${at}`,
-        )
-      }
-    }
-  })
-
-  const firstAct = track.acts[0]
-  const opening = firstAct ? firstAct.nodes.slice(0, foundations.length).map((n) => n.id) : []
-  if (opening.length !== foundations.length || opening.some((id, i) => id !== foundations[i])) {
-    r.error(
-      'FOUNDATIONS_PREFIX',
-      `${path}.acts[0].nodes`,
-      `track "${trackId}" opens with [${opening.join(', ')}]; every track must open with [${foundations.join(', ')}]`,
-    )
-  }
-}
-
-// ---------------------------------------------------------------------------
-// Entry point.
-// ---------------------------------------------------------------------------
 
 /**
- * Validate the two registry files against each other. Never throws — malformed
- * input comes back as issues, including `null` or a string in place of a file.
+ * Depth-first cycle detection over `requires`. A cycle is the one defect that makes
+ * the interface unusable rather than merely wrong: every node in the loop is locked
+ * forever, and nothing on screen explains why.
  */
-export function validateRegistry(nodesRaw: unknown, tracksRaw: unknown): ValidationResult {
-  const r = new Report()
+function findCycle(nodes: readonly RoadmapNode[]): string[] | null {
+  const byId = new Map(nodes.map((n) => [n.id, n]))
+  const state = new Map<string, 'open' | 'closed'>()
+  const stack: string[] = []
 
-  if (!isObject(nodesRaw)) {
-    r.error('BAD_ROOT', 'nodes.json', `expected an object, got ${describe(nodesRaw)}`)
-  }
-  if (!isObject(tracksRaw)) {
-    r.error('BAD_ROOT', 'tracks.json', `expected an object, got ${describe(tracksRaw)}`)
-  }
-  if (!isObject(nodesRaw) || !isObject(tracksRaw)) return r.result()
+  const walk = (id: string): string[] | null => {
+    const seen = state.get(id)
+    if (seen === 'closed') return null
+    if (seen === 'open') return [...stack.slice(stack.indexOf(id)), id]
 
-  for (const [label, file] of [
-    ['nodes.json', nodesRaw],
-    ['tracks.json', tracksRaw],
-  ] as const) {
-    if (typeof file['version'] !== 'number') {
-      r.error('BAD_ROOT', `${label}.version`, `expected a number, got ${describe(file['version'])}`)
+    state.set(id, 'open')
+    stack.push(id)
+    for (const next of byId.get(id)?.requires ?? []) {
+      if (!byId.has(next)) continue
+      const cycle = walk(next)
+      if (cycle) return cycle
     }
-    if (!isDate(file['generated'])) {
-      r.error('BAD_ROOT', `${label}.generated`, `expected yyyy-mm-dd, got ${describe(file['generated'])}`)
-    }
-  }
-
-  if (!Array.isArray(nodesRaw['nodes'])) {
-    r.error('BAD_ROOT', 'nodes.json.nodes', `expected an array, got ${describe(nodesRaw['nodes'])}`)
-    return r.result()
+    stack.pop()
+    state.set(id, 'closed')
+    return null
   }
 
-  const nodes: Node[] = []
-  const byId = new Map<string, Node>()
-  nodesRaw['nodes'].forEach((raw, i) => {
-    const node = checkNode(r, raw, `nodes[${i}]`)
-    if (!node) return
-    if (byId.has(node.id)) {
-      r.error('DUPLICATE_NODE_ID', `nodes[${i}].id`, `"${node.id}" is already defined`)
-      return
-    }
-    byId.set(node.id, node)
-    nodes.push(node)
-  })
-
-  checkNodeIntegrity(r, nodes, byId)
-
-  const geometry = tracksRaw['geometry']
-  if (!isObject(geometry)) {
-    r.error('BAD_ROOT', 'tracks.json.geometry', `expected an object, got ${describe(geometry)}`)
-  } else {
-    checkString(r, geometry['viewBox'], 'tracks.json.geometry.viewBox', 'BAD_ROOT')
-    checkPathD(r, geometry['branchPath'], 'tracks.json.geometry.branchPath')
-    const curves = geometry['curves']
-    if (!isObject(curves)) {
-      r.error('BAD_ROOT', 'tracks.json.geometry.curves', `expected an object, got ${describe(curves)}`)
-    } else {
-      for (const id of CURVE_IDS) {
-        checkPathD(r, curves[id], `tracks.json.geometry.curves.${id}`)
-      }
-    }
+  for (const node of nodes) {
+    const cycle = walk(node.id)
+    if (cycle) return cycle
   }
-
-  const foundationsRaw = tracksRaw['foundations']
-  const foundations: string[] = []
-  if (!Array.isArray(foundationsRaw)) {
-    r.error(
-      'BAD_ROOT',
-      'tracks.json.foundations',
-      `expected an array, got ${describe(foundationsRaw)}`,
-    )
-  } else {
-    foundationsRaw.forEach((id, i) => {
-      if (!checkString(r, id, `tracks.json.foundations[${i}]`, 'BAD_ROOT')) return
-      if (!byId.has(id as string)) {
-        r.error(
-          'DANGLING_REQUIRE',
-          `tracks.json.foundations[${i}]`,
-          `foundation "${String(id)}" is not in the node registry`,
-        )
-        return
-      }
-      foundations.push(id as string)
-    })
-  }
-
-  const tracksRoot = tracksRaw['tracks']
-  if (!isObject(tracksRoot)) {
-    r.error('BAD_ROOT', 'tracks.json.tracks', `expected an object, got ${describe(tracksRoot)}`)
-    return r.result()
-  }
-
-  for (const key of Object.keys(tracksRoot)) {
-    if (!(TRACK_IDS as readonly string[]).includes(key)) {
-      r.error('BAD_ENUM', `tracks.json.tracks.${key}`, `"${key}" is not a known track id`)
-    }
-  }
-
-  for (const trackId of TRACK_IDS) {
-    const raw = tracksRoot[trackId]
-    const path = `tracks.${trackId}`
-    if (!isObject(raw)) {
-      r.error('BAD_ROOT', path, `expected an object, got ${describe(raw)}`)
-      continue
-    }
-    let ok = checkString(r, raw['id'], `${path}.id`)
-    if (!checkString(r, raw['title'], `${path}.title`)) ok = false
-    if (!checkString(r, raw['destination'], `${path}.destination`)) ok = false
-
-    const acts: Act[] = []
-    if (!Array.isArray(raw['acts'])) {
-      r.error('BAD_ROOT', `${path}.acts`, `expected an array, got ${describe(raw['acts'])}`)
-      ok = false
-    } else {
-      raw['acts'].forEach((a, i) => {
-        const act = checkAct(r, a, `${path}.acts[${i}]`)
-        if (act) acts.push(act)
-        else ok = false
-      })
-    }
-
-    const branches: Branch[] = []
-    if (!Array.isArray(raw['branches'])) {
-      r.error('BAD_ROOT', `${path}.branches`, `expected an array, got ${describe(raw['branches'])}`)
-      ok = false
-    } else {
-      raw['branches'].forEach((b, i) => {
-        const branch = checkBranch(r, b, `${path}.branches[${i}]`)
-        if (branch) branches.push(branch)
-        else ok = false
-      })
-    }
-
-    if (!ok) continue
-
-    const track: Track = {
-      id: raw['id'] as TrackId,
-      title: raw['title'] as string,
-      destination: raw['destination'] as string,
-      acts,
-      branches,
-    }
-    checkTrackIntegrity(r, trackId, track, byId, nodes, foundations)
-  }
-
-  return r.result()
+  return null
 }
 
-/** One line per issue, for a terminal or a console. */
-export function formatIssues(issues: Issue[]): string {
-  return issues
-    .map((i) => `${i.severity === 'error' ? 'error' : 'warn '}  ${i.code}  ${i.path}\n         ${i.message}`)
-    .join('\n')
+export function validateRoadmap(raw: unknown): ValidationResult {
+  const c = new Collector()
+  const finish = (): ValidationResult => {
+    const errors = c.issues.filter((i) => i.severity === 'error')
+    const warnings = c.issues.filter((i) => i.severity === 'warning')
+    return { ok: errors.length === 0, issues: c.issues, errors, warnings }
+  }
+
+  if (typeof raw !== 'object' || raw === null) {
+    c.error('BAD_ROOT', 'roadmap', 'the registry must be an object')
+    return finish()
+  }
+
+  const file = raw as Partial<RoadmapFile>
+  if (!Array.isArray(file.nodes) || !Array.isArray(file.stages) || !Array.isArray(file.paths)) {
+    c.error('BAD_ROOT', 'roadmap', 'nodes, stages and paths must all be arrays')
+    return finish()
+  }
+
+  const stageIds = new Set<string>()
+  file.stages.forEach((stage, i) => {
+    const at = `stages[${i}]`
+    for (const field of ['id', 'title', 'kicker', 'summary'] as const) {
+      if (!isString(stage[field])) c.error('BAD_FIELD', `${at}.${field}`, 'must be a non-empty string')
+    }
+    if (stageIds.has(stage.id)) c.error('DUPLICATE_ID', `${at}.id`, `duplicate stage "${stage.id}"`)
+    stageIds.add(stage.id)
+  })
+
+  const nodeIds = new Set<string>()
+  file.nodes.forEach((node, i) => {
+    if (nodeIds.has(node.id)) c.error('DUPLICATE_ID', `nodes[${i}].id`, `duplicate node "${node.id}"`)
+    nodeIds.add(node.id)
+  })
+
+  file.nodes.forEach((node, i) => {
+    const at = `nodes[${i}]`
+    checkNode(node, at, nodeIds, c)
+    if (!stageIds.has(node.stage)) c.error('UNKNOWN_STAGE', `${at}.stage`, `no such stage "${node.stage}"`)
+  })
+
+  // Two nodes in one cell would draw on top of each other, and the one underneath
+  // would be unclickable — a defect nobody would ever report as a data problem.
+  const cells = new Set<string>()
+  file.nodes.forEach((node, i) => {
+    const cell = `${node.stage}:${node.col}:${node.row}`
+    if (cells.has(cell)) c.error('GRID_COLLISION', `nodes[${i}]`, `two nodes share cell ${cell}`)
+    cells.add(cell)
+  })
+
+  const cycle = findCycle(file.nodes)
+  if (cycle) c.error('CYCLE', 'nodes.requires', `prerequisite cycle: ${cycle.join(' -> ')}`)
+
+  const allNodes = file.nodes
+  const byId = new Map(allNodes.map((n) => [n.id, n]))
+  const pathIds = new Set<string>()
+
+  file.paths.forEach((path, i) => {
+    const at = `paths[${i}]`
+    for (const field of ['id', 'title', 'tagline', 'goal'] as const) {
+      if (!isString(path[field])) c.error('BAD_FIELD', `${at}.${field}`, 'must be a non-empty string')
+    }
+    if (pathIds.has(path.id)) c.error('DUPLICATE_ID', `${at}.id`, `duplicate path "${path.id}"`)
+    pathIds.add(path.id)
+
+    if (!isStringArray(path.stages) || path.stages.length === 0) {
+      c.error('BAD_FIELD', `${at}.stages`, 'a path needs at least one stage')
+      return
+    }
+
+    const order = new Map(path.stages.map((s, index) => [s, index]))
+    for (const stage of path.stages) {
+      if (!stageIds.has(stage)) c.error('UNKNOWN_STAGE', `${at}.stages`, `no such stage "${stage}"`)
+    }
+
+    // The rule that makes the map trustworthy: on any path you can actually walk,
+    // every prerequisite is visible and comes earlier. A node whose prerequisite is
+    // off-path would be permanently locked with no way to unlock it.
+    for (const node of allNodes) {
+      const here = order.get(node.stage)
+      if (here === undefined) continue
+      for (const id of node.requires) {
+        const required = byId.get(id)
+        if (!required) continue
+        const there = order.get(required.stage)
+        if (there === undefined) {
+          c.error('OFF_PATH_EDGE', `${at}.stages`, `"${node.id}" requires "${id}", not on this path`)
+        } else if (there > here) {
+          c.error('BACKWARD_EDGE', `${at}.stages`, `"${node.id}" requires "${id}" from a later stage`)
+        } else if (there === here && required.row > node.row) {
+          c.error('UPWARD_EDGE', `${at}.stages`, `"${node.id}" requires "${id}" from a lower row`)
+        }
+      }
+    }
+  })
+
+  for (const node of allNodes) {
+    const onSome = file.paths.some((p) => Array.isArray(p.stages) && p.stages.includes(node.stage))
+    if (!onSome) c.warn('ORPHAN_STAGE', `nodes.${node.id}`, `stage "${node.stage}" is on no path`)
+  }
+
+  // A side quest that something else depends on is not optional, whatever it says.
+  for (const node of allNodes) {
+    for (const id of node.requires) {
+      if (byId.get(id)?.type === 'side') {
+        c.warn('SIDE_PREREQUISITE', `nodes.${node.id}`, `depends on side quest "${id}"`)
+      }
+    }
+  }
+
+  return finish()
+}
+
+export function formatIssues(issues: readonly Issue[]): string {
+  return issues.map((i) => `${i.severity}  ${i.code}  ${i.path}: ${i.message}`).join('\n')
 }

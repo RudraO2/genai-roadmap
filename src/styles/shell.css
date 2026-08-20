@@ -1,9 +1,10 @@
 /**
  * shell.css — the shell's own classes. @layer components, tokens only.
  *
- * Owns the app frame (masthead / main / colophon), the Section heading pattern,
- * and the track-index rows Intake renders. No other spec should add classes
- * here — a later spec that needs its own component styling gets its own file.
+ * Owns the app frame (masthead / main / colophon) and the Section heading
+ * pattern. Nothing else belongs here — a surface that needs its own styling gets
+ * its own file, which is why the picker, the map and the quest dialog each have
+ * one.
  *
  * Spec 13 repainted every rule in here for the paper-roadmap identity. Two things
  * that were in this file are deliberately gone and must not come back:
@@ -236,118 +237,5 @@
 
   .section__body {
     margin-top: calc(var(--space-unit) * 7);
-  }
-
-  /* ---- Track index ------------------------------------------------------
-   * Four cards, one per track, in a responsive equal-column grid. Not a bento:
-   * every cell is the same size and the sequence still reads 01 → 04.
-   *
-   * Each track's paper is fixed to its id, not to its position in the list —
-   * section 8 bans colour by `nth-child`, and a track keeps its colour if the
-   * registry ever reorders. The number chip inside is ink so the paper stays
-   * legible behind it.
-   */
-
-  .track-list {
-    list-style: none;
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr));
-    gap: calc(var(--space-unit) * 4);
-  }
-
-  .track-list > li {
-    display: flex;
-  }
-
-  .track-row {
-    position: relative;
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    gap: calc(var(--space-unit) * 2);
-    width: 100%;
-    padding: calc(var(--space-unit) * 4);
-    background: var(--surface-raised);
-    border: var(--rule-strong) solid var(--surface-road);
-    border-radius: var(--radius-paper);
-    font: inherit;
-    text-align: left;
-    cursor: pointer;
-    /* The lift. See the note at .node-card in cards.css for why this is a
-     * zero-blur drop-shadow and not box-shadow or a pseudo-element. */
-    filter: drop-shadow(var(--lift) var(--lift) 0 var(--surface-road));
-    transition:
-      transform var(--dur-state) var(--ease-state),
-      filter var(--dur-state) var(--ease-state);
-  }
-
-  .track-row[data-track='game'] {
-    background: var(--paper-lime);
-  }
-
-  .track-row[data-track='app'] {
-    background: var(--paper-blue);
-  }
-
-  .track-row[data-track='portfolio'] {
-    background: var(--paper-lilac);
-  }
-
-  .track-row[data-track='media'] {
-    background: var(--paper-orange);
-  }
-
-  .track-row:hover,
-  .track-row--selected {
-    transform: translate(calc(var(--lift) * -1), calc(var(--lift) * -1));
-    filter: drop-shadow(
-      calc(var(--lift) * 2) calc(var(--lift) * 2) 0 var(--surface-road)
-    );
-  }
-
-  .track-row--selected {
-    border-width: var(--rule-thick);
-  }
-
-  .track-row__id {
-    font-family: var(--font-mono);
-    font-size: var(--size-nano);
-    font-weight: var(--weight-bold);
-    letter-spacing: var(--tracking-caps);
-    background: var(--surface-road);
-    color: var(--text-inverse);
-    border-radius: var(--radius-paper);
-    padding: calc(var(--space-unit) * 1) calc(var(--space-unit) * 2);
-  }
-
-  .track-row__title {
-    font-family: var(--font-display);
-    font-size: var(--size-card-title);
-    font-weight: var(--weight-black);
-    letter-spacing: var(--tracking-tight);
-    line-height: var(--leading-tight);
-    color: var(--text-primary);
-  }
-
-  .track-row__destination {
-    font-size: var(--size-meta);
-    line-height: var(--leading-snug);
-    color: var(--text-secondary);
-  }
-
-  .track-row__meta {
-    margin-top: auto;
-    padding-top: calc(var(--space-unit) * 2);
-    font-family: var(--font-mono);
-    font-size: var(--size-nano);
-    letter-spacing: var(--tracking-caps);
-    text-transform: uppercase;
-    color: var(--text-secondary);
-  }
-
-  /* Selection said in words as well as in shape, for anyone who cannot see the
-   * 1px border-width change or the 3px lift. */
-  .track-row--selected .track-row__id::after {
-    content: ' / picked';
   }
 }

@@ -1,0 +1,343 @@
+/**
+ * quest.css — the quest dialog. @layer components, tokens only.
+ *
+ * The backdrop dims with `color-mix()` against the ink rather than a hardcoded
+ * rgba — still one colour source — and never blurs. It dims towards ink and not
+ * towards paper: on a paper ground, a paper-coloured scrim washes the page out
+ * instead of pushing it back.
+ *
+ * Two link families, styled differently on purpose. A stored link is a promise
+ * that this specific page exists; a search link is a promise that you will find
+ * something. Both belong on the page, and a reader should be able to tell which
+ * one they are about to click.
+ */
+
+@layer components {
+  .quest {
+    position: fixed;
+    inset: 0;
+    margin: auto;
+    max-height: min(48rem, 88vh);
+    width: min(38rem, calc(100vw - var(--gutter) * 2));
+    padding: 0;
+    border: var(--rule-thick) solid var(--rule);
+    border-radius: var(--radius-paper);
+    background: var(--surface-raised);
+    color: var(--text-primary);
+  }
+
+  .quest::backdrop {
+    background: color-mix(in srgb, var(--surface-road) 45%, transparent);
+  }
+
+  .quest__content {
+    max-height: min(48rem, 88vh);
+    overflow-y: auto;
+    padding: calc(var(--space-unit) * 8);
+  }
+
+  .quest__close {
+    float: right;
+    background: var(--surface-base);
+    border: var(--rule-strong) solid var(--surface-road);
+    border-radius: var(--radius-badge);
+    padding: 0 calc(var(--space-unit) * 2);
+    font-family: var(--font-mono);
+    font-size: var(--size-nano);
+    font-weight: var(--weight-bold);
+    letter-spacing: var(--tracking-caps);
+    text-transform: uppercase;
+    color: var(--text-secondary);
+    cursor: pointer;
+  }
+
+  .quest__close:hover {
+    color: var(--text-primary);
+  }
+
+  .quest__kicker {
+    font-family: var(--font-mono);
+    font-size: var(--size-nano);
+    font-weight: var(--weight-bold);
+    letter-spacing: var(--tracking-caps);
+    text-transform: uppercase;
+    color: var(--text-muted);
+  }
+
+  .quest__title {
+    margin-top: calc(var(--space-unit) * 2);
+    font-family: var(--font-display);
+    font-size: var(--size-title);
+    font-weight: var(--weight-black);
+    letter-spacing: var(--tracking-tight);
+    line-height: var(--leading-tight);
+    overflow-wrap: break-word;
+    clear: both;
+  }
+
+  .quest__blurb {
+    margin-top: calc(var(--space-unit) * 2);
+    font-family: var(--font-body);
+    font-size: var(--size-lead);
+    line-height: var(--leading-snug);
+    color: var(--text-secondary);
+  }
+
+  .quest__facts {
+    margin-top: calc(var(--space-unit) * 5);
+    display: flex;
+    flex-wrap: wrap;
+    gap: calc(var(--space-unit) * 8);
+    border-block: var(--rule-strong) solid var(--rule);
+    padding-block: calc(var(--space-unit) * 3);
+  }
+
+  .quest__fact dt {
+    font-family: var(--font-mono);
+    font-size: var(--size-nano);
+    font-weight: var(--weight-bold);
+    letter-spacing: var(--tracking-caps);
+    text-transform: uppercase;
+    color: var(--text-muted);
+  }
+
+  .quest__fact dd {
+    margin-top: calc(var(--space-unit) * 1);
+    font-family: var(--font-mono);
+    font-size: var(--size-meta);
+    font-weight: var(--weight-bold);
+    color: var(--text-primary);
+  }
+
+  .quest__fact dd[data-state='done'],
+  .quest__fact dd[data-state='ready'] {
+    color: var(--accent-ink);
+  }
+
+  .quest__block {
+    margin-top: calc(var(--space-unit) * 5);
+    background: var(--paper-grey);
+    border: var(--rule-strong) solid var(--surface-road);
+    border-radius: var(--radius-paper);
+    padding: calc(var(--space-unit) * 4);
+  }
+
+  .quest__block-title {
+    font-family: var(--font-mono);
+    font-size: var(--size-nano);
+    font-weight: var(--weight-bold);
+    letter-spacing: var(--tracking-caps);
+    text-transform: uppercase;
+    color: var(--text-secondary);
+  }
+
+  .quest__chips {
+    margin-top: calc(var(--space-unit) * 2);
+    display: flex;
+    flex-wrap: wrap;
+    gap: calc(var(--space-unit) * 2);
+  }
+
+  .quest__chip {
+    background: var(--surface-raised);
+    border: var(--rule-strong) solid var(--surface-road);
+    border-radius: var(--radius-badge);
+    padding: calc(var(--space-unit) * 1) calc(var(--space-unit) * 3);
+    font-family: var(--font-mono);
+    font-size: var(--size-micro);
+    font-weight: var(--weight-bold);
+    color: var(--text-primary);
+    cursor: pointer;
+  }
+
+  .quest__chip:hover {
+    background: var(--accent);
+  }
+
+  .quest__section {
+    margin-top: calc(var(--space-unit) * 7);
+  }
+
+  .quest__heading {
+    font-family: var(--font-mono);
+    font-size: var(--size-nano);
+    font-weight: var(--weight-bold);
+    letter-spacing: var(--tracking-caps);
+    text-transform: uppercase;
+    color: var(--text-muted);
+    border-bottom: var(--hairline) solid var(--rule-faint);
+    padding-bottom: calc(var(--space-unit) * 2);
+  }
+
+  .quest__mission {
+    margin-top: calc(var(--space-unit) * 3);
+    font-family: var(--font-body);
+    font-size: var(--size-lead);
+    line-height: var(--leading-snug);
+    font-weight: var(--weight-medium);
+    color: var(--text-primary);
+  }
+
+  .quest__why {
+    margin-top: calc(var(--space-unit) * 3);
+    font-family: var(--font-body);
+    font-size: var(--size-body);
+    line-height: var(--leading-body);
+    color: var(--text-secondary);
+  }
+
+  .quest__steps,
+  .quest__done-when {
+    margin-top: calc(var(--space-unit) * 3);
+    display: grid;
+    gap: calc(var(--space-unit) * 2);
+    font-family: var(--font-body);
+    font-size: var(--size-body);
+    line-height: var(--leading-body);
+    color: var(--text-primary);
+  }
+
+  .quest__steps {
+    counter-reset: step;
+    list-style: none;
+  }
+
+  .quest__steps li {
+    counter-increment: step;
+    display: grid;
+    grid-template-columns: calc(var(--space-unit) * 7) 1fr;
+    gap: calc(var(--space-unit) * 2);
+  }
+
+  .quest__steps li::before {
+    content: counter(step, decimal-leading-zero);
+    font-family: var(--font-mono);
+    font-size: var(--size-micro);
+    font-weight: var(--weight-bold);
+    color: var(--text-muted);
+    padding-top: calc(var(--space-unit) * 1);
+  }
+
+  .quest__done-when {
+    list-style: none;
+  }
+
+  .quest__done-when li {
+    display: grid;
+    grid-template-columns: calc(var(--space-unit) * 7) 1fr;
+    gap: calc(var(--space-unit) * 2);
+    color: var(--text-secondary);
+  }
+
+  .quest__done-when li::before {
+    content: '✓';
+    font-family: var(--font-mono);
+    font-size: var(--size-micro);
+    font-weight: var(--weight-bold);
+    color: var(--accent-ink);
+  }
+
+  .quest__links,
+  .quest__searches {
+    margin-top: calc(var(--space-unit) * 3);
+    display: grid;
+    gap: calc(var(--space-unit) * 2);
+    list-style: none;
+  }
+
+  .quest__link {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: calc(var(--space-unit) * 2);
+    background: var(--surface-base);
+    border: var(--rule-strong) solid var(--surface-road);
+    border-radius: var(--radius-paper);
+    padding: calc(var(--space-unit) * 3);
+    text-decoration: none;
+    color: var(--text-primary);
+    transition: background-color var(--dur-state) var(--ease-state);
+  }
+
+  .quest__link:hover {
+    background: var(--accent);
+  }
+
+  .quest__link-label {
+    font-family: var(--font-body);
+    font-size: var(--size-body);
+    font-weight: var(--weight-medium);
+    text-decoration: underline;
+  }
+
+  .quest__link-meta {
+    display: flex;
+    gap: calc(var(--space-unit) * 3);
+    font-family: var(--font-mono);
+    font-size: var(--size-nano);
+    font-weight: var(--weight-bold);
+    letter-spacing: var(--tracking-caps);
+    text-transform: uppercase;
+    color: var(--text-secondary);
+  }
+
+  /* A search link is a query, not a page — set as an instrument reading so the
+     difference from a stored link is visible before the click, not after. */
+  .quest__search {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: calc(var(--space-unit) * 3);
+    border: var(--hairline) solid var(--rule);
+    border-radius: var(--radius-paper);
+    padding: calc(var(--space-unit) * 2) calc(var(--space-unit) * 3);
+    text-decoration: none;
+    color: var(--text-secondary);
+    transition: border-color var(--dur-state) var(--ease-state);
+  }
+
+  .quest__search:hover {
+    border-color: var(--accent-ink);
+    color: var(--text-primary);
+  }
+
+  .quest__search-on {
+    font-family: var(--font-mono);
+    font-size: var(--size-nano);
+    font-weight: var(--weight-bold);
+    letter-spacing: var(--tracking-caps);
+    text-transform: uppercase;
+    color: var(--accent-ink);
+  }
+
+  .quest__search-q {
+    font-family: var(--font-mono);
+    font-size: var(--size-meta);
+  }
+
+  .quest__actions {
+    margin-top: calc(var(--space-unit) * 8);
+    display: flex;
+    justify-content: flex-end;
+  }
+
+  .quest__complete {
+    background: var(--accent);
+    border: var(--rule-strong) solid var(--surface-road);
+    border-radius: var(--radius-paper);
+    padding: calc(var(--space-unit) * 3) calc(var(--space-unit) * 6);
+    font-family: var(--font-mono);
+    font-size: var(--size-meta);
+    font-weight: var(--weight-bold);
+    letter-spacing: var(--tracking-caps);
+    text-transform: uppercase;
+    color: var(--text-primary);
+    cursor: pointer;
+  }
+
+  .quest__complete[aria-pressed='true'] {
+    background: var(--surface-base);
+    color: var(--text-secondary);
+  }
+}

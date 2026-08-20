@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState, type ChangeEvent, type ReactNode } from 'react'
 
-import { registry } from '../data/registry.ts'
+import { registry } from '../data/roadmap.ts'
 import type { IntakeState } from '../data/intake.ts'
 import {
   buildProgressFile,
@@ -22,7 +22,7 @@ export interface ProgressPanelProps {
   onReset: () => void
 }
 
-const nodeCount = (n: number): string => `${n} node${n === 1 ? '' : 's'}`
+const questCount = (n: number): string => `${n} quest${n === 1 ? '' : 's'}`
 
 /**
  * Export, import, reset. The whole sync story, and the only place it lives —
@@ -86,7 +86,7 @@ export function ProgressPanel({
     anchor.click()
     anchor.remove()
     setTimeout(() => URL.revokeObjectURL(url), 0)
-    setStatus(`Exported ${nodeCount(completed.size)}.`)
+    setStatus(`Exported ${questCount(completed.size)}.`)
   }
 
   const handleFile = async (event: ChangeEvent<HTMLInputElement>): Promise<void> => {
@@ -119,11 +119,11 @@ export function ProgressPanel({
     }
 
     onImport(result.value)
-    const track = result.value.intake ? registry.tracks[result.value.intake.track] : null
+    const chosen = result.value.intake ? registry.getPath(result.value.intake.path) : null
     setStatus(
-      track
-        ? `Imported ${nodeCount(result.value.completed.size)} and the ${track.title} track.`
-        : `Imported ${nodeCount(result.value.completed.size)}.`,
+      chosen
+        ? `Imported ${questCount(result.value.completed.size)} and the ${chosen.title} path.`
+        : `Imported ${questCount(result.value.completed.size)}.`,
     )
   }
 
@@ -148,7 +148,7 @@ export function ProgressPanel({
           Close
         </button>
 
-        <p className="progress-panel__kicker">{nodeCount(completed.size)} marked done</p>
+        <p className="progress-panel__kicker">{questCount(completed.size)} marked done</p>
         <h2 id="progress-panel-title" className="progress-panel__title">
           Progress file
         </h2>
@@ -160,7 +160,7 @@ export function ProgressPanel({
           <div className="progress-panel__row-head">
             <h3 className="progress-panel__row-title">Export</h3>
             <p className="progress-panel__row-note">
-              Writes your marked nodes and your track to a JSON file.
+              Writes your finished quests and your chosen path to a JSON file.
             </p>
           </div>
           <button type="button" className="progress-panel__action" onClick={handleExport}>

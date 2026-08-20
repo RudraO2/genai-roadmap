@@ -12,38 +12,36 @@ import { readFileSync } from 'node:fs'
 import { fileURLToPath } from 'node:url'
 import { dirname, join } from 'node:path'
 
-import { formatIssues, validateRegistry } from '../src/data/validate.ts'
+import { formatIssues, validateRoadmap } from '../src/data/validate.ts'
 
 const here = dirname(fileURLToPath(import.meta.url))
-const dataDir = join(here, '..', 'data')
+const path = join(here, '..', 'data', 'roadmap.json')
 
-function readJson(name: string): unknown {
-  const path = join(dataDir, name)
-  try {
-    return JSON.parse(readFileSync(path, 'utf8'))
-  } catch (error) {
-    console.error(`could not read ${path}: ${(error as Error).message}`)
-    process.exit(1)
-  }
+let raw: unknown
+try {
+  raw = JSON.parse(readFileSync(path, 'utf8'))
+} catch (error) {
+  console.error(`could not read ${path}: ${(error as Error).message}`)
+  process.exit(1)
 }
 
-const nodesRaw = readJson('nodes.json')
-const tracksRaw = readJson('tracks.json')
-
-const result = validateRegistry(nodesRaw, tracksRaw)
+const result = validateRoadmap(raw)
 
 if (result.issues.length > 0) {
   console.error(formatIssues(result.issues))
   console.error('')
 }
 
-const nodeCount = Array.isArray((nodesRaw as { nodes?: unknown }).nodes)
-  ? ((nodesRaw as { nodes: unknown[] }).nodes).length
-  : 0
-const trackCount = Object.keys((tracksRaw as { tracks?: object }).tracks ?? {}).length
+const file = raw as { nodes?: unknown[]; stages?: unknown[]; paths?: unknown[] }
+const nodes = Array.isArray(file.nodes) ? file.nodes : []
+const links = nodes.reduce<number>(
+  (total, node) => total + ((node as { links?: unknown[] }).links?.length ?? 0),
+  0,
+)
 
 console.log(
-  `registry: ${nodeCount} nodes, ${trackCount} tracks, ` +
+  `roadmap: ${nodes.length} nodes, ${file.stages?.length ?? 0} stages, ` +
+    `${file.paths?.length ?? 0} paths, ${links} links, ` +
     `${result.errors.length} errors, ${result.warnings.length} warnings`,
 )
 
