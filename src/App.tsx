@@ -97,6 +97,10 @@ export default function App(): ReactNode {
   // than lifting the whole derivation past this branch — which cannot hold a
   // hook, and the walker's tween is one.
   const { done, total, frontier } = computeTrackProgress(track, progress.completed)
+  // Same "shipped" condition `TrackMap` derives for the Overview banner (spec
+  // 14), read here off the same numbers this chip already prints so the two can
+  // never disagree.
+  const shipped = total > 0 && done === total
 
   return (
     <ProgressContext.Provider value={progress}>
@@ -105,7 +109,10 @@ export default function App(): ReactNode {
           <>
             {/* Three flex items in the masthead's existing space-between row, so
                 the count needs no new class and no new rule. */}
-            <span className="shell__masthead-meta">
+            <span
+              className="shell__masthead-meta"
+              data-shipped={shipped ? 'true' : undefined}
+            >
               {done} / {total} DONE
               {/* The frontier is counted beside the road, never into it: a spur
                   is optional, so folding it in would make the road's progress

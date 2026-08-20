@@ -62,11 +62,17 @@ spec at a time, inside the session that builds it.
 | 11 | `specs/spec-11-portability.md` | `DONE` | 08 |
 | 12 | `specs/spec-12-ship.md` | `DONE` | 01–11 |
 | 13 | `specs/spec-13-visual-overhaul.md` | `DONE` | 01–12 |
+| 14 | `specs/spec-14-completion-payoff.md` | `DONE` | 01–13 |
 
-Every spec 01–13 is `DONE`. Nothing is `READY FOR DEVELOPMENT`, and there is no spec 14 — the
-board is finished, not stalled. A session that arrives here should say so and stop rather than
-invent work. `BACKLOG.md`'s "Noticed, not done" list is where the next unit of work would come
-from, and T130 (no README) is the strongest candidate.
+Every spec 01–13 was `DONE` and the board was finished. On 2026-08-20 the project owner opened
+spec 14 directly, in conversation, after reviewing a real local build and giving explicit
+direction: keep the paper-roadmap identity, add reward feedback on top of it. See spec 14's
+own "Why this spec exists" for the full account, including the separate GitHub Pages
+deployment fault this session found and logged rather than folded into the spec.
+
+Spec 14 is now `DONE` too, and there is again nothing `READY FOR DEVELOPMENT` on the board —
+`BACKLOG.md`'s "Noticed, not done" list, including the still-open T131 (Pages source setting),
+is where the next unit of work would come from.
 
 **Read the amended section 8 of `CONTEXT.md` before touching any UI.** On 2026-08-19 the
 project owner authorised the one edit that file has ever had: the visual identity moved from
@@ -1287,10 +1293,83 @@ every one of them sat on the road.
 - **Lengths inside an `<svg>` are viewBox user units.** `--road-gauge` and friends are
   unitless numbers for that reason. A `rem` there is not a page length.
 
+## 14 — Completion payoff: the game-psychology pass
+
+**State:** `DONE` — 2026-08-20  **Depends on:** 01–13
+
+Opened directly by the project owner in conversation, not by a Ralph-loop session reading
+the board — the board had nothing `READY FOR DEVELOPMENT` and correctly said so. Full
+rationale in `specs/spec-14-completion-payoff.md`.
+
+Four reward moments, all one-shot and all gated on an actual state change rather than on
+render: a stamp on the `Mark done` button, an "Act cleared" badge, a track-shipped banner
+plus an accent-filled masthead chip, and a reveal animation on expanding a below-level stub.
+No new colour, no new surface, no new npm dependency — every value is a token, and the two
+new ones (`--dur-reward`, `--ease-reward`) exist because the existing `--dur-state` /
+`--ease-state` are deliberately too flat and too fast for a moment that is supposed to feel
+like winning something rather than a routine hover.
+
+**Next session should know:**
+
+- **`useJustCompleted` is the pattern for any future one-shot state-change animation.**
+  Same shape as `useWalking`: a ref holding the last value, `true` for exactly one
+  `--dur-reward` cycle on a `false → true` flip, `false` on mount and on the reverse flip.
+  If a later spec wants another "the learner just did X" animation on a value that is not
+  already a boolean prop, reach for this hook rather than a fresh transient-state pattern.
+- **The badge and banner need no transient state at all.** `data-just-completed` needed the
+  hook because a *button* stays mounted through the toggle. The "Act cleared" badge and the
+  "Shipped" banner do not exist in the DOM until their condition first goes true (`Section`'s
+  `badge` prop and `Overview`'s `shipped` prop both render `null` otherwise), so a plain CSS
+  `animation` on mount is the whole mechanism — nothing to clear, nothing that can replay on
+  an unrelated re-render. This is the cheaper pattern whenever it applies; reach for the hook
+  only when the element cannot be conditionally unmounted.
+- **`TrackMap` derives `actCleared` and `shipped` off the same `progress` it already
+  computes once via `computeTrackProgress`.** No second count exists anywhere. Both exclude
+  frontier by construction, because `ActProgress`/`TrackProgress`'s own `done`/`total` already
+  do (spec 09) — do not fold frontier into either condition later without re-reading why spec
+  09 kept it separate.
+- **`Section` gained a `badge` slot; `.section__kicker` moved inside a new `.section__head`
+  flex row.** The badge is a sibling chip, not a child of the kicker's own ink pill — nesting
+  it inside `.section__kicker` (the more obvious first attempt) renders one colourful chip
+  crushed inside another's padding. If a later spec adds a second optional chip beside the
+  title, it belongs in `.section__head` too.
+- **`reward-stamp-in` is one keyframe shared by `.section__badge` and `.overview__shipped`.**
+  Both set their own resting `transform` and end the keyframe on that exact value, so nothing
+  jumps once the animation finishes. Keep that pairing if either value ever changes — an
+  unmatched end frame is a visible snap, not a build failure, so nothing catches it but eyes.
+- **This session also found, and deliberately did not fix, the actual cause of the "GitHub
+  Pages is broken" report that opened this conversation.** `.github/workflows/pages.yml` was
+  failing at `actions/configure-pages@v5` on every push (confirmed from the Actions API: the
+  `Pages` workflow run has `conclusion: failure` at that step, while GitHub's separate legacy
+  "pages build and deployment" run on the same commit succeeded) — because the repository's
+  Pages source is still "Deploy from a branch" rather than "GitHub Actions", exactly what
+  `BACKLOG.md` T131 already predicted after spec 12. That means the live site has been serving
+  raw, unbuilt source through GitHub's own Jekyll-ish fallback, not `dist/` — a plausible
+  explanation for "looks broken" on its own, independent of anything spec 14 changed. It is a
+  repository-settings change (Settings → Pages → Build and deployment → Source →
+  "GitHub Actions"), not a code fix, and stays outside this spec and this codebase's reach.
+
 ## Change log
 
 Newest first. One line per state change. Whoever changes a state writes the line.
 
+- 2026-08-20 — Spec 14 `DONE`. Completion payoff: a one-shot stamp on `Mark done`
+  (`useJustCompleted` + `cards.css`), an "Act cleared" badge (`Section`'s new `badge` slot),
+  a track-shipped banner on the overview plus an accent-filled masthead chip, and a reveal
+  animation on expanding a below-level stub — all gated on real state transitions, none on
+  render, no new colour or dependency. Verified in a real Chromium tab: every animation's
+  `animation-name` read via `getComputedStyle` immediately after its triggering click, the
+  "shipped" condition proven both false (one act cleared) and true (a full track seeded),
+  no console errors. Build, typecheck and the theme gate (53 files, 61 tokens, 0 violations)
+  all green. Nothing promoted — nothing depends on spec 14. Board is empty of
+  `READY FOR DEVELOPMENT` work again.
+- 2026-08-20 — Spec 14 claimed `IN PROGRESS`. Owner-directed, not board-driven: reward
+  animations for marking a node done, clearing an act, and shipping a track, plus a
+  progressive-disclosure reveal for expanding a below-level stub. `specs/spec-14-completion-
+  payoff.md` has the full scope. Also found and logged separately (not part of this spec):
+  the deployed GitHub Pages site is broken because the repo's Pages source is set to "Deploy
+  from a branch" instead of "GitHub Actions," so the `Pages` workflow fails at
+  `actions/configure-pages@v5` and GitHub's legacy build serves raw source instead of `dist/`.
 - 2026-08-19 — Spec 12 `DONE`. Ship: a source gate (`check:theme`) failing the build on a
   colour literal, a type literal, a banned construct or an undeclared token outside
   `theme.css`, an output gate (`check:output`) failing it on a missing deploy file, a shipped

@@ -590,3 +590,96 @@ notes in `State of the project.md`. The short version: the pocket solver is load
 so is the curve geometry it was sized against; colour is keyed to link kind; SVG lengths are
 user units, not page lengths.
 
+---
+
+## Spec 14 — Completion payoff: the game-psychology pass — 2026-08-20
+
+**Opened how:** directly by the project owner, in conversation, not claimed off the board —
+same as spec 13. The owner's first message reported the deployed site as broken and its
+content and animation as "cringe," with a request to research a well-known GenAI learning
+repo and bring the map to "the next level" of UI/UX and gamification.
+
+**Investigated first, built second.** Before writing anything: pulled the repo's Actions
+history via the GitHub API rather than trusting the report. Found two workflow runs on the
+same commit — the repo's own `Pages` workflow (`actions/configure-pages@v5` step) failing,
+and GitHub's separate legacy "pages build and deployment" succeeding. That means Pages is
+still on "Deploy from a branch," so the live site has been serving raw, unbuilt source through
+GitHub's Jekyll-ish fallback — not `dist/`. `BACKLOG.md` T131 predicted exactly this after
+spec 12 shipped; it was never done. This alone is a plausible full explanation for "broken"
+and "cringe," independent of anything below. It is a repository-settings change the owner has
+to make (Settings → Pages → Source → "GitHub Actions"), and stays logged rather than folded
+into a spec, per `CONTEXT.md`'s "no backend, no server routes" scope and the plain fact that
+no tool in this environment can flip a GitHub Pages setting.
+
+Built the project locally, served `dist/` and drove it with Playwright/Chromium (pre-installed
+in this environment) to see what the owner was actually describing. The map already matched
+`CONTEXT.md` section 8 — a real serpentine `<path>`, a walking character, curated real links,
+numbered stops, a frontier branch. Screenshots went to the owner before any code changed, and
+the owner's follow-up narrowed the ask: keep this identity, "colourful and minimalist," but
+make progress *feel* like winning something — game psychology, progressive disclosure.
+
+**Did:** `specs/spec-14-completion-payoff.md`, claimed and now closed. Two new motion tokens
+in `theme.css` (`--dur-reward`, `--ease-reward`) kept apart from the existing calm
+`--dur-state`/`--ease-state` on purpose. `src/hooks/useJustCompleted.ts`, shaped like
+`useWalking`, flags exactly one animation cycle on a `false → true` flip and nothing else. Four
+reward moments built on it or on the cheaper "does not exist until true" trick: a stamp on
+`Mark done` (`cards.css`'s `node-card-stamp`), an "Act cleared" badge (`Section`'s new `badge`
+slot, `shell.css`'s `.section__badge`), a track-shipped banner on the overview plus an
+accent-filled masthead chip (`Overview.tsx`, `App.tsx`), and a reveal animation on expanding a
+below-level stub (`cards.css`'s `node-card-reveal`, gated on `belowLearnerLevel` at the one
+point in `NodeCard` only an explicit expand click can reach). One drive-by fix: `theme.css`'s
+comment over the four papers still described spec 13's rejected level-keyed rule instead of
+the kind-keyed one actually shipped — corrected while reading the file this spec edits anyway.
+
+**Decided:**
+
+- **Two motion tokens, not a reuse of the existing ones.** `--dur-state` (120ms, flat curve)
+  is right for hover and focus — instant, calm, everywhere. A reward moment is supposed to
+  read as different from that, so it gets its own duration (420ms) and an overshoot easing
+  (`cubic-bezier(0.34, 1.56, 0.64, 1)`). Reusing `--dur-state` for both would have made every
+  hover in the app feel like a tiny celebration, which is the opposite of what section 8's
+  "motion only to show state change" is protecting.
+- **Two different one-shot mechanisms, picked per case.** The stamp needs `useJustCompleted`
+  because the button stays mounted through the toggle — there is no other way to know "this
+  render is the one right after the flip." The badge and the banner need nothing: `Section`'s
+  `badge` prop and `Overview`'s `shipped` prop render `null` until their condition is first
+  true, so the element's *mount* is the state change, and a plain CSS `animation` is the whole
+  mechanism. Building the hook version for all four would have been three unnecessary transient
+  states.
+- **The badge is a sibling chip, not a child of the kicker pill.** First attempt nested it
+  inside `.section__kicker`, which is itself one ink-coloured pill — the badge rendered as a
+  colourful chip crushed inside another chip's padding. Moved both into a new `.section__head`
+  flex row instead, as two separate pills side by side, which is how every other multi-chip
+  row in this app (the masthead) already reads.
+- **`actCleared` and `shipped` are read off the progress `TrackMap` already derives once**,
+  not recomputed. Both exclude frontier automatically, because `ActProgress`/`TrackProgress`
+  already do (spec 09) — no new exclusion logic to get wrong.
+- **Did not touch the pocket solver, the curves, the palette, or add anything from section
+  11's deferred list** (no streaks, no sound, no particle graphics). The owner asked to keep
+  the identity; the brief was reward feedback on top of it, not a new one.
+
+**Verified:** `npm run build` and `npx tsc --noEmit` both exit 0; the theme gate reports 53
+files, 61 tokens, 0 violations. Grepped `dist/assets/` to confirm every new string and class
+(`Act cleared`, `Shipped —`, `reward-stamp-in`, `node-card-stamp`, `node-card-reveal`,
+`.section__badge`, `.overview__shipped`) actually shipped, not just compiled. In a real
+Chromium tab (Playwright, this environment's pre-installed browser): clicked `Mark done` seven
+times across one act and read `getComputedStyle(...).animationName` immediately after each
+click — `node-card-stamp` every time, and the "Act cleared" badge appeared with
+`animation-name: reward-stamp-in` the instant the seventh click cleared the act. Confirmed the
+track-shipped banner and the masthead's `data-shipped` do *not* fire with one of six acts
+cleared, then seeded `localStorage` with every main-zone id of a whole track and confirmed both
+*do* fire, with the exact "Shipped — every stop on the way to ship a playable game is done."
+copy and `26 / 26 DONE` in accent green. Set the learner level to `advanced` to force real
+stubs, clicked one open, and read `node-card-reveal` off the newly-mounted article within
+50ms of the click. Zero console or page errors across every check. Screenshots at each step
+confirm the visual read matches the paper-roadmap identity — flat colour, ink border, slight
+rotation, no glow.
+
+**Next iteration should know:** everything under "Next session should know" in the spec 14
+notes in `State of the project.md`. Short version: `useJustCompleted` is the pattern for a
+future one-shot animation on a value that has to stay mounted through its own state change;
+prefer the cheaper "conditionally-unmounted element plus a plain CSS `animation`" trick
+whenever the element *can* not exist until the condition is true; and the GitHub Pages source
+setting (`BACKLOG.md` T131) is still the most likely reason the live site looks broken —
+nothing in this codebase can fix it, only the repository's own Settings → Pages page can.
+
