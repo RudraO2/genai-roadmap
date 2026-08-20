@@ -62,11 +62,13 @@ spec at a time, inside the session that builds it.
 | 11 | `specs/spec-11-portability.md` | `DONE` | 08 |
 | 12 | `specs/spec-12-ship.md` | `DONE` | 01–11 |
 | 13 | `specs/spec-13-visual-overhaul.md` | `DONE` | 01–12 |
+| 14 | `specs/spec-14-completion-payoff.md` | `IN PROGRESS` | 01–13 |
 
-Every spec 01–13 is `DONE`. Nothing is `READY FOR DEVELOPMENT`, and there is no spec 14 — the
-board is finished, not stalled. A session that arrives here should say so and stop rather than
-invent work. `BACKLOG.md`'s "Noticed, not done" list is where the next unit of work would come
-from, and T130 (no README) is the strongest candidate.
+Every spec 01–13 was `DONE` and the board was finished. On 2026-08-20 the project owner opened
+spec 14 directly, in conversation, after reviewing a real local build and giving explicit
+direction: keep the paper-roadmap identity, add reward feedback on top of it. See spec 14's
+own "Why this spec exists" for the full account, including the separate GitHub Pages
+deployment fault this session found and logged rather than folded into the spec.
 
 **Read the amended section 8 of `CONTEXT.md` before touching any UI.** On 2026-08-19 the
 project owner authorised the one edit that file has ever had: the visual identity moved from
@@ -1287,10 +1289,25 @@ every one of them sat on the road.
 - **Lengths inside an `<svg>` are viewBox user units.** `--road-gauge` and friends are
   unitless numbers for that reason. A `rem` there is not a page length.
 
+## 14 — Completion payoff: the game-psychology pass
+
+**State:** `IN PROGRESS` — claimed 2026-08-20  **Depends on:** 01–13
+
+Opened directly by the project owner in conversation, not by a Ralph-loop session reading
+the board — the board had nothing `READY FOR DEVELOPMENT` and correctly said so. Full
+rationale in `specs/spec-14-completion-payoff.md`.
+
 ## Change log
 
 Newest first. One line per state change. Whoever changes a state writes the line.
 
+- 2026-08-20 — Spec 14 claimed `IN PROGRESS`. Owner-directed, not board-driven: reward
+  animations for marking a node done, clearing an act, and shipping a track, plus a
+  progressive-disclosure reveal for expanding a below-level stub. `specs/spec-14-completion-
+  payoff.md` has the full scope. Also found and logged separately (not part of this spec):
+  the deployed GitHub Pages site is broken because the repo's Pages source is set to "Deploy
+  from a branch" instead of "GitHub Actions," so the `Pages` workflow fails at
+  `actions/configure-pages@v5` and GitHub's legacy build serves raw source instead of `dist/`.
 - 2026-08-19 — Spec 12 `DONE`. Ship: a source gate (`check:theme`) failing the build on a
   colour literal, a type literal, a banned construct or an undeclared token outside
   `theme.css`, an output gate (`check:output`) failing it on a missing deploy file, a shipped
