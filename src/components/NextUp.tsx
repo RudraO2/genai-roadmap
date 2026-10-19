@@ -34,7 +34,7 @@ export interface NextUpProps {
 export function NextUp({ path, progress, completed, onOpen, onToggle }: NextUpProps): ReactNode {
   const [budgetId, setBudgetId] = useState<string | null>(null)
   const node = progress.next
-  const { overall, percent, rank } = progress
+  const { overall } = progress
 
   const budget = SESSION_BUDGETS.find((candidate) => candidate.id === budgetId) ?? null
   const plan = useMemo(
@@ -45,12 +45,12 @@ export function NextUp({ path, progress, completed, onOpen, onToggle }: NextUpPr
   if (!node) {
     return (
       <div className="nextup" data-complete="true">
-        <p className="nextup__kicker">Path complete</p>
-        <h2 className="nextup__title">Every quest on this path is done.</h2>
+        <p className="nextup__kicker">Look how far you’ve come</p>
+        <h2 className="nextup__title">You’ve finished this course.</h2>
         <p className="nextup__mission">
-          {overall.xp} XP, {overall.total} quests. Switch paths from the header — the quests you
-          have already finished stay finished on the new one.
+          {overall.total} lessons completed. Take a moment to enjoy that. Your completed lessons carry over when you try another path.
         </p>
+        <a className="button button--primary" href="#/courses">Find your next course →</a>
       </div>
     )
   }
@@ -60,27 +60,19 @@ export function NextUp({ path, progress, completed, onOpen, onToggle }: NextUpPr
   return (
     <div className="nextup">
       <div className="nextup__head">
-        <p className="nextup__kicker">Do this next / {stage.title}</p>
-        <p className="nextup__rank">
-          {rank.title} · {percent}%
-          {rank.next ? ` · ${rank.next.title} at ${rank.next.atPercent}%` : null}
-        </p>
+        <p className="nextup__kicker">{overall.done === 0 ? 'Your first lesson' : 'Your next lesson'} · {stage.title}</p>
+        <span className="badge">{node.est} · At your pace</span>
       </div>
       <h2 className="nextup__title">{node.title}</h2>
-      <p className="nextup__mission">{node.mission}</p>
+      <p className="nextup__mission">{node.blurb}</p>
       <div className="nextup__actions">
         <button type="button" className="nextup__open" onClick={() => onOpen(node.id)}>
-          Open the quest
+          {overall.done === 0 ? 'Start this lesson' : 'Continue learning'} <span aria-hidden="true">→</span>
         </button>
-        <button type="button" className="nextup__done" onClick={() => onToggle(node.id)}>
-          Already done this
-        </button>
-        <span className="nextup__meta">
-          {node.est} · {node.xp} XP · {progress.readyCount} quests unlocked
-        </span>
+        <span className="nextup__meta">A resource, a practical activity, and a clear finish line.</span>
       </div>
 
-      <div className="session">
+      <details className="session"><summary>Have a little time? Plan a study session</summary>
         <p className="session__ask" id="session-ask">
           How long have you got?
         </p>
@@ -136,7 +128,7 @@ export function NextUp({ path, progress, completed, onOpen, onToggle }: NextUpPr
             </ol>
           </>
         )}
-      </div>
+      </details>
     </div>
   )
 }

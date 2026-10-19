@@ -4,6 +4,15 @@ import { describe, it } from 'node:test'
 import { formatRoute, parseRoute } from '../src/data/route.ts'
 
 describe('parseRoute', () => {
+  it('round-trips the course browser without treating it as a learning path', () => {
+    const courses = { path: null, quest: null, page: 'courses' } as const
+    assert.deepEqual(parseRoute('#/courses'), courses)
+    assert.deepEqual(parseRoute(formatRoute(courses)), courses)
+  })
+
+  it('recovers safely from malformed URL encoding', () => {
+    assert.deepEqual(parseRoute('#/engineer/%E0%A4%A'), { path: null, quest: null })
+  })
   it('reads the three shapes', () => {
     assert.deepEqual(parseRoute('#/'), { path: null, quest: null })
     assert.deepEqual(parseRoute('#/engineer'), { path: 'engineer', quest: null })

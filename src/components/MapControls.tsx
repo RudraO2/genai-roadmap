@@ -55,7 +55,7 @@ export function MapControls({
             type="search"
             className="controls__input"
             value={search}
-            placeholder="rag, agents, lora, prompt…"
+            placeholder="Search a topic or lesson…"
             onChange={(event) => onSearch(event.target.value)}
           />
         </label>
@@ -79,7 +79,7 @@ export function MapControls({
           aria-pressed={showOptional}
           onClick={() => onShowOptional(!showOptional)}
         >
-          Side quests
+          Optional activities
         </button>
         <button
           type="button"

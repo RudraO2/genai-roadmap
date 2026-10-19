@@ -15,7 +15,7 @@ import type { LearningPath, Level, StageId } from "../types.ts";
 import { GraphCanvas, matchNodes } from "./GraphCanvas.tsx";
 import { MapControls, type MapView } from "./MapControls.tsx";
 import { NextUp } from "./NextUp.tsx";
-import { PathBar } from "./PathBar.tsx";
+import { COURSE_COPY, CourseIcon } from "./CourseIcon.tsx";
 import { PrintSheet } from "./PrintSheet.tsx";
 import { QuestPanel } from "./QuestPanel.tsx";
 import { StageList } from "./StageList.tsx";
@@ -27,6 +27,7 @@ export interface RoadmapScreenProps {
   openId: string | null;
   onOpenQuest: (id: string) => void;
   onCloseQuest: () => void;
+  onLevelChange: (level: Level) => void;
 }
 
 /** Below this the absolute grid stops being readable and the list is simply better. */
@@ -90,6 +91,7 @@ export function RoadmapScreen({
   openId,
   onOpenQuest,
   onCloseQuest,
+  onLevelChange,
 }: RoadmapScreenProps): ReactNode {
   const { completed, toggle } = useProgressContext();
   const { visited, markVisited } = useVisited();
@@ -183,7 +185,7 @@ export function RoadmapScreen({
     return (id: string): boolean => ids.has(id);
   }, [nodes]);
 
-  const view: MapView = preferredView ?? (wide ? "map" : "list");
+  const view: MapView = wide && preferredView === "map" ? "map" : "list";
   const openNode = openId === null ? null : registry.getNode(openId);
 
   // Everything that follows from a quest being open, in one place, keyed on the
@@ -236,21 +238,11 @@ export function RoadmapScreen({
   return (
     <>
       <div className="roadmap" data-path={path.id}>
-        <PathBar
-          path={path}
-          level={level}
-          progress={progress}
-          expanded={expanded}
-          onJump={jumpToStage}
-        />
-
-        {/* The finish line, in one line. The full editorial header this replaces
-          was three paragraphs of standing type that a returning learner had
-          read forty times and had to scroll past anyway. */}
-        <p className="roadmap__aim">
-          <span className="roadmap__aim-label">Finish line</span>
-          {path.goal}
-        </p>
+        <header className="learning-heading">
+          <a className="text-link" href="#/courses">← All courses</a>
+          <div className="learning-heading__row"><span className="course-icon"><CourseIcon id={path.id} /></span><div><p className="eyebrow">Your learning path · {path.title}</p><h1>{COURSE_COPY[path.id]?.title ?? path.title}</h1></div></div>
+          <div className="learning-progress"><div><span>{progress.overall.done === 0 ? 'Every journey starts with one lesson.' : `${progress.overall.done} ${progress.overall.done === 1 ? 'lesson' : 'lessons'} completed. Keep going!`}</span><span>{progress.percent}%</span></div><progress value={progress.percent} max="100" aria-label="Course progress" /></div>
+        </header>
 
         <NextUp
           path={path}
@@ -260,6 +252,9 @@ export function RoadmapScreen({
           onToggle={toggle}
         />
 
+        <div className="course-outline-heading"><div><p className="eyebrow">The bigger picture</p><h2>Your course, one chapter at a time</h2></div><span>{path.stages.length} chapters</span></div>
+        <details className="roadmap-tools"><summary>Find a lesson &amp; learning options</summary>
+        <div className="level-settings"><label>Your starting level <select value={level} onChange={(event) => onLevelChange(event.target.value as Level)}><option value="beginner">I’m starting fresh</option><option value="intermediate">I know the basics</option><option value="advanced">I’m ready for advanced topics</option></select></label><p>Review and stretch hints help you choose. You can open every lesson.</p></div>
         <MapControls
           view={view}
           onView={setPreferredView}
@@ -275,6 +270,8 @@ export function RoadmapScreen({
           zoom={zoom}
           onZoom={setZoom}
         />
+        <nav aria-label="Jump to chapter" className="chapter-jumps">{path.stages.map((id) => <button key={id} type="button" onClick={() => jumpToStage(id)}>{registry.getStage(id).title}</button>)}</nav>
+        </details>
 
         {matches !== null ? (
           <div className="results">

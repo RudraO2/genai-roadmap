@@ -74,7 +74,7 @@
       "id": "orient",
       "title": "Orientation",
       "kicker": "Know what you are looking at",
-      "summary": "Four ideas that make everything after this make sense. Half a day, and you stop being confused by the news."
+      "summary": "Start with what AI is, explore a few tools, and try a useful task of your own. No background knowledge needed."
     },
     {
       "id": "drive",
@@ -184,7 +184,7 @@
       "est": "90m",
       "xp": 25,
       "title": "What a model actually is",
-      "blurb": "A next-token predictor with no memory, no browser and no soul. Start here.",
+      "blurb": "Meet the systems behind AI tools and learn why their answers need a human check.",
       "requires": [],
       "mission": "Read the first three lessons of Microsoft's beginner course and write down, in your own words, what the model is doing when it answers you.",
       "why": "Almost every frustration people have with AI — it lied, it forgot, it made up a citation — stops being surprising once you know it is predicting the next token from the text in front of it. Do this before anything else.",
@@ -257,7 +257,7 @@
       "est": "60m",
       "xp": 25,
       "title": "The model landscape",
-      "blurb": "Frontier vs open-weight, big vs small, text vs multimodal. Who makes what.",
+      "blurb": "Get to know the different kinds of AI tools and what each one is useful for.",
       "requires": [
         "what-is-genai"
       ],
@@ -369,7 +369,7 @@
       "est": "45m",
       "xp": 25,
       "title": "Tokens, context and cost",
-      "blurb": "Why length is money, and why the model forgets the top of a long chat.",
+      "blurb": "Learn how AI reads your words, why long chats can be tricky, and how costs add up.",
       "requires": [
         "what-is-genai"
       ],

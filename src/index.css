@@ -23,10 +23,10 @@
 @import './theme.css';
 @import './styles/base.css';
 @import './styles/shell.css';
-@import './styles/picker.css';
 @import './styles/graph.css';
 @import './styles/quest.css';
 @import './styles/portability.css';
+@import './styles/learning.css';
 @import './styles/print.css';
 
 @theme {
