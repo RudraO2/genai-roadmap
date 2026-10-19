@@ -96,7 +96,7 @@
    * `--accent` is a graphic fill at 2.6 : 1 and is never used for text. Where the
    * action accent has to be *read*, that is `--accent-ink`.
    */
-  --surface-base: #fffceb;
+  --surface-base: #fafaf6;
   --surface-raised: #ffffff;
   --surface-road: #17191b;
 
@@ -107,6 +107,19 @@
   --text-secondary: #3a4046;
   --text-muted: #6e7378;
   --text-inverse: #fffceb;
+  --action-fill: #216344;
+  --action-hover: #164b32;
+  --action-text: #ffffff;
+  --surface-learning: #edf3e7;
+  --surface-success: #e8f3e9;
+  --rule-soft: #daddd2;
+  --radius-card: 16px;
+  --radius-control: 8px;
+  --size-hero: clamp(3.25rem, 2rem + 4.2vw, 5.5rem);
+  --size-section: clamp(1.65rem, 1.2rem + 1vw, 2.2rem);
+  --size-page: clamp(2rem, 1.2rem + 2.4vw, 3.25rem);
+  --tracking-label: 0.07em;
+  --leading-hero: 1.02;
 
   /* ---- The one action accent ----------------------------------------------
    * Done, here, go. Never a decorative surface. `--accent` fills and strokes,

@@ -1,6 +1,5 @@
 import type { ReactNode } from 'react'
 
-import { TYPE_LABEL } from '../constants.ts'
 import { registry } from '../data/roadmap.ts'
 import { levelFit, stageStateFor, tallyFor, type PathProgress } from '../data/state.ts'
 import type { LearningPath, Level, NodeState, RoadmapNode, StageId } from '../types.ts'
@@ -49,7 +48,6 @@ export function StageList({
   visited,
   focusedId,
   onOpen,
-  onToggle,
   onToggleStage,
 }: StageListProps): ReactNode {
   return (
@@ -76,7 +74,7 @@ export function StageList({
                 {state === 'current' ? (
                   <span className="stagelist__here">You are here</span>
                 ) : null}
-                {stage.kicker}
+                Chapter {index + 1}
               </p>
               <h3 className="stagelist__heading">
                 <button
@@ -91,11 +89,11 @@ export function StageList({
                   <span className="stagelist__title">{stage.title}</span>
                 </button>
               </h3>
-              <p className="stagelist__summary">{stage.summary}</p>
+              {open ? <p className="stagelist__summary">{stage.summary}</p> : null}
               <p className="stagelist__tally">
-                {tally.done} / {tally.total} done · {tally.xp} / {tally.xpTotal} XP
+                {tally.done} / {tally.total} lessons completed
                 {state === 'cleared' ? ' · cleared' : null}
-                {open ? null : ` · ${nodes.length} quests hidden`}
+                {open ? null : ' · Open chapter to explore'}
               </p>
             </header>
             {open ? (
@@ -117,29 +115,17 @@ export function StageList({
                       data-focused={node.id === focusedId ? 'true' : undefined}
                       data-dimmed={matches !== null && !matches.has(node.id) ? 'true' : undefined}
                     >
-                      <button
-                        type="button"
-                        className="qrow__tick"
-                        aria-pressed={nodeState === 'done'}
-                        aria-label={
-                          nodeState === 'done'
-                            ? `Mark ${node.title} not done`
-                            : `Mark ${node.title} done`
-                        }
-                        onClick={() => onToggle(node.id)}
-                      >
-                        <span aria-hidden="true">{nodeState === 'done' ? '✓' : ''}</span>
-                      </button>
+                      <span className="lesson-state" aria-label={STATE_LABEL[nodeState]}>{nodeState === 'done' ? '✓' : isNext ? '→' : '·'}</span>
                       <button type="button" className="qrow__open" onClick={() => onOpen(node.id)}>
                         <span className="qrow__title">{node.title}</span>
                         <span className="qrow__blurb">{node.blurb}</span>
                         <span className="qrow__meta">
-                          {TYPE_LABEL[node.type]} · {node.est} · {node.xp} XP ·{' '}
+                          {node.type === 'side' ? 'Optional activity · ' : ''}{node.est} ·{' '}
                           {node.id === focusedId
                             ? 'Last opened'
                             : isNext
                               ? 'Do this next'
-                              : STATE_LABEL[nodeState]}
+                              : nodeState === 'locked' ? 'Preview lesson' : STATE_LABEL[nodeState]}
                           {fit === 'match' ? null : ` · ${fit}`}
                           {seen && node.id !== focusedId ? ' · opened' : null}
                         </span>

@@ -3,7 +3,7 @@
  * to route real paths — `#/engineer/rag-pipeline` is a URL GitHub Pages will
  * serve without any rewrite rule, and a real path is not.
  *
- * Three shapes, and there will never be a fourth:
+ * Home, course browsing, and the existing shareable learning URLs:
  *
  *   #/                        no path chosen — the picker
  *   #/engineer                that path's map
@@ -24,6 +24,7 @@ import type { PathId } from '../types.ts'
 import { registry } from './roadmap.ts'
 
 export interface Route {
+  page?: 'courses'
   /** A path id the registry knows, or null for the picker. */
   path: PathId | null
   /** A quest id the registry knows *and* that sits on `path`, or null. */
@@ -38,8 +39,15 @@ function questIsOnPath(pathId: PathId, questId: string): boolean {
 }
 
 export function parseRoute(hash: string): Route {
-  const segments = hash.replace(/^#\/?/, '').split('/').filter(Boolean).map(decodeURIComponent)
+  let segments: string[]
+  try {
+    segments = hash.replace(/^#\/?/, '').split('/').filter(Boolean).map(decodeURIComponent)
+  } catch {
+    return EMPTY_ROUTE
+  }
   const [pathId, questId] = segments
+
+  if (pathId === 'courses') return { ...EMPTY_ROUTE, page: 'courses' }
 
   if (pathId === undefined || !registry.isPathId(pathId)) return EMPTY_ROUTE
   if (questId === undefined) return { path: pathId, quest: null }
@@ -53,6 +61,7 @@ export function parseRoute(hash: string): Route {
 }
 
 export function formatRoute(route: Route): string {
+  if (route.page === 'courses') return '#/courses'
   if (route.path === null) return '#/'
   if (route.quest === null) return `#/${encodeURIComponent(route.path)}`
   return `#/${encodeURIComponent(route.path)}/${encodeURIComponent(route.quest)}`

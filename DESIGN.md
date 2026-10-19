@@ -1,134 +1,68 @@
-# DESIGN.md — the visual language
+# Design: small steps, clear direction
 
-This is the whole of the design constitution. It replaces `CONTEXT.md`, which
-described an earlier version of this project — a single serpentine SVG road with a
-walking character, a `nodes.json` / `tracks.json` registry, and card colours keyed
-to link kind. None of those exist. Keeping a document that describes them was a
-standing invitation to rebuild them by accident, so it is gone; git history has it
-if anyone ever wants it.
+The primary audience includes people encountering AI for the first time. A learner
+should be able to answer three questions without knowing this project's vocabulary:
+What is this? Where do I start? What do I do next?
 
-Everything below describes the app as it is.
+## Progressive disclosure
 
-## The aesthetic
+1. Home explains the experience and recommends a starting point. It does not demand
+   a choice of technical specialties or display the entire curriculum.
+2. Courses describe concrete outcomes and audiences. Chapter outlines expand only
+   when requested. Beginner is the default; level selection is optional.
+3. A course recommends one next lesson. The current chapter is expanded; other
+   chapters are available to explore. Full graph controls, filters, and session
+   planning are secondary disclosures rather than entry requirements.
+4. A lesson shows one activity instruction at a time. The finish checklist precedes
+   completion, then the interface offers the next lesson. Extra resources and
+   searches remain accessible in a disclosure.
 
-A **printed road atlas**: a risograph field guide, an activity poster you could pin
-to a wall. Warm paper, ink-black rules, a small set of flat spot colours that each
-*mean* something. Playful, but not a toy — every colour is load-bearing.
+Use plain language on the primary journey: course, chapter, lesson, next step.
+Technical terms belong where learners are ready to use them. Existing graph-only
+terminology and XP can remain in the optional advanced view.
 
-**The test.** Would this look at home as a printed atlas or a wall poster for a
-course? If it looks like a Product Hunt launch, it is wrong. If it looks like a dark
-developer terminal, that is the identity this project had before 2026-08-19 and is
-also wrong — do not restore it.
+## Visual language
 
-## Banned outright
+Warm neutral paper, near-black text, generous spacing, and restrained flat color.
+Green means start, continue, progress, or completion. Course icons and top borders
+use stable path colors, assigned from IDs rather than positions in a list. The full
+graph retains its semantic activity colors and prerequisite connections.
 
-- Gradients, anywhere, for anything. Flat spot colour only.
-- Glassmorphism, `backdrop-blur`, frosted panels.
-- Emoji as UI icons.
-- Default Tailwind palette tokens (`slate-900`, `indigo-500`, `violet-*`).
-- Glow shadows, neon halos, `box-shadow` with colour. A hard *offset* ink block
-  behind a paper surface is not a glow and is allowed — spelled
-  `drop-shadow(x y 0 ink)` with a zero blur radius, because the build gate rejects
-  `box-shadow` outright.
-- Bento grids.
-- Inter, as a typeface, anywhere.
-- Uniform `rounded-2xl` on every surface.
-- Centred hero plus gradient headline plus two pill buttons.
-- Ambient motion: float, parallax, pulse, spin, anything that runs on a loop.
-- **Colour as decoration.** A surface's colour is derived from its data. Cycling
-  `nth-child` through a palette is banned by name.
+Use Gabarito for headings, Space Grotesk for body and UI, and JetBrains Mono for
+short labels. The hero earns a larger display size because it has one job; other
+screens prioritize readable instructions and controls. All colors and type values
+remain custom properties in `src/theme.css`.
 
-`npm run check:theme` enforces most of this against the source, and
-`npm run check:output` checks the built CSS in case a banned utility survived.
+Use quiet borders and selective rounding. The interface should feel approachable,
+without letting every surface compete for attention. One filled primary action
+leads a task; secondary links and disclosures remain visually quieter.
 
-## Type: three faces, three jobs
+## Interaction and accessibility
 
-| Face | Weight | Job |
-| --- | --- | --- |
-| **Gabarito** | 700–900 | Display. Headings, card titles, the path name. Heavy, rounded, geometric, tight tracking. |
-| **Space Grotesk** | 400–700 | Body and UI. Blurbs, standfirsts, prose, hints. |
-| **JetBrains Mono** | 500–700 | The instrument panel, and nothing else. Labels, counters, tags, tallies, state words, metadata. |
+- Native buttons, links, selects, details, and dialog semantics.
+- Visible focus rings, logical headings, and a working skip-to-content link.
+- Touch actions at least 44px; no important action depends on hover.
+- All status colors have a textual equivalent.
+- Browser Back follows navigation history; explicit Close returns to the course.
+- Previewing a future lesson names prerequisite lessons instead of giving a dead end.
+- No ambient animation. Any transition acknowledges an action and respects reduced
+  motion. Lesson stepping works without animation.
+- Design phone layouts explicitly: stacked course cards, compact navigation, a
+  full-screen lesson reader, and accessible action buttons. The full graph stays
+  desktop-only; a narrow screen always uses the chapter list.
+- Preserve the printable checklist and browser-local progress/export formats.
 
-No serif. Seven sizes, declared in `theme.css` as `--size-*`, and every
-`font-size`, `letter-spacing` and `line-height` in `src/styles/` must be one of
-those tokens verbatim — the theme gate rejects a literal or a `calc()` on those
-properties, which is what keeps a scale a scale.
+## Enforced constraints
 
-The scale tops out at `--size-title`. There is deliberately no display step above
-it: the one screen that spent one was onboarding, where two hero headings were most
-of the reason the button people needed sat below the fold.
+- No backend, account, database, or new npm dependency.
+- Every color and typography value is a token in `src/theme.css`.
+- Tailwind is for layout only. No default palette utilities or Inter.
+- No gradients, glow, glassmorphism, blur, colored box shadows, emoji icons,
+  decorative bento grids, or continuous animation.
+- `npm run build` must pass all six gates. UI changes must also be inspected in
+  a browser at desktop and phone widths.
 
-## Colour: two channels that never mix
-
-Warm paper ground (`#FFFCEB`), near-black ink (`#17191B`) for every rule, border and
-sign. On top of that, colour answers exactly two questions, and each question has
-its own surfaces.
-
-**On a quest box — what kind of work is this?** Assigned from the node's `type`,
-the same on every path:
-
-| Paper | Type | Meaning |
-| --- | --- | --- |
-| white | `core` | the spine of a stage |
-| blue | `side` | an optional detour (also drawn with a dashed border) |
-| lime | `build` | you make something |
-| amber | `boss` | a stage capstone |
-| grey | — | the locked/quiet surface |
-
-**On the chrome around it — which path am I on?** Assigned from the path's `id`:
-`--path-explorer`, `--path-engineer`, `--path-builder`, `--path-creator`, each with
-a pale `-wash` for large surfaces. It lands on the map's ground, the sticky path
-bar, the current stage's rules, the stage stepper's "here" chip and the quest
-dialog's spine. It never lands on a quest box, because a box already means
-something.
-
-**One action accent** (green). It means *done*, *here* or *go*, and nothing else.
-It is never a decorative background, and it stays green on all four paths — that is
-the point of it being the only one.
-
-Colour is never the only channel. Every state that has a colour also has a word:
-`Ready`, `Locked`, `Done`, `Last opened`, `You are here`, `cleared`, `review`,
-`stretch`.
-
-## Structure, space, motion
-
-- **Rules**, not hairlines: 2px ink borders by default, 3px where something is
-  emphasised. Hard edges. A small radius and a degree or two of rotation are
-  allowed only on things meant to read as paper stuck to a page.
-- **Space:** dense inside the map, generous around it. The map earns the density;
-  nothing else does.
-- **Motion only to show a state change**, and only on the transition itself. The
-  reward tokens (`--dur-reward`, `--ease-reward`) exist for the one-shot moments
-  that mark a learner actually finishing something, and every use must be gated on
-  a real transition — a hook watching a boolean, or an element that does not exist
-  until the condition is first true. A map loading with forty quests already done
-  must not put on a fireworks display.
-- **Every breakpoint is a designed screen.** The absolute-positioned map is a
-  desktop artefact; below `64rem` the same data is a stage list, which is a better
-  phone experience and a better screen-reader experience, not a degradation. A card
-  clipped off-screen, overlapping another card, or laid across a rule is a bug.
-- **Touch targets are at least 44px** on any surface a phone can reach. The theme
-  carries `--touch-min` for it, applied under `@media (pointer: coarse)` so a mouse
-  keeps the tighter instrument-panel sizing.
-
-  The blanket rule in `base.css` sets `min-height` only. **A control drawn as a
-  square needs both dimensions naming in the coarse-pointer block at the foot of
-  `graph.css`**, or it stretches into an oval — `min-height` clamps a height
-  whatever the cascade layer says. Two controls are listed there, and one, the
-  map's corner tick, is exempt by name and by comment because it sits on a fixed
-  grid that has no room to grow. A new square control belongs in one list or the
-  other.
-
-## Where the rules live in code
-
-| File | What it owns |
-| --- | --- |
-| `src/theme.css` | Every colour and type value in the project, as a custom property. The only file allowed to hold a literal. |
-| `src/index.css` | Import order, and the `@theme` block that deletes the Tailwind namespaces a banned utility would need to exist at all. |
-| `src/styles/*.css` | Component styling, tokens only, one file per surface. |
-| `scripts/check-theme.ts` | The gate. Rejects a literal colour or type value outside `theme.css`, a banned property, and an unknown token. |
-| `public/icon.svg` | The one file outside `theme.css` that holds a colour, stated as an exception rather than discovered as one. An app icon is an asset, like the font files, and cannot read a stylesheet. It carries the ground and the ink, and it changes when they do. `public/apple-touch-icon.png` is a 180px raster of it. |
-| `og-card.html` | The source of the share card, `public/og.png`. A real page rather than a hand-drawn image, so the card is set in the project's own faces at the project's own sizes out of the project's own tokens — it holds no literal of its own. Vite builds `index.html` only, so it never reaches `dist/`. Regenerate after a theme change: `npm run dev`, open `/og-card.html`, screenshot the 1200x630 `.card` element over `public/og.png`. |
-
-Tailwind is for layout only — spacing, flex, grid, breakpoints, position. Colour and
-type reach components through `var(--…)`, never through a class.
+The theme and output scripts enforce these constraints. `public/icon.svg` remains
+the existing standalone asset exception for literal color. `og-card.html` is the
+source for the existing share image. Existing share-image artwork is independent
+of the live learner interface.
